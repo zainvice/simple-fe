@@ -11,10 +11,10 @@ const LandingPage = (props) => {
                     </div>
                     <div className='hidden lg:flex w-[300px] text-white text-sm mt-8 justify-around'>
                       <a href="#experince">Experience</a>
-                      <a href="#">Global&nbsp;Plans</a>
+                      <a href="#global">Global&nbsp;Plans</a>
                       
-                      <a href="#">Consultation</a>
-                      <a href="#">Login</a>
+                      <a href="#consultation">Consultation</a>
+                      <a href="/login">Login</a>
                     </div>
                     <div className='lg:mr-20 mt-5 '>
                         <button className='bg-white text-sm px-5 py-2 text-[#00874E] rounded-[20px]'>Book Now</button>
@@ -77,9 +77,9 @@ const LandingPage = (props) => {
                 </div>
                 <div className='flex justify-between w-[80%] my-20'>
                     <div><img src="./tophosp.png" alt="clinics-img" /></div>
-                    <div className='mt-60 ml-10 w-1/2'><p className='text-[#28574E] font-semibold poppins text-[40px]'>World’s Best USA Hospitals & Research Centers</p></div>
+                    <div className='mt-60 ml-10 w-1/2'><p className='text-[#28574E] font-medium poppins text-[40px]'>World’s Best USA Hospitals & Research Centers</p></div>
                 </div>
-                <div className='bg-[#1E232F] w-full p-16 text-white flex flex-col items-center text-center'>
+                <div className='bg-[#1E232F] w-full p-16 text-white flex flex-col items-center text-center' id='global'>
                         <div>
                             <h1 className='text-[30px] poppins font-medium'>Global Plans</h1>
                             <p>World’s Best USA Healthcare, Now Accessible and Affordable<br/>with MediPocket Global Membership Plan</p>
@@ -128,7 +128,7 @@ const LandingPage = (props) => {
 
                 </div>
                 <div className='flex flex-col justify-between w-[80%] my-20'>
-                    <p>Explore Treatments across specialties</p>
+                    <p className='poppins font-medium text-[#28574E] text-[40px] w-[380px]' >Explore Treatments<br/> across specialties</p>
                     <div className='grid grid-cols-5'>
                         <div className='flex flex-col bg-[#F9F9F9] py-8 rounded-[30px] items-center text-center m-4'><div><img src="./1.png" alt="logo" /></div> <p>Onocology</p></div>
                         <div className='flex flex-col bg-[#F9F9F9] py-8 rounded-[30px] items-center text-center m-4'><div><img src="./2.png" alt="logo" /></div> <p>Endocrinology</p></div>
@@ -145,16 +145,34 @@ const LandingPage = (props) => {
 
                 </div>
                 <div  className='flex flex-col justify-between w-[80%] my-20 items-center text-center'>
-                    <p>World’s Top Doctors</p>
+                    <p className='poppins font-medium text-[#28574E] text-[40px] my-10'>World’s Top Doctors</p>
                     <img src="./top_drs.png" alt="Doctors" />
 
                 </div>
-                <div className='flex relative bg-[#E8E7E3] rounded-[20px] w-[80%] my-20'>
-                    <form action="">
-                        <h1>Book A Free Consultation</h1>
+                <div className='flex relative bg-[#EEEEEC] rounded-[20px] w-[80%] my-20 overflow-hidden' id='consultation'>
+                    <div className='flex flex-col w-[45%] p-8'>
+                        <h1 className='poppins font-medium text-[#28574E] text-[40px] my-2 ml-10'>Book A Free Consultation</h1>
+                        <form action="" className='w-[200%] p-8 top-[90px] -mt-20 z-10 -mb-40'>
+                        
+                        <div className='flex w-full '>
+                            <input type="text" className='px-5 py-3 w-1/2 m-3 rounded-[30px] placeholder-[#969696] bg-white bg-opacity-[74%]' placeholder='First Name' />
+                            <input type="text" className='px-5 py-3 w-1/2 m-3 rounded-[30px] placeholder-[#969696] bg-white bg-opacity-[74%]' placeholder='Last Name'/>
+                        </div>
+                        <div className='flex w-full'>
+                            <input type="text" className='px-5 py-3 w-1/2 m-3 rounded-[30px] placeholder-[#969696] bg-white bg-opacity-[74%]' placeholder='Email' />
+                            <input type="text" className='px-5 py-3 w-1/2 m-3 rounded-[30px] placeholder-[#969696] bg-white bg-opacity-[74%]' placeholder='Phone Number'/>
+                        </div>
+                        <div className='flex flex-col w-full'>
+                            <input type="text" className='px-5 py-3  m-3 rounded-[30px] placeholder-[#969696] bg-white bg-opacity-[74%]' placeholder='State' />
+                            <textarea type="text" rows='7' className='px-5 py-3  m-3 rounded-[30px] placeholder-[#969696] bg-white bg-opacity-[74%]' placeholder='Message'/>
+                        </div>
+                        <button className='bg-black m-3 text-white px-9 py-3 rounded-[30px] shadow-md'>Submit</button>
+                        
                     </form>
-                    <div className='w-[65%] self-end'>
-                        <img src="./cosult.png" alt="img-form" />
+                    </div>
+                    
+                    <div className='w-[80%]'>
+                        <img src="./cosult.png" alt="img-form" className=''/>
                     </div>
                 </div>
                 <footer className='bg-[#28574E] w-full relative text-white flex items-center flex-col'>
@@ -172,24 +190,28 @@ const LandingPage = (props) => {
                     </div>
                     <div className='w-[90%] h-[2px] rounded-full bg-white'></div>
                     <div className='flex mx-20 my-10 w-[90%]'>
-                        <div className='w-1/4 mr-6'>
-                            <p>About Simple</p>
+                        <div className='w-1/4 text-sm mr-6'>
+                            <p className='font-semibold text-[18px] my-5'>About Simple</p>
                             <p>Simple is a medical care USA platform bridging the gap in speciality care by connecting patients around the states from their homes to the top hospitals and specialists in the USA.</p>
                         </div>
-                        <div className='w-1/4 mx-6 flex flex-col'>
-                            <p>Useful Links</p>
+                        <div className='w-1/4 text-sm mx-6 flex flex-col'>
+                            <p className='font-semibold text-[18px] my-5' >Useful Links</p>
                             <a href="">Login</a>
                             <a href="">Sign Up</a>
-                            <a href="">Link</a>
-                            <a href="">Link</a>
-                            <a href="">Link</a>
+                            <a href="#experince">Experience</a>
+                            <a href="#global">Global Plans</a>  
+                            <a href="#consultation">Consultation</a>
                         </div>
-                        <div className='w-1/4 mx-6'>
-                            <p>Contact Info</p>
+                        <div className='w-1/4 text-sm mx-6'>
+                            <p className='font-semibold text-[18px] my-5' >Contact Info</p>
+                            <div className='bg-white bg-opacity-10 rounded-[10px] px-4 py-2 flex'>
+                                <img src="./Email.png" alt="" />
+                                <p className='ml-5'>hello@simple.com</p>
+                            </div>
 
                         </div>
-                        <div className='w-1/4 ml-6 '>
-                            <p>Legal</p>
+                        <div className='w-1/4 text-sm ml-6 '>
+                            <p className='font-semibold text-[18px] my-5' >Legal</p>
                             <p>Privacy Policy</p>
                             <p>Terms Conditions</p>
                             <p>License</p>
@@ -198,7 +220,7 @@ const LandingPage = (props) => {
                         
                     </div>
                     <div className='w-[90%] h-[2px] rounded-full bg-white'></div>
-                    <div className='text-left w-[90%] my-4'><p>©  2024 Simple USA. All Rights Reserved.</p></div>
+                    <div className='text-left w-[90%] my-4 text-sm font-thin'><p>©  2024 Simple USA. All Rights Reserved.</p></div>
                 </footer>
           
         </div>
