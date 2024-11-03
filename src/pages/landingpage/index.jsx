@@ -2,94 +2,94 @@ import React from 'react';
 
 const LandingPage = (props) => {
     return (
-        <div className='w-screen m-0 p-0'>
-            <div className='bg-[#00874E] absolute top-0 left-0 w-full h-[920px] z-[-1]'></div>
+        <div className='w-screen m-0 p-0 flex flex-col items-center'>
+            <div className='bg-[#00874E] absolute top-0 left-0 w-full h-[500px] lg:h-[820px] z-[-1]'></div>
          
-                <header className='flex justify-between my-5 mx-[100px]'>
-                    <div className='ml-20 mt-4 w-[120px]'>
+                <header className='flex justify-between my-5 w-[80%]'>
+                    <div className='lg:ml-20 mt-4 w-[120px]'>
                         <img src="./logo.png" alt="LOGO_IMG" />
                     </div>
-                    <div className='flex w-[300px] text-white text-sm mt-8 justify-around'>
+                    <div className='hidden lg:flex w-[300px] text-white text-sm mt-8 justify-around'>
                       <a href="#experince">Experience</a>
                       <a href="#">Global&nbsp;Plans</a>
                       
                       <a href="#">Consultation</a>
                       <a href="#">Login</a>
                     </div>
-                    <div className='mr-20 mt-5 '>
+                    <div className='lg:mr-20 mt-5 '>
                         <button className='bg-white text-sm px-5 py-2 text-[#00874E] rounded-[20px]'>Book Now</button>
                     </div>
                 </header>
-                <div className='flex flex-col items-center justify-center text-center text-white h-[500px]' >
-                    <h1 className='text-[60px]'>World's Best Advanced <br/>Medical Care</h1>
-                    <p className='text-[22px] text-normal'> Find The Best Hospitals and Doctors Across the States</p>
-                    <div className='border-black flex w-[600px] h-[60px] mt-[40px]'>
+                <div className='flex flex-col items-center justify-center text-center text-white lg:h-[500px] w-[90%] lg:w-[50%]' >
+                    <h1 className='text-[30px] lg:text-[60px]'>World's Best Advanced <br/>Medical Care</h1>
+                    <p className='text-[13px] lg:text-[22px] text-normal'> Find The Best Hospitals and Doctors Across the States</p>
+                    <div className='border-black flex flex-col lg:flex-row w-full justify-between items-center h-[60px] mt-[40px]'>
                         
-                        <div className='w-[80%] flex rounded-full bg-white bg-opacity-30 px-4 py-2'>
-                            <img className='w-[25px] h-[25px] mt-2' src="./search.png" alt="search" /> <input type="text" className='bg-transparent placeholder-white ml-2 border-none outline-none focus:ring-0 caret-white'  placeholder ='Search disease, hospitals'/>
-                            </div>
-                        <button className='bg-white text-[16px] ml-4 px-4 py-4 text-[#00874E] rounded-full'>Explore&nbsp;Premium&nbsp;Care &nbsp;</button>
+                        <div className='w-full lg:w-[90%] flex rounded-full bg-white bg-opacity-30 px-4 py-3'>
+                            <img className='w-[15px] h-[15px] lg:w-[25px] lg:h-[25px] mt-1 ' src="./search.png" alt="search" /> <input type="text" className='bg-transparent placeholder-white ml-2 border-none outline-none focus:ring-0 caret-white'  placeholder ='Search disease, hospitals'/>
+                        </div>
+                        <button className='bg-white text-[16px] mt-6 lg:mt-0 lg:ml-4 p-3 text-[#00874E] rounded-full'>Explore&nbsp;Premium&nbsp;Care</button>
                     </div>
 
                 </div>
-                <div className='flex items-center justify-center -mt-[70px]'>
+                <div className='flex items-center justify-center mt-20 w-[80%] lg:-mt-[70px]'>
                     <img src="./landingPage.png" alt="landing_page" />
                 </div>
-                <div className='flex justify-between mx-[300px] my-20' id='experince'>
+                <div className='flex justify-between w-[80%] my-20' id='experince'>
                 
-                        <p className='poppins text-[#28574E]'>Experience Exceptional Healthcare In The USA With Simple USA</p>
+                        <p className='poppins text-[#28574E] text-[30px] w-1/2'>Experience Exceptional Healthcare In The USA With Simple USA</p>
                     
                     
-                        <p className='text-[#757575]'>Discover the pinnacle of healthcare services in the United States, where advancements, quality, cutting edge research, expert doctors and a commitment to patient success, combine to provide an unparalleled medical tourism experience. Omnicure USA is your dedicated partner, guiding you towards improved health and wellness. Connect with us today and embark on a journey of exceptional USA healthcare services.</p>
+                        <p className='text-[#757575] w-1/2 text-justify mt-3 ml-8 text-[18px]'>Discover the pinnacle of healthcare services in the United States, where advancements, quality, cutting edge research, expert doctors and a commitment to patient success, combine to provide an unparalleled medical tourism experience. Omnicure USA is your dedicated partner, guiding you towards improved health and wellness. Connect with us today and embark on a journey of exceptional USA healthcare services.</p>
                   
                 </div>
-                <div className='flex justify-around mx-[300px] my-20'>
-                    <div className='flex flex-col bg-[#F9F9F9] text-center items-center p-5 mx-6'>
-                        <img src="" alt="img-so" />
-                        <h1>Second Opinion</h1>
-                        <p>When facing a serious, life-changing illness, we understand the critical importance of obtaining expert advices</p>
-                        <button>Get Started</button>
+                <div className='flex justify-around w-[80%] relative my-20'>
+                    <div className='flex flex-col pb-20 bg-[#F9F9F9] text-center items-center p-5 py-8 mx-6 rounded-[30px] shadow-md w-[33%]'>
+                        <img src="./se.png" alt="img-so" />
+                        <h1 className='font-medium text-[24px] my-6'>Second Opinion</h1>
+                        <p className='text-[#757575]'>When facing a serious, life-changing illness, we understand the critical importance of obtaining expert advices</p>
+                        <button className='bg-[#00D97E] shadow-md absolute -bottom-6 rounded-[30px] text-white px-5 py-3 text-sm'>Get Started</button>
                     </div>
-                    <div className='flex flex-col bg-[#F9F9F9] text-center items-center p-5 mx-6'>
-                        <img src="" alt="img-t" />
-                        <h1>Treatment</h1>
-                        <p>Get help from the best chosen hospitals and specialists that excel in providing premium healthcare directly from the United States.</p>
-                        <button>Get Started</button>
+                    <div className='flex flex-col pb-20 bg-[#F9F9F9] text-center items-center p-5 py-8 mx-6 rounded-[30px] shadow-md w-[33%]'>
+                        <img src="./treat.png" alt="img-t" />
+                        <h1 className='font-medium text-[24px] my-6'>Treatment</h1>
+                        <p className='text-[#757575]'>Get help from the best chosen hospitals and specialists that excel in providing premium healthcare directly from the United States.</p>
+                        <button className='bg-[#00D97E] shadow-md absolute -bottom-6 rounded-[30px] text-white px-5 py-3 text-sm'>Get Started</button>
                     </div>
-                    <div className='flex flex-col bg-[#F9F9F9] text-center items-center p-5 mx-6'>
-                        <img src="" alt="img-globle" />
-                        <h1>Treatment</h1>
-                        <p>Get help from the best chosen hospitals and specialists that excel in providing premium healthcare directly from the United States.</p>
-                        <button>Get Started</button>
+                    <div className='flex flex-col pb-20 bg-[#F9F9F9] text-center items-center p-5 py-8 mx-6 rounded-[30px] shadow-md w-[33%]'>
+                        <img src="./globe.png" alt="img-globle" />
+                        <h1 className='font-medium text-[24px] my-6'>Glolal Plans</h1>
+                        <p className='text-[#757575]'>Get help from the best chosen hospitals and specialists that excel in providing premium healthcare directly from the United States.</p>
+                        <button className='bg-[#00D97E] shadow-md absolute -bottom-6 rounded-[30px] text-white px-5 py-3 text-sm'>Get Started</button>
                     </div>
                 </div>
 
-                <div className='flex justify-between mx-[300px] my-20'>
-                    <div>
-                        <p>Teleconsult Our Patient Advisors</p>
-                        <button>Get Started</button>
+                <div className='flex px-8 py-6 relative justify-between w-[80%] my-20'>
+                    <div className='mt-60 ml-20'>
+                        <p className='poppins font-medium text-white text-[30px]'>Teleconsult Our<br/>Patient Advisors</p>
+                        <button className='bg-white text-[#1E232F] rounded-[30px] mt-6 px-5 py-3'>Book A Call</button>
                     </div>
-                    <div>
-                        <img src="" alt="doc-img" />
-                        <img src="" alt="phone-img" />
+                    <div className='-mb-6'>
+                        <img src="./calldoc.png" alt="doc-img" />
+                       
                     </div>
-                    <div className='absolute'></div>
+                    <div className='absolute top-[150px] left-0 w-full h-[70%] bg-[#1E232F] rounded-[40px] z-[-1]' id='rectangle'></div>
                 </div>
-                <div className='flex justify-between mx-[300px] my-20'>
-                    <div><img src="" alt="clinics-img" /></div>
-                    <div><p>World’s Best USA Hospitals & Research Centers</p></div>
+                <div className='flex justify-between w-[80%] my-20'>
+                    <div><img src="./tophosp.png" alt="clinics-img" /></div>
+                    <div className='mt-60 ml-10 w-1/2'><p className='text-[#28574E] font-semibold poppins text-[40px]'>World’s Best USA Hospitals & Research Centers</p></div>
                 </div>
-                <div className='bg-[#1E232F] text-white flex flex-col items-center text-center'>
+                <div className='bg-[#1E232F] w-full p-16 text-white flex flex-col items-center text-center'>
                         <div>
-                            <h1>Global Plans</h1>
-                            <p>World’s Best USA Healthcare, Now Accessible and Affordable  with MediPocket Global Membership Plan</p>
+                            <h1 className='text-[30px] poppins font-medium'>Global Plans</h1>
+                            <p>World’s Best USA Healthcare, Now Accessible and Affordable<br/>with MediPocket Global Membership Plan</p>
                         </div>
-                        <div className='flex justify-between'>
-                            <div className='bg-[#FFFFF] bg-opacity-30'>
-                             <h2>Global Life</h2>
-                             <p>Starting At</p>
-                             <h1>$10 Month</h1>
-                             <ul>
+                        <div className='flex justify-between w-[80%] mt-10'>
+                            <div className='bg-white bg-opacity-[5%] rounded-[40px] mx-10 px-6 py-8 text-left w-1/2 '>
+                             <h2 className='font-medium text-[22px]'>Global Life</h2>
+                             <p className='text-white opacity-40'>Starting At</p>
+                             <h1 className='poppins font-medium text-[30px]'>$10 Month</h1>
+                             <ul className='list-disc text-sm my-5 ml-5'>
                                 <li>Global Health Coverage IN 50L-3Cr</li>
 
                                 <li>USA Health Advisor</li>
@@ -102,13 +102,13 @@ const LandingPage = (props) => {
 
                                 <li>Global Concierge Service </li>
                              </ul>
-                             <button>Get Started</button>
+                             <button className='bg-white text-[#1E232F] px-5 py-3 rounded-[30px] shadow-md'>Get Started</button>
                              </div>
-                            <div className='bg-[#FFFFF] bg-opacity-30'>
-                             <h2>Global Life</h2>
-                             <p>Starting At</p>
-                             <h1>$10 Month</h1>
-                             <ul>
+                            <div className='bg-white bg-opacity-[5%] rounded-[40px] mx-10 px-6 py-8 text-left w-1/2 '>
+                             <h2 className='font-medium text-[22px]'>Global Family</h2>
+                             <p className='text-white opacity-40'>Starting At</p>
+                             <h1 className='poppins font-medium text-[30px]'>$45 Month</h1>
+                             <ul className='list-disc text-sm my-5 ml-5'>
                                 <li>Global Health Coverage IN 50L-3Cr</li>
 
                                 <li>USA Health Advisor</li>
@@ -121,72 +121,74 @@ const LandingPage = (props) => {
 
                                 <li>Global Concierge Service </li>
                              </ul>
-                             <button>Get Started</button>
+                             <button className='bg-white text-[#1E232F] px-5 py-3 rounded-[30px] shadow-md'>Get Started</button>
                       
                         </div>
                     </div>
 
                 </div>
-                <div className='flex flex-col justify-between mx-[300px] my-20'>
+                <div className='flex flex-col justify-between w-[80%] my-20'>
                     <p>Explore Treatments across specialties</p>
                     <div className='grid grid-cols-5'>
-                        <div className='flex flex-col'><img src="" alt="logo" /> <p>Onocology</p></div>
-                        <div className='flex flex-col'><img src="" alt="logo" /> <p>Onocology</p></div>
-                        <div className='flex flex-col'><img src="" alt="logo" /> <p>Onocology</p></div>
-                        <div className='flex flex-col'><img src="" alt="logo" /> <p>Onocology</p></div>
-                        <div className='flex flex-col'><img src="" alt="logo" /> <p>Onocology</p></div>
-                        <div className='flex flex-col'><img src="" alt="logo" /> <p>Onocology</p></div>
-                        <div className='flex flex-col'><img src="" alt="logo" /> <p>Onocology</p></div>
-                        <div className='flex flex-col'><img src="" alt="logo" /> <p>Onocology</p></div>
-                        <div className='flex flex-col'><img src="" alt="logo" /> <p>Onocology</p></div>
-                        <div className='flex flex-col'><img src="" alt="logo" /> <p>Onocology</p></div>
+                        <div className='flex flex-col bg-[#F9F9F9] py-8 rounded-[30px] items-center text-center m-4'><div><img src="./1.png" alt="logo" /></div> <p>Onocology</p></div>
+                        <div className='flex flex-col bg-[#F9F9F9] py-8 rounded-[30px] items-center text-center m-4'><div><img src="./2.png" alt="logo" /></div> <p>Endocrinology</p></div>
+                        <div className='flex flex-col bg-[#F9F9F9] py-8 rounded-[30px] items-center text-center m-4'><div><img src="./3.png" alt="logo" /></div> <p>Infertility</p></div>
+                        <div className='flex flex-col bg-[#F9F9F9] py-8 rounded-[30px] items-center text-center m-4'><div><img src="./4.png" alt="logo" /></div> <p>Mental Health</p></div>
+                        <div className='flex flex-col bg-[#F9F9F9] py-8 rounded-[30px] items-center text-center m-4'><div><img src="./5.png" alt="logo" /></div> <p>Cardiology</p></div>
+                        <div className='flex flex-col bg-[#F9F9F9] py-8 rounded-[30px] items-center text-center m-4'><div><img src="./neo.png" alt="logo" /></div> <p>Neurology</p></div>
+                        <div className='flex flex-col bg-[#F9F9F9] py-8 rounded-[30px] items-center text-center m-4'><div><img src="./rhe.png" alt="logo" /></div> <p>Rheumatology</p></div>
+                        <div className='flex flex-col bg-[#F9F9F9] py-8 rounded-[30px] items-center text-center m-4'><div><img src="./ps.png" alt="logo" /></div> <p>Plastice Surgery</p></div>
+                        <div className='flex flex-col bg-[#F9F9F9] py-8 rounded-[30px] items-center text-center m-4'><div><img src="./rds.png" alt="logo" /></div> <p>Rare Diseases</p></div>
+                        <div className='flex flex-col bg-[#F9F9F9] py-8 rounded-[30px] items-center text-center m-4'><div><img src="./sg.png" alt="logo" /></div> <p>Surrogacy</p></div>
 
                     </div>
 
                 </div>
-                <div  className='flex flex-col justify-between mx-[300px] my-20 items-center text-center'>
+                <div  className='flex flex-col justify-between w-[80%] my-20 items-center text-center'>
                     <p>World’s Top Doctors</p>
-                    <img src="" alt="Doctors" />
+                    <img src="./top_drs.png" alt="Doctors" />
 
                 </div>
-                <div className='flex bg-[#E8E7E3] rounded-[20px] mx-[300px] my-20'>
+                <div className='flex relative bg-[#E8E7E3] rounded-[20px] w-[80%] my-20'>
                     <form action="">
                         <h1>Book A Free Consultation</h1>
                     </form>
-                    <img src="" alt="" />
+                    <div className='w-[65%] self-end'>
+                        <img src="./cosult.png" alt="img-form" />
+                    </div>
                 </div>
-                <footer className='bg-[#28574E] text-white'>
-                    <div className='flex justify-between mx-20'>
+                <footer className='bg-[#28574E] w-full relative text-white flex items-center flex-col'>
+                    <div className='flex justify-between w-[90%]'>
                         <div className='w-[160px] my-10'>
                             <img src="./logo.png" alt="logo" />
                         </div>
-                        <div className='flex my-10'>
-                            <img src="" alt="social" />
-                            <img src="" alt="social" />
-                            <img src="" alt="social" />
-                            <img src="" alt="social" />
-                            <img src="" alt="social" />
+                        <div className='flex my-10 mr-6 h-10'>
+                            <img src="./sfb.png" alt="social" className='mx-2'/>
+                            <img src="./sig.png" alt="social" className='mx-2'/>
+                            <img src="./sin.png" alt="social" className='mx-2'/>
+                            <img src="./syt.png" alt="social" className='mx-2'/>
+                            <img src="./spin.png" alt="social" className='mx-2'/>
                         </div>
                     </div>
-                    <img src="" alt="line" />
-                    <div className='flex mx-20'>
-                        <div>
+                    <div className='w-[90%] h-[2px] rounded-full bg-white'></div>
+                    <div className='flex mx-20 my-10 w-[90%]'>
+                        <div className='w-1/4 mr-6'>
                             <p>About Simple</p>
                             <p>Simple is a medical care USA platform bridging the gap in speciality care by connecting patients around the states from their homes to the top hospitals and specialists in the USA.</p>
                         </div>
-                        <div>
+                        <div className='w-1/4 mx-6 flex flex-col'>
                             <p>Useful Links</p>
-                            <a href="">Link</a>
-                            <a href="">Link</a>
+                            <a href="">Login</a>
+                            <a href="">Sign Up</a>
                             <a href="">Link</a>
                             <a href="">Link</a>
                             <a href="">Link</a>
                         </div>
-                        <div>
+                        <div className='w-1/4 mx-6'>
                             <p>Contact Info</p>
 
                         </div>
-                        <div>
+                        <div className='w-1/4 ml-6 '>
                             <p>Legal</p>
                             <p>Privacy Policy</p>
                             <p>Terms Conditions</p>
@@ -195,8 +197,8 @@ const LandingPage = (props) => {
                         </div>
                         
                     </div>
-                    <img src="" alt="line" />
-                    <p>©  2024 Simple USA. All Rights Reserved.</p>
+                    <div className='w-[90%] h-[2px] rounded-full bg-white'></div>
+                    <div className='text-left w-[90%] my-4'><p>©  2024 Simple USA. All Rights Reserved.</p></div>
                 </footer>
           
         </div>
