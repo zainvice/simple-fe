@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { FaPhoneAlt, FaVideo, FaMicrophone, FaMicrophoneSlash, FaVideoSlash } from 'react-icons/fa';
+import React, { useState, useRef } from 'react';
+import { FaPhoneAlt, FaVideo, FaMicrophone, FaMicrophoneSlash, FaVideoSlash, FaPaperclip, FaRegImages } from 'react-icons/fa';
 
 const contacts = [
   { name: 'Lisa Roy', message: 'Are you available tomorrow?', time: '10:32 AM' },
@@ -14,10 +14,37 @@ const ChatPage = () => {
   const [showCallUI, setShowCallUI] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOn, setIsVideoOn] = useState(true);
+  const [attachedFile, setAttachedFile] = useState(null);
+  const [attachedImage, setAttachedImage] = useState(null);
+  const [showVideoPreview, setShowVideoPreview] = useState(false);
+  const videoRef = useRef(null);
 
   const handleToggleMute = () => setIsMuted(!isMuted);
-  const handleToggleVideo = () => setIsVideoOn(!isVideoOn);
+  const handleToggleVideo = () => {
+    setIsVideoOn(!isVideoOn);
+    setShowVideoPreview(!showVideoPreview);
+  };
   const handleEndCall = () => setShowCallUI(false);
+
+  const handleFileAttach = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.includes('image')) {
+      setAttachedImage(URL.createObjectURL(file));
+    } else {
+      setAttachedFile(file);
+    }
+  };
+
+  const handleStartCall = () => {
+    setShowCallUI(true);
+    if (videoRef.current) {
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then((stream) => {
+          videoRef.current.srcObject = stream;
+        })
+        .catch((err) => console.error("Error accessing webcam: ", err));
+    }
+  };
 
   return (
     <div className="flex h-[90%] bg-gray-100">
@@ -37,10 +64,10 @@ const ChatPage = () => {
       {/* Chat Area */}
       <div className="flex-1 flex flex-col">
         <div className="flex items-center justify-between p-4 bg-white shadow">
-          <h3 className="font-semibold text-lg">Dr. Dianne Jhonson</h3>
+          <h3 className="font-semibold text-lg">Dr. Dianne Johnson</h3>
           <div>
-            <button onClick={() => setShowCallUI(true)} className="p-2 mx-1 rounded-full bg-green-500 text-white"><FaPhoneAlt /></button>
-            <button onClick={() => setShowCallUI(true)} className="p-2 mx-1 rounded-full bg-green-500 text-white"><FaVideo /></button>
+            <button onClick={handleStartCall} className="p-2 mx-1 rounded-full bg-green-500 text-white"><FaPhoneAlt /></button>
+            <button onClick={handleStartCall} className="p-2 mx-1 rounded-full bg-green-500 text-white"><FaVideo /></button>
           </div>
         </div>
 
@@ -54,20 +81,27 @@ const ChatPage = () => {
             <div className="bg-green-500 text-white p-3 rounded-lg w-max ml-auto">No, I did not get it.</div>
             <div className="text-sm text-gray-500 mt-1">11:46 AM</div>
           </div>
-          {/* More messages as needed */}
+
+          {/* Attachments Preview */}
+          {attachedImage && <img src={attachedImage} alt="Attachment" className="w-1/2 mt-4 rounded-lg" />}
+          {attachedFile && <p className="bg-gray-300 p-3 rounded-lg w-max mt-4">{attachedFile.name}</p>}
         </div>
 
         {/* Input Field */}
         <div className="flex items-center p-4 bg-gray-200">
           <input type="text" placeholder="Write something..." className="flex-1 p-3 rounded-lg focus:outline-none" />
           <button className="p-3 mx-2 rounded-full bg-green-500 text-white">Send</button>
+          <label className="p-3 mx-2 rounded-full bg-gray-300 cursor-pointer">
+            <FaPaperclip />
+            <input type="file" className="hidden" onChange={handleFileAttach} />
+          </label>
         </div>
       </div>
 
       {/* Audio/Video Call UI */}
       {showCallUI && (
         <div className="absolute inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center text-white">
-          <h2 className="text-3xl font-bold mb-6">In Call with Dr. Dianne Jhonson</h2>
+          <h2 className="text-3xl font-bold mb-6">In Call with Dr. Dianne Johnson</h2>
           <div className="flex space-x-6">
             <button onClick={handleToggleMute} className="p-4 rounded-full bg-gray-700 hover:bg-gray-600">
               {isMuted ? <FaMicrophoneSlash size={24} /> : <FaMicrophone size={24} />}
@@ -79,6 +113,11 @@ const ChatPage = () => {
               End Call
             </button>
           </div>
+          
+          {/* Video Preview */}
+          {showVideoPreview && (
+            <video ref={videoRef} autoPlay muted className="mt-6 w-1/2 h-1/2 rounded-lg bg-gray-800"></video>
+          )}
         </div>
       )}
     </div>
