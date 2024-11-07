@@ -26,4 +26,27 @@
 .redRose {
   font-family: 'Red Rose'
 }
+.auth-form {
+  transition: transform 0.5s ease;
+}
+
+.slide-left {
+  transform: translateX(0%);
+}
+
+.slide-right {
+  transform: translateX(0%);
+}
+.slide-left-img {
+  transform: translateX(0%);
+}
+
+.slide-right-image {
+  transform: translateX(200%);
+}
+
+.auth-side {
+  transition: order 0.5s ease;
+}
+
 

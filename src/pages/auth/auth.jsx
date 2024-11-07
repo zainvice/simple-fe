@@ -24,9 +24,10 @@ const AuthPage = () => {
       </div>
 
 
-      <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-8 border-4 text-[#121619]">
+      <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-8 text-[#121619]">
         <form className="lg:w-[75%] shadow-md rounded-[40px] p-8 flex flex-col items-center bg-white">
-          <h2 className="text-[30px] my-8 text-center text-[#666666]">{isLogin ? <p>SIGN IN TO <span className='text-[#00D97E] font-bold'>SIMPLE</span></p> : <p>Create an <span className='text-[#00D97E] font-bold'>Account</span></p>}</h2>
+          <img src="./logodark.png" alt="Logo" className="h-14 my-2 lg:hidden" />
+          <h2 className="text-[30px] lg:my-8 text-center text-[#666666]">{isLogin ? <p>SIGN IN TO <span className='text-[#00D97E] font-bold'>SIMPLE</span></p> : <p>Create an <span className='text-[#00D97E] font-bold'>Account</span></p>}</h2>
           
 
           {!isLogin && (
@@ -74,13 +75,15 @@ const AuthPage = () => {
           {!isLogin && (
             <div className="mb-4 w-full">
               <label className="flex items-center text-[12px]">
-                
-                <p>By continuing, you're agreeing to our <span className='text-[#00D97E]'>Terms & Conditions</span> and <span className='text-[#00D97E]'>Privacy Policy</span></p>
+                <p>
+                  By continuing, you're agreeing to our <span className="text-[#00D97E]">Terms & Conditions</span> and{' '}
+                  <span className="text-[#00D97E]">Privacy Policy</span>
+                </p>
               </label>
             </div>
           )}
 
-          <button type="submit" className="bg-[#00D97E] text-white py-2 mb-6 mt-2 px-8 rounded-[30px] text-[14px] font-semibold">
+          <button type="submit" className="bg-[#00D97E] text-white py-2 mt-6 px-8 rounded-[30px] text-[14px] font-semibold">
             {isLogin ? 'SIGN IN' : 'SIGN UP'}
           </button>
 
