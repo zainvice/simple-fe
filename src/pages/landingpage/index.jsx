@@ -1,11 +1,11 @@
 import React from 'react';
-
+import Button from '../../common/button';
 
 const LandingPage = () => {
 
     return (
         <div className='w-screen m-0 p-0 flex flex-col items-center'>
-            <div className='bg-[#00874E] absolute top-0 left-0 w-full h-[500px] lg:h-[820px] z-[-1]'></div>
+            <div className='bg-[#1EBDB8] absolute top-0 left-0 w-full h-[500px] lg:h-[820px] z-[-1]'></div>
          
                 <header className='flex justify-between my-5 w-[80%]'>
                     <div className='lg:ml-20 mt-4 w-[120px]'>
@@ -19,7 +19,7 @@ const LandingPage = () => {
                       <a href="/login">Login</a>
                     </div>
                     <div className='lg:mr-20 mt-5 '>
-                        <button className='bg-white text-sm px-5 py-2 text-[#00874E] rounded-[20px]' onClick={(e)=> window.location.href = '/signup'}>Book Now</button>
+                        <button className='bg-white text-sm px-5 py-2 text-[#1EBDB8] rounded-[20px]' onClick={(e)=> window.location.href = '/signup'}>Book Now</button>
                     </div>
                 </header>
                 <div className='flex flex-col items-center justify-center text-center text-white lg:h-[500px] w-[90%] lg:w-[50%]' >
@@ -30,7 +30,7 @@ const LandingPage = () => {
                         <div className='w-full lg:w-[90%] flex rounded-full bg-white bg-opacity-30 px-4 py-3'>
                             <img className='w-[15px] h-[15px] lg:w-[25px] lg:h-[25px] mt-1 ' src="./search.png" alt="search" /> <input type="text" className='bg-transparent placeholder-white ml-2 border-none outline-none focus:ring-0 caret-white'  placeholder ='Search disease, hospitals'/>
                         </div>
-                        <button className='bg-white text-[16px] mt-6 lg:mt-0 lg:ml-4 p-3 text-[#00874E] rounded-full' onClick={(e)=> window.location.href = '/signup'} >Explore&nbsp;Premium&nbsp;Care</button>
+                        <button className='bg-white text-[16px] mt-6 lg:mt-0 lg:ml-4 p-3 text-[#1EBDB8] rounded-full' onClick={(e)=> window.location.href = '/signup'} >Explore&nbsp;Premium&nbsp;Care</button>
                     </div>
 
                 </div>
@@ -50,19 +50,19 @@ const LandingPage = () => {
                         <img src="./se.png" alt="img-so" />
                         <h1 className='font-medium text-[24px] my-6'>Second Opinion</h1>
                         <p className='text-[#757575]'>When facing a serious, life-changing illness, we understand the critical importance of obtaining expert advices</p>
-                        <button className='bg-[#00D97E] shadow-md absolute -bottom-6 rounded-[30px] text-white px-5 py-3 text-sm'>Get Started</button>
+                        <button className='bg-[#1EBDB8] shadow-md absolute -bottom-6 rounded-[30px] text-white px-5 py-3 text-sm'>Get Started</button>
                     </div>
                     <div className='flex flex-col pb-20 bg-[#F9F9F9] text-center items-center p-5 py-8 mx-6 rounded-[30px] shadow-md w-[33%]'>
                         <img src="./treat.png" alt="img-t" />
                         <h1 className='font-medium text-[24px] my-6'>Treatment</h1>
                         <p className='text-[#757575]'>Get help from the best chosen hospitals and specialists that excel in providing premium healthcare directly from the United States.</p>
-                        <button className='bg-[#00D97E] shadow-md absolute -bottom-6 rounded-[30px] text-white px-5 py-3 text-sm' onClick={(e)=> window.location.href = '/signup'} >Get Started</button>
+                        <button className='bg-[#1EBDB8] shadow-md absolute -bottom-6 rounded-[30px] text-white px-5 py-3 text-sm' onClick={(e)=> window.location.href = '/signup'} >Get Started</button>
                     </div>
                     <div className='flex flex-col pb-20 bg-[#F9F9F9] text-center items-center p-5 py-8 mx-6 rounded-[30px] shadow-md w-[33%]'>
                         <img src="./globe.png" alt="img-globle" />
                         <h1 className='font-medium text-[24px] my-6'>Glolal Plans</h1>
                         <p className='text-[#757575]'>Get help from the best chosen hospitals and specialists that excel in providing premium healthcare directly from the United States.</p>
-                        <button className='bg-[#00D97E] shadow-md absolute -bottom-6 rounded-[30px] text-white px-5 py-3 text-sm' onClick={(e)=> window.location.href = '/signup'} >Get Started</button>
+                        <button className='bg-[#1EBDB8] shadow-md absolute -bottom-6 rounded-[30px] text-white px-5 py-3 text-sm' onClick={(e)=> window.location.href = '/signup'} >Get Started</button>
                     </div>
                 </div>
 

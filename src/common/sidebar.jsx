@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { FaHome, FaUser, FaCog, FaChartBar, FaSignOutAlt } from 'react-icons/fa';
+import { FaHome, FaUser, FaCog, FaSignOutAlt} from 'react-icons/fa';
+import { FaUserDoctor } from "react-icons/fa6";
 import { MdOutlinePhonelinkRing } from "react-icons/md";
 import { BsChatSquareText } from "react-icons/bs";
 
@@ -14,7 +15,7 @@ const Sidebar = ({ isExpanded, toggleSidebar, toggleShifter, shifter }) => {
   }, [shifter]);
 
   return (
-    <div className={`h-screen rounded-r-[40px] bg-[#1E232F] text-white flex flex-col ${isExpanded ? 'w-[15%]' : 'w-[5%]'} transition-all duration-300`}>
+    <div className={`h-screen hidden lg:flex rounded-r-[40px] bg-[#1E232F] text-white flex flex-col ${isExpanded ? 'w-[15%]' : 'w-[5%]'} transition-all duration-300`}>
       {/* Logo and Toggle */}
       <div className="flex items-center justify-between p-4 relative">
         <div className={`flex items-center mt-5 ${isExpanded ? 'ml-4' : ''} transition-all duration-300`}>
@@ -30,11 +31,12 @@ const Sidebar = ({ isExpanded, toggleSidebar, toggleShifter, shifter }) => {
       <div className="flex-1 my-16 text-sm">
         <SidebarItem icon={<FaHome />} text="Dashboard" isExpanded={isExpanded} isActive={activeItem === 'Dashboard'} onClick={() => toggleShifter('Dashboard')} />
         <SidebarItem icon={<MdOutlinePhonelinkRing />} text="Appointments" isExpanded={isExpanded} isActive={activeItem === 'Appointments'} onClick={() => toggleShifter('Appointments')} />
-        <SidebarItem icon={<FaChartBar />} text="Reports" isExpanded={isExpanded} isActive={activeItem === 'Reports'} onClick={() => toggleShifter('Reports')} />
+        <SidebarItem icon={<FaUserDoctor />} text="Pharmacies" isExpanded={isExpanded} isActive={activeItem === 'Pharmacies'} onClick={() => toggleShifter('Pharmacies')} />
+        <SidebarItem icon={<FaUserDoctor />} text="Doctors" isExpanded={isExpanded} isActive={activeItem === 'Doctors'} onClick={() => toggleShifter('Doctors')} />
         <SidebarItem icon={<BsChatSquareText />} text="Chats" isExpanded={isExpanded} isActive={activeItem === 'Chats'} onClick={() => toggleShifter('Chats')} />
         <SidebarItem icon={<FaUser />} text="Profile" isExpanded={isExpanded} isActive={activeItem === 'Profile'} onClick={() => toggleShifter('Profile')} />
-        <SidebarItem icon={<FaCog />} text="Settings" isExpanded={isExpanded} isActive={activeItem === 'Settings'} onClick={() => toggleShifter('Settings')} />
-        <SidebarItem icon={<FaSignOutAlt />} text="Logout" isExpanded={isExpanded} isActive={activeItem === 'Logout'} onClick={() => toggleShifter('Logout')} />
+
+        <SidebarItem icon={<FaSignOutAlt />} text="Logout" isExpanded={isExpanded} isActive={activeItem === 'Logout'}/>
       </div>
     </div>
   );
@@ -44,7 +46,7 @@ const SidebarItem = ({ icon, text, isExpanded, isActive, onClick }) => {
   return (
     <div
       onClick={onClick}
-      className={`flex w-[90%] rounded-r-[30px] items-center p-5 hover:bg-gray-700 cursor-pointer h-12 my-4 ${isActive ? 'bg-[#00D97E]' : ''} transition-all duration-300`}
+      className={`flex w-[90%] rounded-r-[30px] items-center p-5 hover:bg-gray-700 cursor-pointer h-12 my-4 ${isActive ? 'bg-[#1EBDB8]' : ''} transition-all duration-300`}
     >
       <div className={`text-lg ${isExpanded ? 'ml-4' : ''} transition-all duration-300`}>{icon}</div>
       {isExpanded && <span className="ml-4 transition-all duration-300">{text}</span>}

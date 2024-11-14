@@ -1,13 +1,20 @@
 import React, { useState, useRef } from 'react';
 import { FaPhoneAlt, FaVideo, FaMicrophone, FaMicrophoneSlash, FaVideoSlash, FaPaperclip, FaRegImages } from 'react-icons/fa';
 
+import ChatArea from '../common/chatArea';
+
+const messages = [
+  {type: 'incoming', content: `Hey, how is it going!`, time: '11:37AM', status: 'read'},
+  {type: 'outgoing', content: `Hey, i'm good thanks for asking!`, time: '11:37AM', status: 'delivered'},
+  {type: 'incoming', content: `How's everything else!`, time: '11:37AM', status: 'unread'}
+]
 const contacts = [
-  { name: 'Lisa Roy', message: 'Are you available tomorrow?', time: '10:32 AM' },
-  { name: 'Jamie Taylor', message: 'Meeting Reminder', time: '10:35 AM' },
-  { name: 'Jason Roy', message: 'Shared two files with you', time: '10:34 AM' },
-  { name: 'Amy Frost', message: 'Hello', time: '10:30 AM' },
-  { name: 'Paul Wilson', message: 'Important meeting update', time: '10:25 AM' },
-  { name: 'Ana Williams', message: '??', time: '10:20 AM' },
+  { avatar: 'https://via.placeholder.com/40', name: 'Dr. Lisa Roy', messages: messages,  counter: '1', active: false },
+  { avatar: 'https://via.placeholder.com/40', name: 'Dr. Jamie Taylor', messages: messages, active: true  },
+  { avatar: 'https://via.placeholder.com/40', name: 'Dr. Jason Roy', messages: messages, active: false,  counter: '10'},
+  { avatar: 'https://via.placeholder.com/40', name: 'Dr. Amy Frost', messages: messages, active: false },
+  { avatar: 'https://via.placeholder.com/40', name: 'Dr. Paul Wilson', messages: messages, active: false },
+  { avatar: 'https://via.placeholder.com/40', name: 'Dr. Ana Williams', messages: messages, active: false },
 ];
 
 const ChatPage = () => {
@@ -15,6 +22,8 @@ const ChatPage = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [attachedFile, setAttachedFile] = useState(null);
+  const [viewContact, setContact] = useState()
+  const [sender, setSender] = useState({avatar: 'https://via.placeholder.com/40', name: 'Zane', active: true})
   const [attachedImage, setAttachedImage] = useState(null);
   const [showVideoPreview, setShowVideoPreview] = useState(false);
   const videoRef = useRef(null);
@@ -46,58 +55,39 @@ const ChatPage = () => {
     }
   };
 
+  const viewMessage = (contact) => {
+
+      setContact(contact)
+  }
+
   return (
     <div className="flex h-[90%] bg-gray-100">
       {/* Sidebar */}
-      <div className="w-1/4 p-4 bg-gray-200">
-        <input type="text" placeholder="Search Here..." className="w-full p-2 mt-4 rounded-lg focus:outline-none" />
+      <div className="w-1/4 p-4 bg-[#F0F0F0]">
+        <div className='w-full p-2 mt-4 rounded-full bg-white flex'>
+          <span class="material-symbols-outlined text-[#CDCDCD] mx-2">search</span>
+          <input type="text" placeholder="Search Here..." className="focus:outline-none placholder-[#CDCDCD]" />
+        </div>
+       
         <div className="mt-4">
           {contacts.map((contact, index) => (
-            <div key={index} className="flex justify-between items-center p-2 my-2 bg-white rounded-lg shadow hover:bg-gray-300 cursor-pointer">
-              <span className="font-semibold">{contact.name}</span>
-              <span className="text-sm text-gray-500">{contact.time}</span>
+            <div key={index} className="flex items-center p-2 my-2 rounded-lg hover:shadow hover:bg-gray-300 cursor-pointer relative" onClick={(e)=> viewMessage(contact)}>
+              <img src={contact.avatar} alt="Sender" className="w-14 h-14 rounded-full"/>
+              <div className='flex flex-col ml-2'>
+                <span className="font-semibold text-[#00D97E]">{contact.name}</span>
+                <span className="text-[12px] text-[#959595] whitespace-nowrap"> {contact?.messages?.[contact.messages.length - 1]?.content || "No messages"}</span>
+              </div>
+              <div className='absolute flex flex-col right-1 top-3'>
+                <span className=" text-[#BABABA] text-[12px] whitespace-nowrap">{contact.time}</span>
+                <span className="text-[12px] text-white text-center rounded-full bg-[#00D97E] w-5 absolute top-6 right-0 ">{contact.counter}</span>
+              </div>
             </div>
           ))}
         </div>
       </div>
 
       {/* Chat Area */}
-      <div className="flex-1 flex flex-col">
-        <div className="flex items-center justify-between p-4 bg-white shadow">
-          <h3 className="font-semibold text-lg">Dr. Dianne Johnson</h3>
-          <div>
-            <button onClick={handleStartCall} className="p-2 mx-1 rounded-full bg-green-500 text-white"><FaPhoneAlt /></button>
-            <button onClick={handleStartCall} className="p-2 mx-1 rounded-full bg-green-500 text-white"><FaVideo /></button>
-          </div>
-        </div>
-
-        <div className="flex-1 p-4 overflow-y-auto">
-          {/* Sample Messages */}
-          <div className="mb-4">
-            <div className="bg-gray-300 p-3 rounded-lg w-max">Hi David, have you got the project report pdf?</div>
-            <div className="text-green-500 text-sm mt-1">11:45 AM</div>
-          </div>
-          <div className="mb-4 text-right">
-            <div className="bg-green-500 text-white p-3 rounded-lg w-max ml-auto">No, I did not get it.</div>
-            <div className="text-sm text-gray-500 mt-1">11:46 AM</div>
-          </div>
-
-          {/* Attachments Preview */}
-          {attachedImage && <img src={attachedImage} alt="Attachment" className="w-1/2 mt-4 rounded-lg" />}
-          {attachedFile && <p className="bg-gray-300 p-3 rounded-lg w-max mt-4">{attachedFile.name}</p>}
-        </div>
-
-        {/* Input Field */}
-        <div className="flex items-center p-4 bg-gray-200">
-          <input type="text" placeholder="Write something..." className="flex-1 p-3 rounded-lg focus:outline-none" />
-          <button className="p-3 mx-2 rounded-full bg-green-500 text-white">Send</button>
-          <label className="p-3 mx-2 rounded-full bg-gray-300 cursor-pointer">
-            <FaPaperclip />
-            <input type="file" className="hidden" onChange={handleFileAttach} />
-          </label>
-        </div>
-      </div>
-
+        <ChatArea props={viewContact}/>
       {/* Audio/Video Call UI */}
       {showCallUI && (
         <div className="absolute inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center text-white">

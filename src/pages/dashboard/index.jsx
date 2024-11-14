@@ -1,10 +1,11 @@
 import React from 'react';
 import { useState } from 'react';
-import Sidebar from '../../comp/sidebar';
-import MainPage from '../../comp/mainpage';
+import Sidebar from '../../common/sidebar';
+import MainPage from '../../components/mainpage';
+import BottomBar from '../../common/bottombar';
 
 const Dashboard = () => {
-    const [isExpanded, setIsExpanded] = useState(true);
+    const [isExpanded, setIsExpanded] = useState(false);
     const [shifter, setShifter] = useState({
         state: "Dashboard"
     })
@@ -17,9 +18,12 @@ const Dashboard = () => {
         setIsExpanded(!isExpanded);
     };
     return (
-        <div className='flex w-full'>
+        <div className='flex-1 lg:flex w-full '>
             <Sidebar toggleSidebar={toggleSidebar} isExpanded={isExpanded} toggleShifter={toggleShifter} shifter={shifter}/>
             <MainPage isExpanded={isExpanded} type={shifter}/>
+            <div >
+                <BottomBar isHorizontal={true} isExpanded={isExpanded} toggleShifter={toggleShifter} shifter={shifter}/>
+            </div>
         </div>
     );
 }

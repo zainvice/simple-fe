@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-
+import Button from '../../common/button';
 const AuthPage = () => {
   const location = useLocation();
   const isLogin = location.pathname === '/login';
@@ -14,12 +14,11 @@ const AuthPage = () => {
           <img src="./logodark.png" alt="Logo" className="h-20 my-8" />
           <h2 className="text-[60px] font-semibold mb-2  mt-8">{!isLogin ? 'Hi there!' : 'Welcome Back!'}</h2>
           <p className="mb-4 font-thin">{isLogin ? "Don't Have an Account with us?" : 'Already have an account?'}</p>
-          <button 
-            onClick={() => window.location.href = isLogin ? '/signup' : '/login'}
-            className="bg-[#00D97E] text-white py-2 mt-6 px-8 rounded-[30px] text-[14px] font-semibold"
-          >
-            {isLogin ? 'SIGN UP' : 'SIGN IN'}
-          </button>
+          <div className='mt-6'>
+            <Button text={isLogin ? 'SIGN UP' : 'SIGN IN'} onClick={() => window.location.href = isLogin ? '/signup' : '/login'}/>
+          </div>
+          
+         
         </div>
       </div>
 
@@ -27,7 +26,7 @@ const AuthPage = () => {
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-8 text-[#121619]">
         <form className="lg:w-[75%] shadow-md rounded-[40px] p-8 flex flex-col items-center bg-white">
           <img src="./logodark.png" alt="Logo" className="h-14 my-2 lg:hidden" />
-          <h2 className="text-[30px] lg:my-8 text-center text-[#666666]">{isLogin ? <p>SIGN IN TO <span className='text-[#00D97E] font-bold'>SIMPLE</span></p> : <p>Create an <span className='text-[#00D97E] font-bold'>Account</span></p>}</h2>
+          <h2 className="text-[30px] lg:my-8 text-center text-[#666666]">{isLogin ? <p>SIGN IN TO <span className='text-[#1EBDB8] font-bold'>SIMPLE</span></p> : <p>Create an <span className='text-[#1EBDB8] font-bold'>Account</span></p>}</h2>
           
 
           {!isLogin && (
@@ -64,7 +63,7 @@ const AuthPage = () => {
             </div>
             {isLogin && (
               <div className='w-full text-right'>
-               <a href="/forgot-password" className="hover:font-semibold duration-300 my-4 text-[#00D97E]">Forgot your password?</a>
+               <a href="/forgot-password" className="hover:font-semibold duration-300 my-4 text-[#1EBDB8]">Forgot your password?</a>
              </div>
             )}
             
@@ -76,16 +75,14 @@ const AuthPage = () => {
             <div className="mb-4 w-full">
               <label className="flex items-center text-[12px]">
                 <p>
-                  By continuing, you're agreeing to our <span className="text-[#00D97E]">Terms & Conditions</span> and{' '}
-                  <span className="text-[#00D97E]">Privacy Policy</span>
+                  By continuing, you're agreeing to our <span className="text-[#1EBDB8]">Terms & Conditions</span> and{' '}
+                  <span className="text-[#1EBDB8]">Privacy Policy</span>
                 </p>
               </label>
             </div>
           )}
 
-          <button type="submit" className="bg-[#00D97E] text-white py-2 mt-6 px-8 rounded-[30px] text-[14px] font-semibold">
-            {isLogin ? 'SIGN IN' : 'SIGN UP'}
-          </button>
+          <Button text={isLogin ? 'SIGN IN' : 'SIGN UP'}/>
 
 
           <div className="text-center mt-4 lg:hidden">
@@ -93,12 +90,12 @@ const AuthPage = () => {
               <>
                 
                 <p className="mt-2">
-                  Don't have an account? <a href="/signup" className="text-[#00D97E]">Sign Up</a>
+                  Don't have an account? <a href="/signup" className="text-[#1EBDB8]">Sign Up</a>
                 </p>
               </>
             ) : (
               <p>
-                Already have an account? <a href="/login" className="text-[#00D97E]">Login</a>
+                Already have an account? <a href="/login" className="text-[#1EBDB8]">Login</a>
               </p>
             )}
           </div>
