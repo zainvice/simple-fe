@@ -3,3 +3,4 @@
 // Improve error messages on 2024-11-25
 // Change font size on 2024-11-26
 // Improve accessibility on 2024-11-28
+// Refactor navbar on 2024-11-30
