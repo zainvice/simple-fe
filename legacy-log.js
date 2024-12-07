@@ -8,3 +8,4 @@
 // Add loading spinner on 2024-12-03
 // Fix typo in component on 2024-12-05
 // Update dependencies on 2024-12-06
+// Align card layout on 2024-12-07
