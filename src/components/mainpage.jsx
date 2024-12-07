@@ -14,24 +14,56 @@ const appointments = Array.from({ length: 6 }, () => {
             profession: "Cardiologist",
             avatar: "https://via.placeholder.com/50",
             rating: 4.8,
+            reviews: [
+                {name: '', review: ''},
+                {name: '', review: ''},
+                {name: '', review: ''},
+                {name: '', review: ''},
+                {name: '', review: ''},
+
+            ]
         },
         {
             name: "Dr. Shelly Christian",
             profession: "Therapist",
             avatar: "https://via.placeholder.com/50",
             rating: 4.9,
+            reviews: [
+                {name: '', review: ''},
+                {name: '', review: ''},
+                {name: '', review: ''},
+                {name: '', review: ''},
+                {name: '', review: ''},
+
+            ]
         },
         {
             name: "Dr. John Doe",
             profession: "Dentist",
             avatar: "https://via.placeholder.com/50",
             rating: 4.7,
+            reviews: [
+                {name: '', review: ''},
+                {name: '', review: ''},
+                {name: '', review: ''},
+                {name: '', review: ''},
+                {name: '', review: ''},
+
+            ]
         },
         {
             name: "Dr. Rachel Smith",
             profession: "Psychologist",
             avatar: "https://via.placeholder.com/50",
             rating: 4.6,
+            reviews: [
+                {name: '', review: ''},
+                {name: '', review: ''},
+                {name: '', review: ''},
+                {name: '', review: ''},
+                {name: '', review: ''},
+
+            ]
         },
     ];
 
@@ -85,7 +117,7 @@ const MainPage = ({type, isExpanded}) => {
         setIsViewAppointmentOpen(false);
     };
     return (
-        <div className={`${isExpanded ? 'w-[85%]': 'lg:w-[95%] w-full'} transition-all duration-300`}>
+        <div className={`${isExpanded ? 'w-[85%]': 'lg:w-[95%] w-full'} transition-all duration-300 h-screen flex flex-col relative `}>
 
             <Header props ={type}/>
             {type.state === 'Dashboard' && <MainDash handleNewAppointmentOpen= {handleNewAppointmentOpen} handleViewAppointmentOpen= {handleViewAppointmentOpen} appointments={appointments}/>}

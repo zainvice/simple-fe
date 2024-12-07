@@ -15,14 +15,14 @@ const Sidebar = ({ isExpanded, toggleSidebar, toggleShifter, shifter }) => {
   }, [shifter]);
 
   return (
-    <div className={`h-screen hidden lg:flex rounded-r-[40px] bg-[#1E232F] text-white flex flex-col ${isExpanded ? 'w-[15%]' : 'w-[5%]'} transition-all duration-300`}>
+    <div className={`h-screen hidden lg:flex rounded-r-[40px] bg-[#1E232F] text-white flex flex-col ${isExpanded ? 'w-[15%]' : 'w-[5%]'} transition-all duration-300 z-50`}>
       {/* Logo and Toggle */}
       <div className="flex items-center justify-between p-4 relative">
         <div className={`flex items-center mt-5 ${isExpanded ? 'ml-4' : ''} transition-all duration-300`}>
           <img src="./logo-icon.png" alt="Logo" className="h-8" />
           <span className={`poppins ml-2 text-xl font-bold ${!isExpanded && 'hidden'}`}>Simple</span>
         </div>
-        <button onClick={toggleSidebar} className={`text-green absolute top-6 ${isExpanded ? 'left-40' : 'left-14'} transition-all duration-300 bg-[#1E232F] rounded-r-[10px] px-1 py-2 flex`}>
+        <button onClick={toggleSidebar} className={`text-green absolute cursor-pointer top-6 ${isExpanded ? 'left-[80%]' : 'left-[95%]'} transition-all duration-300 bg-[#1E232F] rounded-r-[10px] px-1 py-2 flex`}>
           {isExpanded ? <span className="material-symbols-outlined">chevron_left</span> : <span className="material-symbols-outlined">chevron_right</span>}
         </button>
       </div>
@@ -48,7 +48,7 @@ const SidebarItem = ({ icon, text, isExpanded, isActive, onClick }) => {
       onClick={onClick}
       className={`flex w-[90%] rounded-r-[30px] items-center p-5 hover:bg-gray-700 cursor-pointer h-12 my-4 ${isActive ? 'bg-[#1EBDB8]' : ''} transition-all duration-300`}
     >
-      <div className={`text-lg ${isExpanded ? 'ml-4' : ''} transition-all duration-300`}>{icon}</div>
+      <div className={`text-xl ${isExpanded ? 'ml-4' : ''} transition-all duration-300`}>{icon}</div>
       {isExpanded && <span className="ml-4 transition-all duration-300">{text}</span>}
     </div>
   );

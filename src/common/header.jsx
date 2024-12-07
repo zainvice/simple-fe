@@ -2,7 +2,7 @@ import React from 'react';
 
 const Header = ({props}) => {
     return (
-        <div className='flex w-full mt-8  justify-between'>
+        <div className='flex w-full mt-8  justify-between z-0'>
             <div> <p className='redRose lg:ml-12 ml-6 text-[#1EBDB8] font-semibold text-[20px]'>{props?.state ? props?.state : 'CompName'}</p> </div>
             
             <div className='lg:flex poppins text-sm mt-2 mr-14 hidden'>

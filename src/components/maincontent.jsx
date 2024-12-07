@@ -13,6 +13,15 @@ const MainDash = ({handleNewAppointmentOpen, handleViewAppointmentOpen, appointm
       university: 'M.B.B.S., F.C.P.S. (Dermatology)',
       rating: 4.8,
       doctorImage: 'https://via.placeholder.com/100', 
+      reviews: [
+        {name: '', review: ''},
+        {name: '', review: ''},
+        {name: '', review: ''},
+        {name: '', review: ''},
+        {name: '', review: ''},
+
+      ],
+      features: 'New Patient Appointments . Excellent wait time . Highly Recommended'
     },
     {
       id: 2,
@@ -21,6 +30,15 @@ const MainDash = ({handleNewAppointmentOpen, handleViewAppointmentOpen, appointm
       university: 'M.B.B.S., F.C.P.S. (Dermatology)',
       rating: 4.8,
       doctorImage: 'https://via.placeholder.com/100',
+      reviews: [
+        {name: '', review: ''},
+        {name: '', review: ''},
+        {name: '', review: ''},
+        {name: '', review: ''},
+        {name: '', review: ''},
+
+      ],
+      features: 'New Patient Appointments . Excellent wait time . Highly Recommended'
     },
     
   ]);
@@ -31,9 +49,9 @@ const MainDash = ({handleNewAppointmentOpen, handleViewAppointmentOpen, appointm
   };
 
   return (
-    <div className="p-4 mx-2 border4 lg:mx-8 bg-white">
+    <div className="p-4 mx-2 border4 lg:mx-8 bg-white overflow-y-auto">
       {/* Upcoming Appointments Section */}
-      <div className="mb-8">
+      <div className="mb-4">
         <div className="flex items-center justify-between mb-4">
           <h2 className="lg:text-2xl text-xl font-semibold text-[#1EBDB8]">Upcoming Appointments</h2>
             <Button icon={'add'} text={'Book New Appointment'} onClick={handleNewAppointmentOpen}/>
