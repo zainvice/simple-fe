@@ -9,3 +9,4 @@
 // Fix typo in component on 2024-12-05
 // Update dependencies on 2024-12-06
 // Align card layout on 2024-12-07
+// Improve error messages on 2024-12-09
