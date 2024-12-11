@@ -61,25 +61,25 @@ const ChatPage = () => {
   }
 
   return (
-    <div className="flex h-[90%] bg-gray-100">
+    <div className="flex h-[90%] ">
       {/* Sidebar */}
-      <div className="w-1/4 p-4 bg-[#F0F0F0]">
-        <div className='w-full p-2 mt-4 rounded-full bg-white flex'>
+      <div className="w-1/4 p-4 ">
+        <div className='w-full p-2 mt-4 rounded-full bg-white flex border-4'>
           <span class="material-symbols-outlined text-[#CDCDCD] mx-2">search</span>
-          <input type="text" placeholder="Search Here..." className="focus:outline-none placholder-[#CDCDCD]" />
+          <input type="text" placeholder="Search Here..." className="focus:outline-none placholder-[#CDCDCD] w-[80%]" />
         </div>
        
         <div className="mt-4">
           {contacts.map((contact, index) => (
-            <div key={index} className="flex items-center p-2 my-2 rounded-lg hover:shadow hover:bg-gray-300 cursor-pointer relative" onClick={(e)=> viewMessage(contact)}>
+            <div key={index} className="flex items-center p-2 my-2 rounded-lg hover:shadow hover:bg-gray-100 cursor-pointer relative" onClick={(e)=> viewMessage(contact)}>
               <img src={contact.avatar} alt="Sender" className="w-14 h-14 rounded-full"/>
               <div className='flex flex-col ml-2'>
-                <span className="font-semibold text-[#00D97E]">{contact.name}</span>
+                <span className="font-semibold text-[#1EBDB8]">{contact.name}</span>
                 <span className="text-[12px] text-[#959595] whitespace-nowrap"> {contact?.messages?.[contact.messages.length - 1]?.content || "No messages"}</span>
               </div>
               <div className='absolute flex flex-col right-1 top-3'>
                 <span className=" text-[#BABABA] text-[12px] whitespace-nowrap">{contact.time}</span>
-                <span className="text-[12px] text-white text-center rounded-full bg-[#00D97E] w-5 absolute top-6 right-0 ">{contact.counter}</span>
+                <span className="text-[12px] text-white text-center rounded-full bg-[#1EBDB8] w-5 absolute top-6 right-0 ">{contact.counter}</span>
               </div>
             </div>
           ))}

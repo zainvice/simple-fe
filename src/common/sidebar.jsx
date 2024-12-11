@@ -29,14 +29,14 @@ const Sidebar = ({ isExpanded, toggleSidebar, toggleShifter, shifter }) => {
 
       {/* Sidebar Items */}
       <div className="flex-1 my-16 text-sm">
-        <SidebarItem icon={<FaHome />} text="Dashboard" isExpanded={isExpanded} isActive={activeItem === 'Dashboard'} onClick={() => toggleShifter('Dashboard')} />
-        <SidebarItem icon={<MdOutlinePhonelinkRing />} text="Appointments" isExpanded={isExpanded} isActive={activeItem === 'Appointments'} onClick={() => toggleShifter('Appointments')} />
-        <SidebarItem icon={<FaUserDoctor />} text="Pharmacies" isExpanded={isExpanded} isActive={activeItem === 'Pharmacies'} onClick={() => toggleShifter('Pharmacies')} />
-        <SidebarItem icon={<FaUserDoctor />} text="Doctors" isExpanded={isExpanded} isActive={activeItem === 'Doctors'} onClick={() => toggleShifter('Doctors')} />
-        <SidebarItem icon={<BsChatSquareText />} text="Chats" isExpanded={isExpanded} isActive={activeItem === 'Chats'} onClick={() => toggleShifter('Chats')} />
-        <SidebarItem icon={<FaUser />} text="Profile" isExpanded={isExpanded} isActive={activeItem === 'Profile'} onClick={() => toggleShifter('Profile')} />
+        <SidebarItem icon={<span class="material-symbols-outlined"> home </span>} text="Dashboard" isExpanded={isExpanded} isActive={activeItem === 'dashboard'} onClick={() => toggleShifter('dashboard')} />
+        <SidebarItem icon={<span class="material-symbols-outlined"> book_online </span>} text="Appointments" isExpanded={isExpanded} isActive={activeItem === 'appointments'} onClick={() => toggleShifter('appointments')} />
+        <SidebarItem icon={<span class="material-symbols-outlined"> diversity_1 </span>} text="Explore" isExpanded={isExpanded} isActive={activeItem === 'explore'} onClick={() => toggleShifter('explore')} />
+        <SidebarItem icon={<span class="material-symbols-outlined"> bookmark_heart </span>} text="Favorites" isExpanded={isExpanded} isActive={activeItem === 'favorites'} onClick={() => toggleShifter('favorites')} />
+        <SidebarItem icon={<span class="material-symbols-outlined"> history </span>} text="History" isExpanded={isExpanded} isActive={activeItem === 'history'} onClick={() => toggleShifter('history')} />
+        <SidebarItem icon={<span class="material-symbols-outlined"> chat </span>} text="Chats" isExpanded={isExpanded} isActive={activeItem === 'chats'} onClick={() => toggleShifter('chats')} />
 
-        <SidebarItem icon={<FaSignOutAlt />} text="Logout" isExpanded={isExpanded} isActive={activeItem === 'Logout'}/>
+      
       </div>
     </div>
   );
@@ -48,7 +48,7 @@ const SidebarItem = ({ icon, text, isExpanded, isActive, onClick }) => {
       onClick={onClick}
       className={`flex w-[90%] rounded-r-[30px] items-center p-5 hover:bg-gray-700 cursor-pointer h-12 my-4 ${isActive ? 'bg-[#1EBDB8]' : ''} transition-all duration-300`}
     >
-      <div className={`text-xl ${isExpanded ? 'ml-4' : ''} transition-all duration-300`}>{icon}</div>
+      <div className={`text-xl mt-2 ${isExpanded ? 'ml-4' : ''} transition-all duration-300`}>{icon}</div>
       {isExpanded && <span className="ml-4 transition-all duration-300">{text}</span>}
     </div>
   );

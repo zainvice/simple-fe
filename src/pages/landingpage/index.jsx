@@ -1,7 +1,112 @@
 import React, { useState, useEffect } from 'react';
-import Button from '../../common/button';
+import SpecialtyDropdown from '../../common/specialtySelector';
+import DoctorCard from '../../common/doctorcard';
 
 const LandingPage = () => {
+    const [topDoctors, setTopDoctors] = useState([
+        {
+          id: 1,
+          name: 'Dr. Adam Cooper',
+          qualification: 'Dermatologist, Cosmetologist',
+          university: 'M.B.B.S., F.C.P.S. (Dermatology)',
+          rating: 4.8,
+          doctorImage: 'https://via.placeholder.com/100', 
+          reviews: [
+            {name: '', review: ''},
+            {name: '', review: ''},
+            {name: '', review: ''},
+            {name: '', review: ''},
+            {name: '', review: ''},
+    
+          ],
+          features: 'New Patient Appointments . Excellent wait time . Highly Recommended'
+        },
+        {
+          id: 2,
+          name: 'Dr. Adam Cooper',
+          qualification: 'Dermatologist, Cosmetologist',
+          university: 'M.B.B.S., F.C.P.S. (Dermatology)',
+          rating: 4.8,
+          doctorImage: 'https://via.placeholder.com/100',
+          reviews: [
+            {name: '', review: ''},
+            {name: '', review: ''},
+            {name: '', review: ''},
+            {name: '', review: ''},
+            {name: '', review: ''},
+    
+          ],
+          features: 'New Patient Appointments . Excellent wait time . Highly Recommended'
+        },
+        {
+            id: 1,
+            name: 'Dr. Adam Cooper',
+            qualification: 'Dermatologist, Cosmetologist',
+            university: 'M.B.B.S., F.C.P.S. (Dermatology)',
+            rating: 4.8,
+            doctorImage: 'https://via.placeholder.com/100', 
+            reviews: [
+              {name: '', review: ''},
+              {name: '', review: ''},
+              {name: '', review: ''},
+              {name: '', review: ''},
+              {name: '', review: ''},
+      
+            ],
+            features: 'New Patient Appointments . Excellent wait time . Highly Recommended'
+          },
+          {
+            id: 2,
+            name: 'Dr. Adam Cooper',
+            qualification: 'Dermatologist, Cosmetologist',
+            university: 'M.B.B.S., F.C.P.S. (Dermatology)',
+            rating: 4.8,
+            doctorImage: 'https://via.placeholder.com/100',
+            reviews: [
+              {name: '', review: ''},
+              {name: '', review: ''},
+              {name: '', review: ''},
+              {name: '', review: ''},
+              {name: '', review: ''},
+      
+            ],
+            features: 'New Patient Appointments . Excellent wait time . Highly Recommended'
+          },
+          {
+            id: 1,
+            name: 'Dr. Adam Cooper',
+            qualification: 'Dermatologist, Cosmetologist',
+            university: 'M.B.B.S., F.C.P.S. (Dermatology)',
+            rating: 4.8,
+            doctorImage: 'https://via.placeholder.com/100', 
+            reviews: [
+              {name: '', review: ''},
+              {name: '', review: ''},
+              {name: '', review: ''},
+              {name: '', review: ''},
+              {name: '', review: ''},
+      
+            ],
+            features: 'New Patient Appointments . Excellent wait time . Highly Recommended'
+          },
+          {
+            id: 2,
+            name: 'Dr. Adam Cooper',
+            qualification: 'Dermatologist, Cosmetologist',
+            university: 'M.B.B.S., F.C.P.S. (Dermatology)',
+            rating: 4.8,
+            doctorImage: 'https://via.placeholder.com/100',
+            reviews: [
+              {name: '', review: ''},
+              {name: '', review: ''},
+              {name: '', review: ''},
+              {name: '', review: ''},
+              {name: '', review: ''},
+      
+            ],
+            features: 'New Patient Appointments . Excellent wait time . Highly Recommended'
+          },
+      ]);
 
     const [location, setLocation] = useState("");
     const [error, setError] = useState("");
@@ -29,7 +134,26 @@ const LandingPage = () => {
   
       fetchLocation();
     }, []);
+    const [viewFilter, setFilter] = useState(false)
+    const onViewFilter = () => {
+        setFilter(true)
+    }
+    const onHideFilter = () => {
+        setFilter(false)
+    }
+    const [searchTerm, setSearchTerm] = useState('')
 
+    const onSearchTermChange = (e) => {
+        setSearchTerm(e.target.value)
+    }
+    const setSearchValue = (speciality) => {
+        console.log("TRIGGERED")
+        setSearchTerm(speciality)
+        onHideFilter()
+    }
+
+  
+   
     return (
         <div className='w-screen m-0 p-0 flex flex-col items-center'>
             <div className='bg-[#1E232F] absolute top-0 left-0 w-full lg:h-[600px] h-[500px] z-[-1]'></div>
@@ -50,15 +174,16 @@ const LandingPage = () => {
                         <button className='bg-white text-sm px-5 py-2 text-[#1E232F] rounded-[20px]' onClick={(e)=> window.location.href = '/signup'}>Book Now</button>
                     </div>
                 </header>
-                <div className='flex flex-col items-center justify-center text-center text-white lg:h-[500px] w-[90%] lg:w-[50%]' >
+                <div className='flex flex-col items-center justify-center text-center text-white lg:h-[500px] w-[90%] lg:w-[50%] z-60' >
                     <h1 className='text-[30px] lg:text-[60px]'>Find World's Best <br/>Medical Care</h1>
                     <p className='text-[13px] lg:text-[20px] my-4 mt-8 text-normal'> Find The Best Hospitals and Doctors Near You!</p>
                     <div className='hidden border-black lg:flex flex-col lg:flex-row w-full justify-between items-center h-[60px] mt-[40px]'>
                         
-                        <div className='w-full lg:w-[90%] flex rounded-l-full bg-white bg-opacity-30 px-4 py-4'>
+                        <div className='w-full lg:w-[90%] flex rounded-l-full bg-white bg-opacity-30 px-4 py-4 relative'>
+                            {viewFilter&& <SpecialtyDropdown setSearchTerm={setSearchValue} searchTerm = {searchTerm}/>}
                             <div className='flex lg:w-[90%]'>
                                 
-                                <input type="text" className='bg-transparent placeholder-white ml-2 border-none outline-none focus:ring-0 caret-white'  placeholder ='Search disease, hospitals'/>
+                                <input type="text" value={searchTerm} onChange={onSearchTermChange} onFocus={onViewFilter} className='bg-transparent placeholder-white ml-2 border-none outline-none focus:ring-0 caret-white'  placeholder ='Search disease, hospitals'/>
                             </div>
                             <div className='flex'>
                                 <span className="material-symbols-outlined mt-1" style={{ fontSize: "24px" }}>
@@ -99,7 +224,7 @@ const LandingPage = () => {
 
                 </div>
                
-                <div className='flex flex-col lg:flex-row text-center lg:text-left justify-between w-[80%] my-20' id='experince'>
+                <div className='flex flex-col lg:flex-row text-center lg:text-left justify-between w-[80%] my-20 -z-10' id='experince'>
                 
                         <p className='poppins text-[#28574E] text-[30px] lg:w-1/2'>Experience Exceptional Healthcare In The USA With Simple USA</p>
                     
@@ -163,7 +288,11 @@ const LandingPage = () => {
                 </div>
                 <div  className='flex flex-col justify-between w-[80%] my-20 items-center text-center'>
                     <p className='poppins font-medium text-[#28574E] text-[40px] my-10'>Our Top Providers</p>
-                    <img src="./top_drs.png" alt="Doctors" />
+                    <div className="grid mx-auto lg:grid-cols-3 grid-cols-1 gap-4">
+                        {topDoctors.map((doctor) => (
+                            <DoctorCard doctor={doctor} schedule={(e)=> window.location.href = '/signup'} fav={false}/>
+                        ))}
+                    </div>
 
                 </div>
                 

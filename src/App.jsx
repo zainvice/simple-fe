@@ -31,7 +31,8 @@ function App() {
               <Route path="/" element={<LandingPage/>} />
               <Route path="/login" element={<AuthPage/>} />
               <Route path="/signup" element={<AuthPage/>} />
-              <Route path="/dashboard" element={<Dashboard/>} />
+              <Route path="/:selectedPath" element={<Dashboard/>} />
+              <Route path="/:selectedPath/:more" element={<Dashboard/>} />
          
             </Routes>
     </Router>   

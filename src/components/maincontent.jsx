@@ -69,7 +69,7 @@ const MainDash = ({handleNewAppointmentOpen, handleViewAppointmentOpen, appointm
         <h2 className="lg:text-2xl text-xl font-semibold text-[#1EBDB8] mb-4">Favorite Doctors</h2>
         <div className="grid lg:grid-cols-3 grid-cols-1 gap-4">
           {favoriteDoctors.map((doctor) => (
-            <DoctorCard doctor={doctor} schedule={handleNewAppointmentOpen}/>
+            <DoctorCard doctor={doctor} schedule={handleNewAppointmentOpen} fav={true}  />
           ))}
         </div>
       </div>

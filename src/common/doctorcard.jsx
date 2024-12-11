@@ -1,13 +1,14 @@
 import React from 'react';
 import Button from './button';
 
-function DoctorCard({doctor, schedule}) {
+function DoctorCard({doctor, schedule, fav}) {
     console.log('DOCTOR', doctor)
     return (
-        <div key={doctor.id} className="bg-white relative shadow-md rounded-[20px] shadow-lg py-8 px-4 poppins">
-         <div className='absolute right-4 top-4'>
+        <div key={doctor.id} onClick={(e)=> window.location.href = `/explore/providerDetails`} className="bg-white cursor-pointer relative shadow-md rounded-[20px] shadow-lg py-8 px-4 poppins">
+         {fav && <div className='absolute right-4 top-4'>
             <img src="./heart.png" alt="fav" />
          </div>
+         }
          <div className='flex w-full'>
             <img
             src={doctor.doctorImage}
