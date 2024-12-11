@@ -32,7 +32,7 @@ const Header = ({props}) => {
         <div className='flex w-full mt-8  justify-between z-0'>
             <div> 
                 <p className='redRose lg:ml-12 ml-6 text-[#1EBDB8] font-semibold text-[20px]'>
-                {props?.state && props?.state!='Explore' ? props?.state?.toUpperCase() :  
+                {props?.state && props?.state!='explore' ? props?.state?.toUpperCase() :  
                 
                     <div className='hidden -mt-4 text-sm font-normal border-black lg:flex flex-col lg:flex-row w-full justify-between items-center '>
                         
