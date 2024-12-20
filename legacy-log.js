@@ -17,3 +17,4 @@
 // Adjust padding on 2024-12-16
 // Fix typo in component on 2024-12-17
 // Improve accessibility on 2024-12-19
+// Add mobile nav support on 2024-12-20
