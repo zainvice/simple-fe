@@ -4,8 +4,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import React, { useState, useEffect } from 'react';
 import LandingPage from './pages/landingpage';
-import AuthPage from './pages/auth/auth';
-import Dashboard from './pages/dashboard';
+import PatientAuthPage from './pages/patient/auth/auth';
+import ProviderAuthPage from './pages/provider/auth/auth';
+import Dashboard from './pages/patient/dashboard';
 
 
 function App() {
@@ -16,9 +17,9 @@ function App() {
     
       const timer = setTimeout(() => {
         setLoading(false);
-      }, 1500); // Show loader for 3 seconds
+      }, 1500); 
   
-      return () => clearTimeout(timer); // Clean up the timer
+      return () => clearTimeout(timer);
     
   }, []);
 
@@ -29,10 +30,12 @@ function App() {
             <Routes>
               
               <Route path="/" element={<LandingPage/>} />
-              <Route path="/login" element={<AuthPage/>} />
-              <Route path="/signup" element={<AuthPage/>} />
-              <Route path="/:selectedPath" element={<Dashboard/>} />
-              <Route path="/:selectedPath/:more" element={<Dashboard/>} />
+              <Route path="/auth/patient/signup" element={<PatientAuthPage/>} />
+              <Route path="/auth/provider/signup" element={<ProviderAuthPage/>} />
+              <Route path="/auth/provider/login" element={<ProviderAuthPage/>} />
+              <Route path="/:userType" element={<Dashboard/>} />
+              <Route path="/:userType/:selectedPath" element={<Dashboard/>} />
+              <Route path="/:userType/:selectedPath/:more" element={<Dashboard/>} />
          
             </Routes>
     </Router>   

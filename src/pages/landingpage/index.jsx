@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import SpecialtyDropdown from '../../common/specialtySelector';
-import DoctorCard from '../../common/doctorcard';
+import SpecialtyDropdown from '../../dropdowns/patient/specialtySelector';
+import DoctorCard from '../../common/patient/doctorcard';
+import LoginDropdown from '../../dropdowns/loginDropdown';
+import Loginoverlay from '../../overlays/patient/loginoverlay';
 
 const LandingPage = () => {
+
     const [topDoctors, setTopDoctors] = useState([
         {
           id: 1,
@@ -107,7 +110,16 @@ const LandingPage = () => {
             features: 'New Patient Appointments . Excellent wait time . Highly Recommended'
           },
       ]);
+    const [isLoginDropdownOpen, setLoginDropdownOpen] = useState(false)
 
+    const toggleLoginDropdown = () => {
+        setLoginDropdownOpen(!isLoginDropdownOpen)
+    }
+    const [isLoginOverlayOpen, setLoginOverlayOpen] = useState(false)
+
+    const toggleLoginOverlay = () => {
+        setLoginOverlayOpen(!isLoginOverlayOpen)
+    }
     const [location, setLocation] = useState("");
     const [error, setError] = useState("");
   
@@ -155,10 +167,10 @@ const LandingPage = () => {
   
    
     return (
-        <div className='w-screen m-0 p-0 flex flex-col items-center'>
+        <div className='w-screen m-0 p-0 flex flex-col items-center '>
             <div className='bg-[#1E232F] absolute top-0 left-0 w-full lg:h-[600px] h-[500px] z-[-1]'></div>
          
-                <header className='flex justify-between my-5 w-[80%]'>
+                <header className='flex justify-between my-5 w-[80%] relative'>
                     <div className='lg:ml-20 mt-4 w-[120px]'>
                         <img src="./logo.png" alt="LOGO_IMG" />
                     </div>
@@ -170,10 +182,16 @@ const LandingPage = () => {
                      
                     </div>
                     <div className='lg:mr-20 mt-5 space-x-6 hidden lg:flex'>
-                        <a href="/login" className='mt-2 text-white'>Login</a>
-                        <button className='bg-white text-sm px-5 py-2 text-[#1E232F] rounded-[20px]' onClick={(e)=> window.location.href = '/signup'}>Book Now</button>
+                        <div className='flex cursor-pointer' onClick={toggleLoginDropdown}>
+                            <a className='mt-2 text-white'>Login</a>
+                            <span class="material-symbols-outlined mt-2 text-white mx-2 cursor-pointer" >keyboard_arrow_down</span>
+                        </div>
+                        <button className='bg-white text-sm px-5 py-2 text-[#1E232F] rounded-[20px]' onClick={(e)=> window.location.href = 'auth/patient/signup'}>Book Now</button>
                     </div>
+                    {isLoginDropdownOpen&&<LoginDropdown toggleLoginOverlay={toggleLoginOverlay}/>}
+                   
                 </header>
+                {isLoginOverlayOpen&&<Loginoverlay/>}
                 <div className='flex flex-col items-center justify-center text-center text-white lg:h-[500px] w-[90%] lg:w-[50%] z-60' >
                     <h1 className='text-[30px] lg:text-[60px]'>Find World's Best <br/>Medical Care</h1>
                     <p className='text-[13px] lg:text-[20px] my-4 mt-8 text-normal'> Find The Best Hospitals and Doctors Near You!</p>

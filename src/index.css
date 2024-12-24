@@ -15,7 +15,11 @@
   padding: 0;
   font-family: 'Outfit';
   user-select: none;
+  /* background-color: #EEFFFE; */
   
+}
+body {
+  background-color: #EEFFFE;
 }
 ::-webkit-scrollbar {
   display: none;

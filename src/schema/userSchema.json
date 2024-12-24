@@ -1,0 +1,246 @@
+doctor: {
+            firstName: "Adam",
+            lastName: "Cooper",
+            name: "Dr. Adam Cooper",
+            specialty: [
+                "Cardiologist",
+                //can be upto 3
+            ],
+            phoneNumber: '',
+            emailAddress: '',
+            practiceSize: '', //number of practitioners employed
+            reference: '', //some user or our options
+            
+            specialization: '',
+            location: 'ABC Health Partners - 6746 Charlotte Pike, San Antonio, California ',
+            avatar: "https://png.pngtree.com/png-vector/20230928/ourmid/pngtree-young-afro-professional-doctor-png-image_10148632.png",
+            rating: 4.8,
+            videoVisits: true,
+            features: [
+                'New Patient Appointments',
+                'Excellent wait time',
+                'Highly Recommended',
+                //add more features based of data of provider e.g reviews, ratings, interactions
+            ],
+            active: false, //used for chat status
+            contacts: [
+                    //used for chats can be patients only
+            ],
+            messages: [
+                //used for chats
+            ],
+
+            subscription: {
+                type: "",
+                price: "",
+                features: "",
+            }
+            
+            availability:[
+                
+                {
+                  "date": "2024-12-13",
+                  "day": "Friday",
+                  "availableAppointments": []
+                },
+                {
+                  "date": "2024-12-14",
+                  "day": "Saturday",
+                  "availableAppointments": [
+                    "9:00 am",
+                    "10:00 am",
+                    "11:00 am",
+                    "12:00 pm"
+                  ]
+                },
+                {
+                  "date": "2024-12-15",
+                  "day": "Sunday",
+                  "availableAppointments": [
+                    "9:00 am",
+                    "10:00 am",
+                    "11:00 am"
+                  ]
+                },
+                {
+                  "date": "2024-12-16",
+                  "day": "Monday",
+                  "availableAppointments": []
+                },
+                {
+                  "date": "2024-12-17",
+                  "day": "Tuesday",
+                  "availableAppointments": [
+                    "9:00 am",
+                    "10:00 am",
+                    "11:00 am"
+                  ]
+                },
+                {
+                  "date": "2024-12-18",
+                  "day": "Wednesday",
+                  "availableAppointments": [
+                    "9:00 am",
+                    "10:00 am",
+                    "11:00 am"
+                  ]
+                },
+                {
+                  "date": "2024-12-19",
+                  "day": "Thursday",
+                  "availableAppointments": []
+                },
+                {
+                  "date": "2024-12-20",
+                  "day": "Friday",
+                  "availableAppointments": []
+                },
+                {
+                  "date": "2024-12-21",
+                  "day": "Saturday",
+                  "availableAppointments": [
+                    "9:00 am",
+                    "10:00 am",
+                    "11:00 am",
+                    "12:00 pm"
+                  ]
+                },
+                {
+                  "date": "2024-12-22",
+                  "day": "Sunday",
+                  "availableAppointments": [
+                    "9:00 am",
+                    "10:00 am",
+                    "11:00 am"
+                  ]
+                }
+              
+              
+            ],
+            gender: 'Male',
+            languagesSpoken: [
+                'English',
+                'Spanish'
+            ],
+            patients: [
+                //array of patients seen
+            ],
+            appointments: [
+                {
+                    "date": "2024-12-13",
+                    "day": "Friday",
+                    "bookedAppointments": []
+                  },
+                  {
+                    "date": "2024-12-14",
+                    "day": "Saturday",
+                    "bookedAppointments": [
+                      "9:00 am": {
+                        patientData: {
+
+                        }
+                      },
+                      "10:00 am": {
+                        patientData: {
+                            
+                        }
+                      },
+                      "11:00 am": {
+                        patientData: {
+                            
+                        }
+                      },
+                      "12:00 pm": {
+                        patientData: {
+                            
+                        }
+                      }
+                    ]
+                  }
+            ]
+            clientele: [
+                'Young Adults (18-24)',
+                'Adults (25-64)',
+                'Seniors (65+)',
+                'Individuals'
+                //should be adjusted based of clients/patients seen
+            ],
+            reviews: [
+                {name: 'Mr. Jacob', review: 'Provides details on provider experience, patient satisfaction and hospital quality.', rating: 4.6},
+                {name: 'Ms. Hanna', review: 'Provides details on provider experience, patient satisfaction and hospital quality.', rating: 5.0},
+                {name: 'Mr. Jacob', review: 'Provides details on provider experience, patient satisfaction and hospital quality.', rating: 4.6},
+                {name: 'Ms. Hanna', review: 'Provides details on provider experience, patient satisfaction and hospital quality.', rating: 5.0},
+                {name: 'Mr. Jacob', review: 'Provides details on provider experience, patient satisfaction and hospital quality.', rating: 4.6},
+                {name: 'Ms. Hanna', review: 'Provides details on provider experience, patient satisfaction and hospital quality.', rating: 5.0},
+                {name: 'Mr. Jacob', review: 'Provides details on provider experience, patient satisfaction and hospital quality.', rating: 4.6},
+                {name: 'Ms. Hanna', review: 'Provides details on provider experience, patient satisfaction and hospital quality.', rating: 5.0},
+               
+    
+            ],
+            clinicTimings: [
+                {
+                    day: 'Monday',
+                    startTime: 900,
+                    endTime: 1700,
+                },
+            ],
+            highlight: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.`,
+            about: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.`,
+            faqs: [
+                {
+                    question: 'What services do you offer?',
+                    answer: 'We offer a variety of services including consultations, follow-ups, and specialized treatments tailored to your needs.'
+                },
+                {
+                    question: 'What are your operating hours?',
+                    answer: 'Our operating hours are Monday to Friday, 9:00 AM to 5:00 PM. Weekend appointments are available upon request.'
+                },
+                {
+                    question: 'How can I book an appointment?',
+                    answer: 'You can book an appointment through our online scheduling system or by calling our office directly.'
+                },
+                {
+                    question: 'What is your cancellation policy?',
+                    answer: 'Cancellations must be made at least 24 hours in advance to avoid any cancellation fees.'
+                },
+                {
+                    question: 'Do you accept insurance?',
+                    answer: 'Yes, we accept most major insurance plans. Please contact us to verify your coverage before your visit.'
+                }
+            ]
+        },
+}
+
+patient: {
+    avatar: 'https://zaneone.pages.dev/img/aboutme.png',
+    firstName: 'Zain',
+    lastName: 'Ul Hassan',
+    email: 'zainvicee@gmail.com',
+    phone: '',
+    bookedAppointments: [
+        //list of appointments booked
+    ]
+    completedAppointments: [
+        //list of completed appointments
+    ]
+    cancelledAppointments: [
+        //list of cancelled appointments
+    ]
+    frequentLocation: '',
+    reference: '', //some user or our options
+ 
+    address: 'ABC Health Partners - 6746 Charlotte Pike, San Antonio, California ',
+
+    active: false, //used for chat status
+    contacts: [
+            //used for chats can be providers only
+    ],
+    messages: [
+        //used for chats
+    ],
+    preferences: [
+        //array of user prefernces such as notification prefernece etc
+    ]
+
+
+}
