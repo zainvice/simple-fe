@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import Header from '../../common/patient/header';
-import ChatPage from './chats';
-import ProfilePage from './profile';
-import MainDash from './maindash';
-import Appointments from './appointments';
-import NewAppointmentOverlay from "../../overlays/patient/newappointmentoverlay";
-import ViewAppointmentOverlay from "../../overlays/patient/viewappointmentoverlay";
-import ExplorePage from './explore';
-import ProviderDetails from './providerDetails';
-import ReviewAndBook from './reviewandbook';
+import Header from '../common/patient/header';
+import ChatPage from './patient/chats';
+import ProfilePage from './patient/profile';
+import MainDash from './patient/maindash';
+import Appointments from './patient/appointments';
+import NewAppointmentOverlay from "../overlays/patient/newappointmentoverlay";
+import ViewAppointmentOverlay from "../overlays/patient/viewappointmentoverlay";
+import ExplorePage from './patient/explore';
+import ProviderDetails from './patient/providerDetails';
+import ReviewAndBook from './patient/reviewandbook';
+import ProviderMainDash from './providers/maindash';
 
 const visitReasons = [
     {
@@ -558,11 +559,11 @@ const appointments = Array.from({ length: 10 }, () => {
     ];
 
     const dates = [
-        "Wednesday, 20th October",
-        "Thursday, 21st October",
-        "Friday, 22nd October",
-        "Saturday, 23rd October",
-        "Sunday, 24th October",
+      "2024-12-24", // Tuesday, 24th December
+      "2024-12-25", // Wednesday, 25th December
+      "2024-12-26", // Thursday, 26th December
+      "2024-12-23", // Monday, 23rd December
+      "2024-12-22"  // Sunday, 22nd December
     ];
 
     const randomDoctor = doctors[Math.floor(Math.random() * doctors.length)];
@@ -581,12 +582,14 @@ const appointments = Array.from({ length: 10 }, () => {
             patientType: 'Returning',
         },
         patientDetails: {
-            name: '',
+            firstName: 'Zane',
+            lastName: 'Ul Hassan',
             address: '',
             insuranceinfo: '',
             memberID: '',
             phone: '',
             email: '',
+            avatar: 'https://w7.pngwing.com/pngs/7/618/png-transparent-man-illustration-avatar-icon-fashion-men-avatar-face-fashion-girl-heroes-thumbnail.png',
 
         },
         paymentStatus: ''
@@ -642,18 +645,27 @@ const MainPage = ({userType, type, isExpanded, showHideSidebar}) => {
     return (
         <div className={`${isExpanded ? 'w-[85%]': 'lg:w-[95%] w-full'} transition-all duration-300 h-screen flex flex-col relative `}>
 
-            <Header props ={type} showSideBar={showHideSidebar} />
-            {type.state === 'dashboard' && <MainDash handleNewAppointmentOpen= {handleNewAppointmentOpen} handleViewAppointmentOpen= {handleViewAppointmentOpen} appointments={appointments}/>}
-            {type.state === 'chats' && <ChatPage/>}
-            {type.state === 'profile' && <ProfilePage/>}
-            {type.state === 'explore' && <ExplorePage handleNewAppointmentOpen= {handleNewAppointmentOpen} handleViewAppointmentOpen= {handleViewAppointmentOpen} location={location} setLocation={setLocation} error={error}/>}
-            {type.state === 'appointments' && <Appointments handleNewAppointmentOpen= {handleNewAppointmentOpen} handleViewAppointmentOpen= {handleViewAppointmentOpen} appointments={appointments}/>}
-            {type.state === 'provider details' && <ProviderDetails handleNewAppointmentOpen= {handleNewAppointmentOpen} handleViewAppointmentOpen= {handleViewAppointmentOpen} doctor={doctors[0]} visitReasons={visitReasons}/>}
-            {type.state === 'review and book' && <ReviewAndBook appointment={appointments[0]} visitReasons={visitReasons}/>}
-           
-            {isNewAppointmentOpen && <NewAppointmentOverlay onClose={handleCloseOverlay} doctor={doctors[0]} visitReasons={visitReasons}/>}
+            {userType === 'patient' ? 
+                <>
+                    <Header props ={type} showSideBar={showHideSidebar} />
+                    {type.state === 'dashboard' && <MainDash handleNewAppointmentOpen= {handleNewAppointmentOpen} handleViewAppointmentOpen= {handleViewAppointmentOpen} appointments={appointments}/>}
+                    {type.state === 'chats' && <ChatPage/>}
+                    {type.state === 'profile' && <ProfilePage/>}
+                    {type.state === 'explore' && <ExplorePage handleNewAppointmentOpen= {handleNewAppointmentOpen} handleViewAppointmentOpen= {handleViewAppointmentOpen} location={location} setLocation={setLocation} error={error}/>}
+                    {type.state === 'appointments' && <Appointments handleNewAppointmentOpen= {handleNewAppointmentOpen} handleViewAppointmentOpen= {handleViewAppointmentOpen} appointments={appointments}/>}
+                    {type.state === 'provider details' && <ProviderDetails handleNewAppointmentOpen= {handleNewAppointmentOpen} handleViewAppointmentOpen= {handleViewAppointmentOpen} doctor={doctors[0]} visitReasons={visitReasons}/>}
+                    {type.state === 'review and book' && <ReviewAndBook appointment={appointments[0]} visitReasons={visitReasons}/>}
+                  
+                    {isNewAppointmentOpen && <NewAppointmentOverlay onClose={handleCloseOverlay} doctor={doctors[0]} visitReasons={visitReasons}/>}
 
-            {isViewAppointmentOpen && <ViewAppointmentOverlay onClose={handleCloseOverlay} appointment={currentView}/>}
+                    {isViewAppointmentOpen && <ViewAppointmentOverlay onClose={handleCloseOverlay} appointment={currentView}/>}
+                </> 
+                : 
+                <>
+                  <Header props ={type} showSideBar={showHideSidebar} />
+                  {type.state === 'dashboard' && <ProviderMainDash appointments={appointments}/>}
+                </>
+            }
         </div>
     );
 }

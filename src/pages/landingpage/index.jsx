@@ -191,8 +191,8 @@ const LandingPage = () => {
                     {isLoginDropdownOpen&&<LoginDropdown toggleLoginOverlay={toggleLoginOverlay}/>}
                    
                 </header>
-                {isLoginOverlayOpen&&<Loginoverlay/>}
-                <div className='flex flex-col items-center justify-center text-center text-white lg:h-[500px] w-[90%] lg:w-[50%] z-60' >
+                {isLoginOverlayOpen&&<Loginoverlay onClose={toggleLoginOverlay}/>}
+                <div className='flex flex-col items-center justify-center text-center text-white lg:h-[500px] w-[90%] lg:w-[50%]' >
                     <h1 className='text-[30px] lg:text-[60px]'>Find World's Best <br/>Medical Care</h1>
                     <p className='text-[13px] lg:text-[20px] my-4 mt-8 text-normal'> Find The Best Hospitals and Doctors Near You!</p>
                     <div className='hidden border-black lg:flex flex-col lg:flex-row w-full justify-between items-center h-[60px] mt-[40px]'>
@@ -216,7 +216,7 @@ const LandingPage = () => {
                                 />
                             </div>
                         </div>
-                        <button className='bg-white text-[16px] mt-6 lg:mt-0 -ml-8 p-5 text-[#1E232F] rounded-full' onClick={(e)=> window.location.href = '/signup'} >Explore&nbsp;Premium&nbsp;Care</button>
+                        <button className='bg-white text-[16px] mt-6 lg:mt-0 -ml-8 p-5 text-[#1E232F] rounded-full' onClick={(e)=> window.location.href = 'auth/patient/signup'} >Explore&nbsp;Premium&nbsp;Care</button>
                     </div>
                     <div className='lg:hidden flex-col'>
                         <div className='flex flex-col mx-auto'>
@@ -242,38 +242,42 @@ const LandingPage = () => {
 
                 </div>
                
-                <div className='flex flex-col lg:flex-row text-center lg:text-left justify-between w-[80%] my-20 -z-10' id='experince'>
-                
-                        <p className='poppins text-[#28574E] text-[30px] lg:w-1/2'>Experience Exceptional Healthcare In The USA With Simple USA</p>
-                    
-                    
-                        <p className='text-[#757575] lg:w-1/2 text-justify mt-3 lg:ml-8 text-[18px]'>Discover the pinnacle of healthcare services in the United States, where advancements, quality, cutting edge research, expert doctors and a commitment to patient success, combine to provide an unparalleled medical tourism experience. Omnicure USA is your dedicated partner, guiding you towards improved health and wellness. Connect with us today and embark on a journey of exceptional USA healthcare services.</p>
-                  
+                <div className='flex flex-col lg:flex-row text-center lg:text-left justify-between w-[80%] my-20 -z-10' id='experience'>
+                    <p className='poppins text-[#28574E] text-[30px] lg:w-1/2 '>
+                        Simplify Your Healthcare <br/>Journey with Simple
+                    </p>
+                    <p className='text-[#757575] lg:w-1/2 text-justify lg:ml-8 text-[18px]'>
+                        At Simple, we transform the way you access healthcare in the United States. With seamless navigation through top-tier medical facilities, access to expert professionals, and tailored solutions, our platform ensures a smooth and stress-free healthcare experience. Whether it’s personalized care plans, 24/7 virtual consultations, or streamlined medical tourism services, we’re here to guide you every step of the way. Let Simple be your trusted partner in achieving optimal health and wellness. Connect with us today and take the first step towards exceptional care.
+                    </p>
                 </div>
+
                 <div className='flex flex-col lg:flex-row justify-around w-[80%] relative my-20'>
-                    <div className='flex relative flex-col pb-20 bg-[#F9F9F9] text-center items-center p-5 py-8 mx-6 rounded-[30px] shadow-md my-4 lg:w-[33%]'>
-                        <img src="./se.png" alt="img-so" />
-                        <h1 className='font-medium text-[24px] my-6'>Second Opinion</h1>
-                        <p className='text-[#757575]'>When facing a serious, life-changing illness, we understand the critical importance of obtaining expert advices</p>
+                    <div className='flex relative flex-col pb-20 bg-white text-center items-center p-5 py-8 mx-6 rounded-[30px] shadow-md my-4 lg:w-[33%]'>
+                        <span className="material-symbols-outlined text-[#1EBDB8] text-[56px]"> calendar_add_on </span>
+                        <h1 className='font-medium text-[24px] my-6'>Appointment Scheduling</h1>
+                        <p className='text-[#757575]'> Explore an intuitive platform to schedule, manage, and track healthcare appointments with ease.</p>
                         <button className='bg-[#1EBDB8] shadow-md absolute -bottom-6 rounded-[30px] text-white px-5 py-3 text-sm'>Get Started</button>
                     </div>
-                    <div className='flex relative flex-col pb-20 bg-[#F9F9F9] text-center items-center p-5 py-8 mx-6 rounded-[30px] shadow-md my-4 lg:w-[33%]'>
-                        <img src="./treat.png" alt="img-t" />
-                        <h1 className='font-medium text-[24px] my-6'>Treatment</h1>
-                        <p className='text-[#757575]'>Get help from the best chosen hospitals and specialists that excel in providing premium healthcare withen the United States.</p>
-                        <button className='bg-[#1EBDB8] shadow-md absolute -bottom-6 rounded-[30px] text-white px-5 py-3 text-sm' onClick={(e)=> window.location.href = '/signup'} >Get Started</button>
+                    <div className='flex relative flex-col pb-20 bg-white text-center items-center p-5 py-8 mx-6 rounded-[30px] shadow-md my-4 lg:w-[33%]'>
+                        <span className="material-symbols-outlined text-[#1EBDB8] text-[56px]"> settings_accessibility </span>
+                        <h1 className='font-medium text-[24px] my-6'>Personalized Care</h1>
+                        <p className='text-[#757575]'>Tailored experience based on patient history, and preferences for a truly unique experience.</p>
+                        <button className='bg-[#1EBDB8] shadow-md absolute -bottom-6 rounded-[30px] text-white px-5 py-3 text-sm' onClick={(e)=> window.location.href = '/signup'}>Get Started</button>
                     </div>
-                    <div className='flex relative flex-col pb-20 bg-[#F9F9F9] text-center items-center p-5 py-8 mx-6 rounded-[30px] shadow-md my-4 lg:w-[33%]'>
-                        <img src="./globe.png" alt="img-globle" />
-                        <h1 className='font-medium text-[24px] my-6'>Glolal Plans</h1>
-                        <p className='text-[#757575]'>Get help from the best chosen hospitals and specialists that excel in providing premium healthcare withen the United States.</p>
-                        <button className='bg-[#1EBDB8] shadow-md absolute -bottom-6 rounded-[30px] text-white px-5 py-3 text-sm' onClick={(e)=> window.location.href = '/signup'} >Get Started</button>
+                    <div className='flex relative flex-col pb-20 bg-white text-center items-center p-5 py-8 mx-6 rounded-[30px] shadow-md my-4 lg:w-[33%]'>
+                        <span className="material-symbols-outlined text-[#1EBDB8] text-[56px]"> videocam </span>
+                        <h1 className='font-medium text-[24px] my-6'>24/7 Virtual Connect</h1>
+                        <p className='text-[#757575]'>Seamlessly connect with healthcare professionals anytime, anywhere, through our HIPPA Approved video consultation platform.</p>
+                        <button className='bg-[#1EBDB8] shadow-md absolute -bottom-6 rounded-[30px] text-white px-5 py-3 text-sm' onClick={(e)=> window.location.href = '/signup'}>Get Started</button>
                     </div>
                 </div>
 
+
                 <div className='flex px-8 py-6 relative justify-between w-[80%] my-20 lg:bg-transparent bg-[#1E232F] text-center lg:text-left rounded-[20px]'>
-                    <div className='lg:mt-60 lg:ml-20 mx-auto'>
-                        <p className='poppins font-medium text-white text-[30px]'>Consult Our<br/>Providers</p>
+                    <div className='lg:mt-52 lg:ml-20 mx-auto'>
+                        <p className='poppins font-medium text-white text-[30px]'>Thousands of providers.
+                        <br/>One app.</p>
+                        <p className='poppins text-white text-sm'>The Zocdoc app is the quickest, easiest way to <br/> book and keep track of your appointments.</p>
                         <button className='bg-white text-[#1E232F] rounded-[30px] mt-6 px-5 lg:py-3 py-2' onClick={(e)=> window.location.href = '/signup'} >Book Now</button>
                     </div>
                     <div className='-mb-6 lg:block hidden'>
@@ -282,37 +286,39 @@ const LandingPage = () => {
                     </div>
                     <div className='hidden lg:block absolute top-[150px] left-0 w-full h-[70%] bg-[#1E232F] rounded-[40px] z-[-1]' id='rectangle'></div>
                 </div>
-                <div className='flex flex-col lg:flex-row justify-between w-[80%] lg:my-20 my-5'>
-                    <div><img src="./tophosp.png" alt="clinics-img" /></div>
-                    <div className='lg:mt-60 mt-5 lg:ml-10 lg:w-1/2'><p className='text-[#28574E] lg:font-medium font-semibold poppins lg:text-[40px] text-[12px] text-center'>World’s Best USA Hospitals & Research Centers</p></div>
-                </div>
-               
-                <div className='flex flex-col justify-between w-[80%] my-20'>
-                    <p className='poppins font-medium text-[#28574E] lg:text-[40px] text-[25px] text-center lg:text-left lg:w-[380px]' >Explore Treatments<br/> across specialties</p>
-                    <div className='grid lg:grid-cols-5 grid-cols-2'>
-                        <div className='flex flex-col bg-[#F9F9F9] py-8 rounded-[30px] items-center text-center m-4'><div><img src="./1.png" alt="logo" /></div> <p>Onocology</p></div>
-                        <div className='flex flex-col bg-[#F9F9F9] py-8 rounded-[30px] items-center text-center m-4'><div><img src="./2.png" alt="logo" /></div> <p>Endocrinology</p></div>
-                        <div className='flex flex-col bg-[#F9F9F9] py-8 rounded-[30px] items-center text-center m-4'><div><img src="./3.png" alt="logo" /></div> <p>Infertility</p></div>
-                        <div className='flex flex-col bg-[#F9F9F9] py-8 rounded-[30px] items-center text-center m-4'><div><img src="./4.png" alt="logo" /></div> <p>Mental Health</p></div>
-                        <div className='flex flex-col bg-[#F9F9F9] py-8 rounded-[30px] items-center text-center m-4'><div><img src="./5.png" alt="logo" /></div> <p>Cardiology</p></div>
-                        <div className='flex flex-col bg-[#F9F9F9] py-8 rounded-[30px] items-center text-center m-4'><div><img src="./neo.png" alt="logo" /></div> <p>Neurology</p></div>
-                        <div className='flex flex-col bg-[#F9F9F9] py-8 rounded-[30px] items-center text-center m-4'><div><img src="./rhe.png" alt="logo" /></div> <p>Rheumatology</p></div>
-                        <div className='flex flex-col bg-[#F9F9F9] py-8 rounded-[30px] items-center text-center m-4'><div><img src="./ps.png" alt="logo" /></div> <p>Plastice Surgery</p></div>
-                        <div className='flex flex-col bg-[#F9F9F9] py-8 rounded-[30px] items-center text-center m-4'><div><img src="./rds.png" alt="logo" /></div> <p>Rare Diseases</p></div>
-                        <div className='flex flex-col bg-[#F9F9F9] py-8 rounded-[30px] items-center text-center m-4'><div><img src="./sg.png" alt="logo" /></div> <p>Surrogacy</p></div>
-
-                    </div>
-
-                </div>
                 <div  className='flex flex-col justify-between w-[80%] my-20 items-center text-center'>
                     <p className='poppins font-medium text-[#28574E] text-[40px] my-10'>Our Top Providers</p>
-                    <div className="grid mx-auto lg:grid-cols-3 grid-cols-1 gap-4">
+                    <div className="grid mx-auto lg:grid-cols-3 grid-cols-1 gap-4 w-full">
                         {topDoctors.map((doctor) => (
                             <DoctorCard doctor={doctor} schedule={(e)=> window.location.href = '/signup'} fav={false}/>
                         ))}
                     </div>
 
                 </div>
+                <div className='flex flex-col justify-between w-[80%] my-20'>
+                    <p className='poppins font-medium text-[#28574E] lg:text-[40px] text-[25px] text-center lg:text-left lg:w-[380px]' >Explore Treatments<br/> across specialties</p>
+                    <div className='grid lg:grid-cols-5 grid-cols-2'>
+                        <div className='flex flex-col bg-white shadow-md cursor-pointer py-8 rounded-[30px] items-center text-center m-4'><div><img src="./1.png" alt="logo" /></div> <p>Onocology</p></div>
+                        <div className='flex flex-col bg-white shadow-md cursor-pointer py-8 rounded-[30px] items-center text-center m-4'><div><img src="./2.png" alt="logo" /></div> <p>Endocrinology</p></div>
+                        <div className='flex flex-col bg-white shadow-md cursor-pointer py-8 rounded-[30px] items-center text-center m-4'><div><img src="./3.png" alt="logo" /></div> <p>Infertility</p></div>
+                        <div className='flex flex-col bg-white shadow-md cursor-pointer py-8 rounded-[30px] items-center text-center m-4'><div><img src="./4.png" alt="logo" /></div> <p>Mental Health</p></div>
+                        <div className='flex flex-col bg-white shadow-md cursor-pointer py-8 rounded-[30px] items-center text-center m-4'><div><img src="./5.png" alt="logo" /></div> <p>Cardiology</p></div>
+                        <div className='flex flex-col bg-white shadow-md cursor-pointer py-8 rounded-[30px] items-center text-center m-4'><div><img src="./neo.png" alt="logo" /></div> <p>Neurology</p></div>
+                        <div className='flex flex-col bg-white shadow-md cursor-pointer py-8 rounded-[30px] items-center text-center m-4'><div><img src="./rhe.png" alt="logo" /></div> <p>Rheumatology</p></div>
+                        <div className='flex flex-col bg-white shadow-md cursor-pointer py-8 rounded-[30px] items-center text-center m-4'><div><img src="./ps.png" alt="logo" /></div> <p>Plastice Surgery</p></div>
+                        <div className='flex flex-col bg-white shadow-md cursor-pointer py-8 rounded-[30px] items-center text-center m-4'><div><img src="./rds.png" alt="logo" /></div> <p>Rare Diseases</p></div>
+                        <div className='flex flex-col bg-white shadow-md cursor-pointer py-8 rounded-[30px] items-center text-center m-4'><div><img src="./sg.png" alt="logo" /></div> <p>Surrogacy</p></div>
+
+                    </div>
+
+                </div>
+                <div className='flex flex-col lg:flex-row justify-between w-[80%] lg:my-20 my-5'>
+                    <div><img src="./tophosp.png" alt="clinics-img" /></div>
+                    <div className='lg:mt-60 mt-5 lg:ml-10 lg:w-1/2'><p className='text-[#28574E] lg:font-medium font-semibold poppins lg:text-[40px] text-[12px] text-center'>World’s Best USA Hospitals & Research Centers</p></div>
+                </div>
+               
+              
+                
                 
                 <footer className='bg-[#1E232F] w-full relative text-white flex items-center flex-col'>
                     <div className='flex flex-col lg:flex-row justify-between w-[90%]'>
@@ -359,7 +365,7 @@ const LandingPage = () => {
                         
                     </div>
                     <div className='w-[90%] h-[2px] rounded-full bg-white'></div>
-                    <div className='text-left w-[90%] my-4 text-sm font-thin'><p>©  2024 Simple USA. All Rights Reserved.</p></div>
+                    <div className='text-left w-[90%] my-4 text-sm font-thin'><p>©  2024 Simple. All Rights Reserved.</p></div>
                 </footer>
           
         </div>

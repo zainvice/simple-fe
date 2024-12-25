@@ -1,4 +1,7 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { signup } from '../../../api/features/auth/patient/authSlice';
+import { sendOTP } from '../../../api/features/auth/patient/authSlice';
 import Button from '../../../common/patient/button';
 import Loginoverlay from '../../../overlays/patient/loginoverlay';
 import Verificationoverlay from '../../../overlays/patient/verificationoverlay';
@@ -6,10 +9,15 @@ import Verificationoverlay from '../../../overlays/patient/verificationoverlay';
 
 
 const PatientAuthPage = () => {
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.auth);
+
   const [isLoginOpen, setLoginOpen] = useState(false) 
   const [isVerificationOpen, setVerificationOpen] = useState(false) 
   const [isStepComplete, setStep] = useState(false) 
   const [isPhoneProvided, setPhoneProvided] = useState(true)
+  const [signupError, setSignupError] = useState('')
+  const [dobError, setdobError] = useState('');
 
 
   const onOpenCloseLogin = () =>{
@@ -26,28 +34,105 @@ const PatientAuthPage = () => {
     phone: '',
     dob: '',
     gender: '',
+    role: 'user'
   });
+
+  const calculateAge = (dob) => {
+    const today = new Date();
+    const birthDate = new Date(dob);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const month = today.getMonth();
+    const day = today.getDate();
+    if (month < birthDate.getMonth() || (month === birthDate.getMonth() && day < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  useEffect(()=>{
+      if(error==='User already exists with this emailAddress.'){
+        setSignupError("This email is already associated with an account.")
+      } else if (error === 'Failed to fetch'){
+        setSignupError("Unable to connect to the server.")
+      }
+
+  }, [error])
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    setSignupError('')
+    setdobError('')
     setFormData({ ...formData, [name]: value });
     if(name==='phone'){
       if(value!=''){
           setPhoneProvided(true)
       }
     }
+    if (name === 'dob') {
+      const age = calculateAge(value);
+      console.log("CALCULATED DOB")
+      if (age < 18) {
+        setdobError('You must be at least 18 years old.');
+        console.log("CLE")
+      } else {
+        setdobError('');
+        console.log("CALCUD DOB")
+      }
+    }
   };
+  
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     
-    setStep(true)
-    if(isStepComplete){
-      console.log('Form submitted:', formData);
-      setVerificationOpen(true)
-    }
+    //setStep(true)
+    if(!dobError){
+      if(isStepComplete){
+        try {
+          const actionResult = await dispatch(sendOTP({ formData }));
+    
+          console.log(actionResult)
+          if (signup.fulfilled.match(actionResult)) {
+           
+            const response = actionResult.payload; 
+            console.log('Signup successful:', response);
+            setStep(true)
+            
+          } else if(signup.rejected.match(actionResult)){
+            const response = actionResult.payload; 
+            console.log('Sign Up error', response);
+          }
+        } catch (error) {
+         
+          console.error('Error during signup:', error);
+        }
+      }else{
+        try {
+          const actionResult = await dispatch(signup({ formData }));
+    
+          console.log(actionResult)
+          if (signup.fulfilled.match(actionResult)) {
+            
+            const response = actionResult.payload; 
+            console.log('Signup successful:', response);
+            setStep(true)
+            
+          } else if(signup.rejected.match(actionResult)){
+            const response = actionResult.payload; 
+            console.log('Sign Up error', response);
+          }
+        } catch (error) {
+         
+          console.error('Error during signup:', error);
+        }
+      }
+
+    }      
+    //setVerificationOpen(true)
+    
     //
   };
+  console.log("ERROR", error)
 
   return (
     <div className="flex flex-col h-screen poppins bg-[#FFFFFF] text-center">
@@ -57,13 +142,13 @@ const PatientAuthPage = () => {
       <>
        <div className='w-full flex justify-between lg:p-8 p-4'>
             <a className='flex lg:ml-6' href='/'>
-            <img src="./logodark-icon.png" alt="Logo" className="h-12 lg:ml-6 ml-3" />
+            <img src="/logodark-icon.png" alt="Logo" className="h-12 lg:ml-6 ml-3" />
             <p className='hidden lg:block text-[28px] ml-2 text-[#1EBDB8] font-medium'>Simple</p>
             </a>
             
         </div>
         <p className='text-[40px] text-[#707271]'>Verifying <span className='text-[#1EBDB8] font-bold'>Account</span></p>
-        <div className="mx-auto p-6 text-[#707271] text-left mt-3">
+        <div className="mx-auto p-6 text-[#707271] text-left mt-3 flex-grow">
           <h2 className="font-medium text-[32px]">Enter your mobile phone number</h2>
           <p className="text-gray-500 text-sm mb-4">
             We'll text you to verify your account
@@ -92,14 +177,16 @@ const PatientAuthPage = () => {
             >
               Continue
             </button>
-            
-          </form>
-          <button
+            <button
                       
                 className="w-full py-2 px-4 bg-transparent text-[#888888] font-semibold my-4 hover:text-[#1E232F] duration-300"
+                onClick={handleSubmit}
                 >
                 Verify with email instead
             </button>
+            
+          </form>
+          
             <div className='max-w-lg text-[#888888] text-center font-normal'>
               <p className='ml-2 text-[15px]'>By clicking "Send verification text" you agree to receive account updates and appointment reminders via text from Simple. Message frequency varies. Reply STOP to cancel or HELP for help. Message and data rates may apply.</p>
             </div>
@@ -115,7 +202,7 @@ const PatientAuthPage = () => {
           </a>
           <div className='flex text-[#888888] mr-5'>
             <div className='flex text-[#888888] mt-2'>
-              <span class="material-symbols-outlined mx-2"> lock </span>
+              <span className="material-symbols-outlined mx-2"> lock </span>
               Protected
             </div>
             <div className='mx-2 mt-2'>
@@ -132,7 +219,9 @@ const PatientAuthPage = () => {
         <p className="text-gray-500 text-sm mb-6">
           To book your appointment, we need to verify a few things
         </p>
+        {signupError && <p className="text-red-600 my-2 flex"><span className="material-symbols-outlined mr-2"> error </span>{signupError}</p>} 
         <form onSubmit={handleSubmit}>
+
           <div className="mb-4">
             <label className=" font-semibold block text-sm font-medium mb-2" htmlFor="email">
               Email Address
@@ -193,6 +282,7 @@ const PatientAuthPage = () => {
               onChange={handleChange}
               required
             />
+            {dobError && <p className="text-red-600 mt-2 flex"><span className="material-symbols-outlined mr-2"> error </span>{dobError}</p>} 
           </div>
           <div className="mb-4">
             <label className=" font-semibold block text-sm font-medium mb-2">Gender</label>

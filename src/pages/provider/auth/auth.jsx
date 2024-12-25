@@ -2,7 +2,8 @@ import React, {useState} from 'react';
 import Button from '../../../common/patient/button';
 import Verificationoverlay from '../../../overlays/patient/verificationoverlay';
 import ProviderPracticesDropdown from '../../../dropdowns/provider/providerspecialtyselector';
-import { useMatch } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+
 
 
 const ProviderAuthPage = () => {
@@ -333,8 +334,7 @@ const ProviderAuthPage = () => {
     }
   ];
     
-  const loginMatch = useMatch('/login');
-  const signupMatch = useMatch('/signup');
+  const { type } = useParams()
 
   const [isVerificationOpen, setVerificationOpen] = useState(false) 
   const [isStepComplete, setStep] = useState(false) 
@@ -398,7 +398,7 @@ const ProviderAuthPage = () => {
   };
 
   return (
-    <div className="flex flex-col poppins bg-[#FFFFFF] text-center">
+    <div className="flex flex-col poppins bg-[#FFFFFF] text-center h-screen overflow-y-auto border-4 border-red-600">
   
       {isVerificationOpen&&<Verificationoverlay onClose={onOpenCloseVerification} email={formData.email}/>}
 
@@ -409,16 +409,20 @@ const ProviderAuthPage = () => {
            <p className='text-[#707271] ml-2 mt-3'>for Providers</p>
           </a>
           <div className='flex text-[#888888] mr-5'>
-            <div className='flex text-[#888888] mt-2 cursor-pointer'>
+            <div className='flex text-[#888888] mt-2 cursor-pointer' onClick={(e)=> window.location.href = '/'}>
             
               Find Care
             </div>
+            {type!='login'&& 
             <div className='mx-2 mt-2'>
               |
             </div>
-            <div>
-              <Button text={'SIGN IN'} onClick={onOpenCloseLogin}/>
+            }
+           {type!='login'&& 
+             <div>
+              <Button text={'SIGN IN'} onClick={(e)=> window.location.href = '/auth/provider/login'}/>
             </div>
+            }
             <div className='ml-6 '>
               <button className='px-3 py-2 border-2 border-[#707271] rounded-[10px] text-[#707271] font-medium'>
                 Need Help?
@@ -427,8 +431,43 @@ const ProviderAuthPage = () => {
            
           </div>
       </div>
-      {loginMatch ? (
-        <></> 
+      {type==='login' ? (
+        <div className='flex-grow'>
+        <p className='text-[40px] text-[#707271]'>Welcome to <span className='text-[#1EBDB8] font-bold'>Simple</span></p>
+          <div className="lg:max-w-lg mx-auto p-6 text-[#707271] text-left mt-3">
+            <h2 className="text-xl font-400 mb-3 text-3xl">To login, enter you email address</h2>
+           
+            <form onSubmit={handleSubmit} className='my-8'>
+              
+           
+              <div className="mb-4">
+                <label className=" font-semibold block text-sm font-medium mb-2" htmlFor="email">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  className="w-full p-3 bg-[#F5F5F5] rounded-[10px]"
+                  placeholder="Enter your email address"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+             
+              <button
+                type="submit"
+                className="w-full py-2 px-4 bg-[#1EBDB8] my-6 border border-[#1EBDB8] text-white rounded-[20px] font-bold hover:text-[#1EBDB8] hover:bg-transparent transition"
+              >
+                Continue
+              </button>
+              <p className='text-center my-2'>Don't have an account? <a href='/auth/provider/signup' className=' cursor-pointer text-[#1EBDB8] hover:font-semibold duration-300'>Sign Up</a></p>
+            </form>
+
+           
+          </div>
+        </div> 
       ): (
         <>
          <p className='text-[40px] text-[#707271]'>Welcome to <span className='text-[#1EBDB8] font-bold'>Simple</span></p>
@@ -589,25 +628,26 @@ const ProviderAuthPage = () => {
                     <option value="moreThan15">More than 15</option>
                   </select>
               </div>
+              <div className='flex max-w-lg text-justify mb-4'>
+                  <input type="checkbox" name="terms" id="terms" required className='-mt-4 w-4'/>
+                  <p className='ml-2 text-sm'>By checking this box I agree to receive text messages from Simple about offers*</p>
+            </div>
               <button
                 type="submit"
                 className="w-full py-2 px-4 bg-[#1EBDB8] border border-[#1EBDB8] text-white rounded-[20px] font-bold hover:text-[#1EBDB8] hover:bg-transparent transition"
               >
                 Sign up
               </button>
-              <p className='text-center my-2'>Already have an account? <span>Login</span></p>
+              <p className='text-center my-2'>Already have an account? <a href='/auth/provider/login' className=' cursor-pointer text-[#1EBDB8] hover:font-semibold duration-300'>Login</a></p>
             </form>
 
-            <div className='flex max-w-lg text-justify mb-4'>
-                  <input type="checkbox" name="terms" id="terms" required className='-mt-4 w-4'/>
-                  <p className='ml-2 text-sm'>By checking this box I agree to receive text messages from Simple about offers*</p>
-            </div>
+          
           </div>
         </>
       )}
    
   
-       <footer className='bg-[#1E232F] w-full relative text-white flex items-center flex-col py-5'>
+       <footer className='bg-[#1E232F] w-full relative text-white flex items-center flex-col py-5 '>
                     <div className='flex flex-col lg:flex-row justify-between w-[90%]'>
                         <div className='w-[160px]'>
                             <img src="/logo-icon.png" alt="logo" className='w-10 h-10' />

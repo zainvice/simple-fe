@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react';
 import LandingPage from './pages/landingpage';
 import PatientAuthPage from './pages/patient/auth/auth';
 import ProviderAuthPage from './pages/provider/auth/auth';
-import Dashboard from './pages/patient/dashboard';
+import Dashboard from './pages/dashboard';
 
 
 function App() {
@@ -31,8 +31,7 @@ function App() {
               
               <Route path="/" element={<LandingPage/>} />
               <Route path="/auth/patient/signup" element={<PatientAuthPage/>} />
-              <Route path="/auth/provider/signup" element={<ProviderAuthPage/>} />
-              <Route path="/auth/provider/login" element={<ProviderAuthPage/>} />
+              <Route path="/auth/provider/:type" element={<ProviderAuthPage/>} />
               <Route path="/:userType" element={<Dashboard/>} />
               <Route path="/:userType/:selectedPath" element={<Dashboard/>} />
               <Route path="/:userType/:selectedPath/:more" element={<Dashboard/>} />

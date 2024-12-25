@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
-import Sidebar from '../../../common/patient/sidebar';
-import MainPage from '../../../components/patient/mainpage';
+import Sidebar from '../../common/sidebar';
+import MainPage from '../../components/mainpage';
 import { useNavigate, useParams } from 'react-router-dom';
-import LostPage from '../../404';
+import LostPage from '../404';
 
 const Dashboard = () => {
     const [isExpanded, setIsExpanded] = useState(false);
