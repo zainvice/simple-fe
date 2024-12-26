@@ -26,6 +26,34 @@ const PatientAuthPage = () => {
   const onOpenCloseVerification = () =>{
     setVerificationOpen(!isVerificationOpen)
   }
+  const [errors, setErrors] = useState({
+    phone: '',
+  });
+  const validatePhone = (phone) => {
+   
+    const phoneRegex = /^(?:\(\d{3}\)\s?|\d{3}-)\d{3}-\d{4}$/;
+    return phoneRegex.test(phone);
+  };
+
+  const handlePhoneChange = (e) => {
+    const { name, value } = e.target;
+
+   
+    let formattedValue = value.replace(/\D/g, '');
+
+   
+    if (formattedValue.length <= 3) {
+      formattedValue = formattedValue.replace(/(\d{1,3})/, '($1');
+    } else if (formattedValue.length <= 6) {
+      formattedValue = formattedValue.replace(/(\d{3})(\d{1,3})/, '($1) $2');
+    } else {
+      formattedValue = formattedValue.replace(/(\d{3})(\d{3})(\d{1,4})/, '($1) $2-$3');
+    }
+
+   
+    setFormData({ ...formData, [name]: formattedValue });
+  };
+
 
   const [formData, setFormData] = useState({
     email: '',
@@ -163,7 +191,7 @@ const PatientAuthPage = () => {
                 className="w-full p-3 bg-[#F5F5F5] rounded-[10px]"
                 placeholder="(___) ___ - ____"
                 value={formData.phone}
-                onChange={handleChange}
+                onChange={handlePhoneChange}
                 required
               />
             </div>

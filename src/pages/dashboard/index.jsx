@@ -4,12 +4,21 @@ import Sidebar from '../../common/sidebar';
 import MainPage from '../../components/mainpage';
 import { useNavigate, useParams } from 'react-router-dom';
 import LostPage from '../404';
+import { useSelector } from 'react-redux';
 
 const Dashboard = () => {
     const [isExpanded, setIsExpanded] = useState(false);
     const navigate = useNavigate()
     const { selectedPath, more, userType } = useParams()
     const [showSideBar, setShowSideBar] = useState ()
+    const { user, accessToken } = useSelector((state) => state.auth);
+
+    useEffect(()=>{
+        console.log("user", user)
+        if(!user||!accessToken){
+            navigate(`/auth/${userType}/signup`)
+        }
+    },[user])
 
     const showHideSidebar = () => {
       setShowSideBar(!showSideBar)

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Header from '../common/patient/header';
+import Header from '../common/header';
 import ChatPage from './patient/chats';
 import ProfilePage from './patient/profile';
 import MainDash from './patient/maindash';
@@ -10,6 +10,9 @@ import ExplorePage from './patient/explore';
 import ProviderDetails from './patient/providerDetails';
 import ReviewAndBook from './patient/reviewandbook';
 import ProviderMainDash from './providers/maindash';
+import ProviderChatPage from './providers/chats';
+import { fetchProviders } from '../api/api';
+import { fetchAppointmentsByEmail } from '../api/api';
 
 const visitReasons = [
     {
@@ -176,435 +179,115 @@ const visitReasons = [
     },
 ];
 
-const doctors = [
-    {
-        name: "Dr. Adam Cooper",
-        type: "Cardiologist",
-        specialization: '',
-        location: '1.2 mil - ABC Health Partners - 6746 Charlotte Pike, San Antonio, California ',
-        avatar: "https://png.pngtree.com/png-vector/20230928/ourmid/pngtree-young-afro-professional-doctor-png-image_10148632.png",
-        rating: 4.8,
-        videoVisits: true,
-        features: [
-            'New Patient Appointments',
-            'Excellent wait time',
-            'Highly Recommended',
-           
-        ],
-        active: false,
-        contacts: [
 
-        ],
-        messages: [
 
-        ],
-        
-        availability:[
-            
-            {
-              "date": "2024-12-13",
-              "day": "Friday",
-              "availableAppointments": []
-            },
-            {
-              "date": "2024-12-14",
-              "day": "Saturday",
-              "availableAppointments": [
-                "9:00 am",
-                "10:00 am",
-                "11:00 am",
-                "12:00 pm"
-              ]
-            },
-            {
-              "date": "2024-12-15",
-              "day": "Sunday",
-              "availableAppointments": [
-                "9:00 am",
-                "10:00 am",
-                "11:00 am"
-              ]
-            },
-            {
-              "date": "2024-12-16",
-              "day": "Monday",
-              "availableAppointments": []
-            },
-            {
-              "date": "2024-12-17",
-              "day": "Tuesday",
-              "availableAppointments": [
-                "9:00 am",
-                "10:00 am",
-                "11:00 am"
-              ]
-            },
-            {
-              "date": "2024-12-18",
-              "day": "Wednesday",
-              "availableAppointments": [
-                "9:00 am",
-                "10:00 am",
-                "11:00 am"
-              ]
-            },
-            {
-              "date": "2024-12-19",
-              "day": "Thursday",
-              "availableAppointments": []
-            },
-            {
-              "date": "2024-12-20",
-              "day": "Friday",
-              "availableAppointments": []
-            },
-            {
-              "date": "2024-12-21",
-              "day": "Saturday",
-              "availableAppointments": [
-                "9:00 am",
-                "10:00 am",
-                "11:00 am",
-                "12:00 pm"
-              ]
-            },
-            {
-              "date": "2024-12-22",
-              "day": "Sunday",
-              "availableAppointments": [
-                "9:00 am",
-                "10:00 am",
-                "11:00 am"
-              ]
-            }
-          
-          
-        ],
-        gender: 'Male',
-        languagesSpoken: [
-            'English',
-            'Spanish'
-        ],
-        clientele: [
-            'Young Adults (18-24)',
-            'Adults (25-64)',
-            'Seniors (65+)',
-            'Individuals'
-        ],
-        reviews: [
-            {name: 'Mr. Jacob', review: 'Provides details on provider experience, patient satisfaction and hospital quality.', rating: 4.6},
-            {name: 'Ms. Hanna', review: 'Provides details on provider experience, patient satisfaction and hospital quality.', rating: 5.0},
-            {name: 'Mr. Jacob', review: 'Provides details on provider experience, patient satisfaction and hospital quality.', rating: 4.6},
-            {name: 'Ms. Hanna', review: 'Provides details on provider experience, patient satisfaction and hospital quality.', rating: 5.0},
-            {name: 'Mr. Jacob', review: 'Provides details on provider experience, patient satisfaction and hospital quality.', rating: 4.6},
-            {name: 'Ms. Hanna', review: 'Provides details on provider experience, patient satisfaction and hospital quality.', rating: 5.0},
-            {name: 'Mr. Jacob', review: 'Provides details on provider experience, patient satisfaction and hospital quality.', rating: 4.6},
-            {name: 'Ms. Hanna', review: 'Provides details on provider experience, patient satisfaction and hospital quality.', rating: 5.0},
-           
 
-        ],
-        clinicTimings: [
-            {
-                day: 'Monday',
-                startTime: 900,
-                endTime: 1700,
-            },
-        ],
-        location: '1.2 mil - ABC Health Partners - 6746 Charlotte Pike, San Antonio, California ',
-        highlight: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.`,
-        about: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.`,
-        faqs: [
-            {
-                question: 'What services do you offer?',
-                answer: 'We offer a variety of services including consultations, follow-ups, and specialized treatments tailored to your needs.'
-            },
-            {
-                question: 'What are your operating hours?',
-                answer: 'Our operating hours are Monday to Friday, 9:00 AM to 5:00 PM. Weekend appointments are available upon request.'
-            },
-            {
-                question: 'How can I book an appointment?',
-                answer: 'You can book an appointment through our online scheduling system or by calling our office directly.'
-            },
-            {
-                question: 'What is your cancellation policy?',
-                answer: 'Cancellations must be made at least 24 hours in advance to avoid any cancellation fees.'
-            },
-            {
-                question: 'Do you accept insurance?',
-                answer: 'Yes, we accept most major insurance plans. Please contact us to verify your coverage before your visit.'
-            }
-        ]
-    },
-    {
-        name: "Dr. Shelly Christian",
-        type: "Therapist",
-        location: '1.2 mil - ABC Health Partners - 6746 Charlotte Pike, San Antonio, California ',
-        avatar: "https://png.pngtree.com/png-vector/20230928/ourmid/pngtree-young-afro-professional-doctor-png-image_10148632.png",
-        rating: 4.9,
-        reviews: [
-            {name: '', review: ''},
-            {name: '', review: ''},
-            {name: '', review: ''},
-            {name: '', review: ''},
-            {name: '', review: ''},
-
-        ]
-    },
-    {
-        name: "Dr. John Doe",
-        type: "Dentist",
-        location: '1.2 mil - ABC Health Partners - 6746 Charlotte Pike, San Antonio, California ',
-        avatar: "https://png.pngtree.com/png-vector/20230928/ourmid/pngtree-young-afro-professional-doctor-png-image_10148632.png",
-        rating: 4.7,
-        reviews: [
-            {name: '', review: ''},
-            {name: '', review: ''},
-            {name: '', review: ''},
-            {name: '', review: ''},
-            {name: '', review: ''},
-
-        ]
-    },
-    {
-        name: "Dr. Rachel Smith",
-        type: "Psychologist",
-        location: '1.2 mil - ABC Health Partners - 6746 Charlotte Pike, San Antonio, California ',
-        avatar: "https://png.pngtree.com/png-vector/20230928/ourmid/pngtree-young-afro-professional-doctor-png-image_10148632.png",
-        rating: 4.6,
-        reviews: [
-            {name: '', review: ''},
-            {name: '', review: ''},
-            {name: '', review: ''},
-            {name: '', review: ''},
-            {name: '', review: ''},
-
-        ]
-    },
-];
-
-const appointments = Array.from({ length: 10 }, () => {
-    const doctors = [
-        
-          {
-            name: "Dr. Adam Cooper",
-            type: "Cardiologist",
-            specialization: '',
-            location: '1.2 mil - ABC Health Partners - 6746 Charlotte Pike, San Antonio, California ',
-            avatar: "https://png.pngtree.com/png-vector/20230928/ourmid/pngtree-young-afro-professional-doctor-png-image_10148632.png",
-            rating: 4.8,
-            videoVisits: true,
-            features: [
-                'New Patient Appointments',
-                'Excellent wait time',
-                'Highly Recommended',
-               
-            ],
-            active: false,
-            contacts: [
-    
-            ],
-            messages: [
-    
-            ],
-            
-            availability:[
-                
-                {
-                  "date": "2024-12-13",
-                  "day": "Friday",
-                  "availableAppointments": []
-                },
-                {
-                  "date": "2024-12-14",
-                  "day": "Saturday",
-                  "availableAppointments": [
-                    "9:00 am",
-                    "10:00 am",
-                    "11:00 am",
-                    "12:00 pm"
-                  ]
-                },
-                {
-                  "date": "2024-12-15",
-                  "day": "Sunday",
-                  "availableAppointments": [
-                    "9:00 am",
-                    "10:00 am",
-                    "11:00 am"
-                  ]
-                },
-                {
-                  "date": "2024-12-16",
-                  "day": "Monday",
-                  "availableAppointments": []
-                },
-                {
-                  "date": "2024-12-17",
-                  "day": "Tuesday",
-                  "availableAppointments": [
-                    "9:00 am",
-                    "10:00 am",
-                    "11:00 am"
-                  ]
-                },
-                {
-                  "date": "2024-12-18",
-                  "day": "Wednesday",
-                  "availableAppointments": [
-                    "9:00 am",
-                    "10:00 am",
-                    "11:00 am"
-                  ]
-                },
-                {
-                  "date": "2024-12-19",
-                  "day": "Thursday",
-                  "availableAppointments": []
-                },
-                {
-                  "date": "2024-12-20",
-                  "day": "Friday",
-                  "availableAppointments": []
-                },
-                {
-                  "date": "2024-12-21",
-                  "day": "Saturday",
-                  "availableAppointments": [
-                    "9:00 am",
-                    "10:00 am",
-                    "11:00 am",
-                    "12:00 pm"
-                  ]
-                },
-                {
-                  "date": "2024-12-22",
-                  "day": "Sunday",
-                  "availableAppointments": [
-                    "9:00 am",
-                    "10:00 am",
-                    "11:00 am"
-                  ]
-                }
-              
-              
-            ],
-            gender: 'Male',
-            languagesSpoken: [
-                'English',
-                'Spanish'
-            ],
-            clientele: [
-                'Young Adults (18-24)',
-                'Adults (25-64)',
-                'Seniors (65+)',
-                'Individuals'
-            ],
-            reviews: [
-                {name: 'Mr. Jacob', review: 'Provides details on provider experience, patient satisfaction and hospital quality.', rating: 4.6},
-                {name: 'Ms. Hanna', review: 'Provides details on provider experience, patient satisfaction and hospital quality.', rating: 5.0},
-                {name: 'Mr. Jacob', review: 'Provides details on provider experience, patient satisfaction and hospital quality.', rating: 4.6},
-                {name: 'Ms. Hanna', review: 'Provides details on provider experience, patient satisfaction and hospital quality.', rating: 5.0},
-                {name: 'Mr. Jacob', review: 'Provides details on provider experience, patient satisfaction and hospital quality.', rating: 4.6},
-                {name: 'Ms. Hanna', review: 'Provides details on provider experience, patient satisfaction and hospital quality.', rating: 5.0},
-                {name: 'Mr. Jacob', review: 'Provides details on provider experience, patient satisfaction and hospital quality.', rating: 4.6},
-                {name: 'Ms. Hanna', review: 'Provides details on provider experience, patient satisfaction and hospital quality.', rating: 5.0},
-               
-    
-            ],
-            clinicTimings: [
-                {
-                    day: 'Monday',
-                    startTime: 900,
-                    endTime: 1700,
-                },
-            ],
-            location: '1.2 mil - ABC Health Partners - 6746 Charlotte Pike, San Antonio, California ',
-            highlight: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.`,
-            about: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.`,
-            faqs: [
-                {
-                    question: 'What services do you offer?',
-                    answer: 'We offer a variety of services including consultations, follow-ups, and specialized treatments tailored to your needs.'
-                },
-                {
-                    question: 'What are your operating hours?',
-                    answer: 'Our operating hours are Monday to Friday, 9:00 AM to 5:00 PM. Weekend appointments are available upon request.'
-                },
-                {
-                    question: 'How can I book an appointment?',
-                    answer: 'You can book an appointment through our online scheduling system or by calling our office directly.'
-                },
-                {
-                    question: 'What is your cancellation policy?',
-                    answer: 'Cancellations must be made at least 24 hours in advance to avoid any cancellation fees.'
-                },
-                {
-                    question: 'Do you accept insurance?',
-                    answer: 'Yes, we accept most major insurance plans. Please contact us to verify your coverage before your visit.'
-                }
-            ]
-        },
-        
-    ];
-
-    const statuses = ["Booked", "Payment Failed", "Pending", "Cancelled"];
-    const times = [
-        "9 AM - 10 AM",
-        "10 AM - 11 AM",
-        "11 AM - 12 PM",
-        "12 PM - 1 PM",
-        "1 PM - 2 PM",
-        "2 PM - 3 PM",
-    ];
-
-    const dates = [
-      "2024-12-24", // Tuesday, 24th December
-      "2024-12-25", // Wednesday, 25th December
-      "2024-12-26", // Thursday, 26th December
-      "2024-12-23", // Monday, 23rd December
-      "2024-12-22"  // Sunday, 22nd December
-    ];
-
-    const randomDoctor = doctors[Math.floor(Math.random() * doctors.length)];
-    const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
-    const randomTime = times[Math.floor(Math.random() * times.length)];
-    const randomDate = dates[Math.floor(Math.random() * dates.length)];
-
-    return {
-        date: randomDate,
-        time: randomTime,
-        type: "Video Appointment",
-        doctor: randomDoctor,
-        status: randomStatus,
-        schedulingDetails: {
-            visitReason: 'Annual Physical',
-            patientType: 'Returning',
-        },
-        patientDetails: {
-            firstName: 'Zane',
-            lastName: 'Ul Hassan',
-            address: '',
-            insuranceinfo: '',
-            memberID: '',
-            phone: '',
-            email: '',
-            avatar: 'https://w7.pngwing.com/pngs/7/618/png-transparent-man-illustration-avatar-icon-fashion-men-avatar-face-fashion-girl-heroes-thumbnail.png',
-
-        },
-        paymentStatus: ''
-    };
-});
 
 const MainPage = ({userType, type, isExpanded, showHideSidebar}) => {
 
     const [isNewAppointmentOpen, setIsNewAppointmentOpen] = useState(false);
     const [isViewAppointmentOpen, setIsViewAppointmentOpen] = useState(false);
     const [currentView, setCurrentView] = useState()
+    const [doctorToBookWith, setDoctorTOBookWith] = useState()
+    const [newAppointmentDetails, setNewAppointmentDetails] = useState({
+      date: "",
+      time: "",
+      type: "",
+      status: "Booked",
+      schedulingDetails: {
+        visitReason: "",
+        patientType: ""
+      },
+      patientDetails: {
+        firstName: "",
+        lastName: "",
+        address: "",
+        email: "",
+        insuranceinfo: "",
+        memberID: "",
+        phone: "",
+        avatar: "https://w7.pngwing.com/pngs/7/618/png-transparent-man-illustration-avatar-icon-fashion-men-avatar-face-fashion-girl-heroes-thumbnail.png"
+      },
+      providerDetails: {
+        providerName: "",
+        providerEmail: "",
+        providerAvatar: "https://pngimg.com/d/doctor_PNG15992.png",
+        providerType: "",
+      },
+      paymentStatus: "Completed"
+    })
+
+    const handleChange = (e) => {
+      const { name, value } = e.target;
+      const nameParts = name.split('.'); 
+  
+      if (nameParts.length === 1) {
+        // Update top-level fields
+        setNewAppointmentDetails((prevDetails) => ({
+          ...prevDetails,
+          [name]: value,
+        }));
+      } else if (nameParts.length === 2) {
+        // Update nested fields like schedulingDetails or patientDetails
+        setNewAppointmentDetails((prevDetails) => ({
+          ...prevDetails,
+          [nameParts[0]]: {
+            ...prevDetails[nameParts[0]],
+            [nameParts[1]]: value,
+          },
+        }));
+      } else if (nameParts.length === 3) {
+        // Update even more deeply nested fields like patientDetails.avatar, providerDetails.providerAvatar
+        setNewAppointmentDetails((prevDetails) => ({
+          ...prevDetails,
+          [nameParts[0]]: {
+            ...prevDetails[nameParts[0]],
+            [nameParts[1]]: {
+              ...prevDetails[nameParts[0]][nameParts[1]],
+              [nameParts[2]]: value,
+            },
+          },
+        }));
+      }
+    };
    
 
     const [location, setLocation] = useState("");
     const [error, setError] = useState("");
+
+    const [providers, setProviders] = useState([]);
+    const [appointments, setAppointments] = useState([]);
+    const [loading, setLoading] = useState(true);
+  
+    useEffect(() => {
+     
+      const getProviders = async () => {
+        try {
+          const data = await fetchProviders();
+          setProviders(data);
+       
+          const user = JSON.parse(localStorage.getItem('user'));
+          const role = user.role;
+          const email = user.email;
+          console.log("EMAIL", email, " ROLE", role)
+          
+          if (email && role) {
+            const appointmentsData = await fetchAppointmentsByEmail(email, role);
+            setAppointments(appointmentsData.slice().reverse());
+          } else {
+            setError('Email and role are required');
+          }
+
+        } catch (err) {
+          setError(err.message); 
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      getProviders();
+    }, []);
+
   
     useEffect(() => {
 
@@ -630,8 +313,29 @@ const MainPage = ({userType, type, isExpanded, showHideSidebar}) => {
       fetchLocation();
     }, []);
 
-  
-    const handleNewAppointmentOpen = () => setIsNewAppointmentOpen(true);
+    useEffect(() => {
+      if (doctorToBookWith) {
+        setNewAppointmentDetails((prevDetails) => ({
+          ...prevDetails,
+          providerDetails: {
+            ...prevDetails.providerDetails,
+            providerName: 'Dr. ' + doctorToBookWith.firstName + ' ' + doctorToBookWith.lastName,
+            providerEmail: doctorToBookWith.email,
+            providerAvatar: doctorToBookWith.gender === 'female' 
+              ? 'https://static.vecteezy.com/system/resources/previews/041/409/059/non_2x/ai-generated-a-female-doctor-with-a-stethoscope-isolated-on-transparent-background-free-png.png'
+              : 'https://pngimg.com/d/doctor_PNG15992.png',
+            providerType: doctorToBookWith.practiceName,
+            providerRating: doctorToBookWith.rating
+          }
+        }));
+      }
+    }, [doctorToBookWith]);
+    
+    
+    const toggleNewAppointmentOpen = ({doctor}) => {
+      setIsNewAppointmentOpen(!isNewAppointmentOpen)
+      setDoctorTOBookWith(doctor)
+    };
     const handleViewAppointmentOpen = (appointment) => {
         setCurrentView(appointment)
         setIsViewAppointmentOpen(true)
@@ -648,15 +352,15 @@ const MainPage = ({userType, type, isExpanded, showHideSidebar}) => {
             {userType === 'patient' ? 
                 <>
                     <Header props ={type} showSideBar={showHideSidebar} />
-                    {type.state === 'dashboard' && <MainDash handleNewAppointmentOpen= {handleNewAppointmentOpen} handleViewAppointmentOpen= {handleViewAppointmentOpen} appointments={appointments}/>}
+                    {type.state === 'dashboard' && <MainDash handleNewAppointmentOpen= {toggleNewAppointmentOpen} handleViewAppointmentOpen= {handleViewAppointmentOpen} appointments={appointments} providers={providers}/>}
                     {type.state === 'chats' && <ChatPage/>}
                     {type.state === 'profile' && <ProfilePage/>}
-                    {type.state === 'explore' && <ExplorePage handleNewAppointmentOpen= {handleNewAppointmentOpen} handleViewAppointmentOpen= {handleViewAppointmentOpen} location={location} setLocation={setLocation} error={error}/>}
-                    {type.state === 'appointments' && <Appointments handleNewAppointmentOpen= {handleNewAppointmentOpen} handleViewAppointmentOpen= {handleViewAppointmentOpen} appointments={appointments}/>}
-                    {type.state === 'provider details' && <ProviderDetails handleNewAppointmentOpen= {handleNewAppointmentOpen} handleViewAppointmentOpen= {handleViewAppointmentOpen} doctor={doctors[0]} visitReasons={visitReasons}/>}
-                    {type.state === 'review and book' && <ReviewAndBook appointment={appointments[0]} visitReasons={visitReasons}/>}
+                    {type.state === 'explore' && <ExplorePage handleNewAppointmentOpen= {toggleNewAppointmentOpen} location={location} setLocation={setLocation} providers={providers} error={error}/>}
+                    {type.state === 'appointments' && <Appointments handleNewAppointmentOpen= {toggleNewAppointmentOpen} handleViewAppointmentOpen= {handleViewAppointmentOpen} appointments={appointments}/>}
+                    {type.state === 'provider details' && <ProviderDetails handleNewAppointmentOpen= {toggleNewAppointmentOpen} handleViewAppointmentOpen= {handleViewAppointmentOpen} doctor={providers[0]} visitReasons={visitReasons}/>}
+                    {type.state === 'review and book' && <ReviewAndBook appointment={newAppointmentDetails} openNewAppointment={toggleNewAppointmentOpen} doctor={doctorToBookWith}/>}
                   
-                    {isNewAppointmentOpen && <NewAppointmentOverlay onClose={handleCloseOverlay} doctor={doctors[0]} visitReasons={visitReasons}/>}
+                    {isNewAppointmentOpen && <NewAppointmentOverlay onClose={handleCloseOverlay} doctor={doctorToBookWith} visitReasons={visitReasons} newAppointmentDetails={newAppointmentDetails} setNewAppointmentDetails= {setNewAppointmentDetails}/>}
 
                     {isViewAppointmentOpen && <ViewAppointmentOverlay onClose={handleCloseOverlay} appointment={currentView}/>}
                 </> 
@@ -664,6 +368,7 @@ const MainPage = ({userType, type, isExpanded, showHideSidebar}) => {
                 <>
                   <Header props ={type} showSideBar={showHideSidebar} />
                   {type.state === 'dashboard' && <ProviderMainDash appointments={appointments}/>}
+                  {type.state === 'chats' && <ProviderChatPage appointments={appointments}/>}
                 </>
             }
         </div>

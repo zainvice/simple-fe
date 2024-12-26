@@ -6,13 +6,13 @@ export const signup = createAsyncThunk(
   'auth/signup',
   async ({ formData }, { rejectWithValue }) => {
     try {
-      const { email, phone, dob, gender, firstName, lastName, role} = formData
+      const { email, phone, dob, gender, firstName, lastName, role, specialty, practiceName, practiceSize, zipCode, reference} = formData
 
       console.log("FORM DATA", formData)
       const response = await fetch(`${API_BASE_URL}/sign-up`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ emailAddress: email, phoneNumber: phone, dateOfBirth: dob, gender, firstName, lastName, role }),
+        body: JSON.stringify({ emailAddress: email, phoneNumber: phone, dateOfBirth: dob, gender, specialty, practiceName, reference, practiceSize, firstName, lastName, zipCode, role }),
       });
 
       console.log("Response: ", response)
@@ -53,28 +53,53 @@ export const sendOTP = createAsyncThunk(
   }
 );
 
-// Login AsyncThunk (Email)
-export const loginWithEmail = createAsyncThunk(
-  'auth/loginWithEmail',
-  async ({ email }, { rejectWithValue }) => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/login/email`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ emailAddress: email }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Email login failed');
+export const loginUser = createAsyncThunk(
+    'auth/loginUser',
+    async ({ formData }, { rejectWithValue }) => {
+      try {
+        const { email, phone, role } = formData
+        console.log("Email", email)
+        const response = await fetch(`${API_BASE_URL}/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ emailAddress: email, method: 'emailAddress', role }),
+        });
+  
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Email login failed');
+        }
+  
+        return await response.json();
+      } catch (error) {
+        return rejectWithValue(error.message);
       }
-
-      return await response.json();
-    } catch (error) {
-      return rejectWithValue(error.message);
     }
-  }
-);
+  );
+// Login AsyncThunk (Email)
+export const verifyOTP = createAsyncThunk(
+    'auth/verifyOTP',
+    async ({ formData }, { rejectWithValue }) => {
+      try {
+        const { email, phone, otp } = formData
+        console.log("Email", email, "OTP", otp)
+        const response = await fetch(`${API_BASE_URL}/login/verify-otp`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ emailAddress: email, otp: otp }),
+        });
+  
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Email login failed');
+        }
+  
+        return await response.json();
+      } catch (error) {
+        return rejectWithValue(error.message);
+      }
+    }
+  );
 
 // Login AsyncThunk (Phone)
 export const loginWithPhone = createAsyncThunk(
@@ -99,38 +124,43 @@ export const loginWithPhone = createAsyncThunk(
   }
 );
 
-// Logout AsyncThunk
+
 export const logout = createAsyncThunk(
     'auth/logout',
     async (_, { rejectWithValue }) => {
       try {
-        const response = await fetch(`${API_BASE_URL}/logout`, {
-          method: 'POST',
-          credentials: 'include', // Send cookies if required by your API
-        });
+        
   
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Logout failed');
-        }
-  
-        return true; // You can return additional data if required
+        return true; 
       } catch (error) {
         return rejectWithValue(error.message);
       }
     }
   );
   
-const authSlice = createSlice({
+
+  const authSlice = createSlice({
     name: 'auth',
     initialState: {
       user: null,
+      accessToken: localStorage.getItem('accessToken') || null, // Initialize with token from localStorage if available
+      refreshToken: localStorage.getItem('refreshToken') || null, // Initialize with refreshToken from localStorage
       loading: false,
       error: null,
     },
-    reducers: {},
+    reducers: {
+      clearAuthData: (state) => {
+        state.user = null;
+        state.accessToken = null;
+        state.refreshToken = null;
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('user');
+      },
+    },
     extraReducers: (builder) => {
       builder
+        // Signup
         .addCase(signup.pending, (state) => {
           state.loading = true;
           state.error = null;
@@ -138,54 +168,92 @@ const authSlice = createSlice({
         .addCase(signup.fulfilled, (state, action) => {
           state.loading = false;
           state.user = action.payload;
+         
+          
         })
         .addCase(signup.rejected, (state, action) => {
           state.loading = false;
           state.error = action.payload;
         })
+        
+        // Send OTP
         .addCase(sendOTP.pending, (state) => {
           state.loading = true;
           state.error = null;
         })
         .addCase(sendOTP.fulfilled, (state, action) => {
           state.loading = false;
-          state.user = action.payload;
+          state.user = action.payload; 
         })
         .addCase(sendOTP.rejected, (state, action) => {
           state.loading = false;
           state.error = action.payload;
         })
-        .addCase(loginWithEmail.pending, (state) => {
+  
+        // Verify OTP
+        .addCase(verifyOTP.pending, (state) => {
           state.loading = true;
           state.error = null;
         })
-        .addCase(loginWithEmail.fulfilled, (state, action) => {
+        .addCase(verifyOTP.fulfilled, (state, action) => {
           state.loading = false;
-          state.user = action.payload;
+           
+          console.log("PAYLOAD", action.payload)
+          state.user = action.payload.message.user;
+          state.accessToken = action.payload.message.tokens.accessToken;
+          state.refreshToken = action.payload.message.tokens.refreshToken;
+          localStorage.setItem('accessToken', action?.payload.message.tokens.accessToken);
+          localStorage.setItem('refreshToken', action?.payload.message.tokens.refreshToken);
+          localStorage.setItem('user', JSON.stringify(action.payload.message.user));
         })
-        .addCase(loginWithEmail.rejected, (state, action) => {
+        .addCase(verifyOTP.rejected, (state, action) => {
           state.loading = false;
           state.error = action.payload;
         })
+  
+        // Login User
+        .addCase(loginUser.pending, (state) => {
+          state.loading = true;
+          state.error = null;
+        })
+        .addCase(loginUser.fulfilled, (state, action) => {
+          state.loading = false;
+          state.user = action.payload.user;
+          
+        })
+        .addCase(loginUser.rejected, (state, action) => {
+          state.loading = false;
+          state.error = action.payload;
+        })
+  
+        // Login with Phone
         .addCase(loginWithPhone.pending, (state) => {
           state.loading = true;
           state.error = null;
         })
         .addCase(loginWithPhone.fulfilled, (state, action) => {
           state.loading = false;
-          state.user = action.payload;
+          state.user = action.payload.user;
+         
         })
         .addCase(loginWithPhone.rejected, (state, action) => {
           state.loading = false;
           state.error = action.payload;
         })
+  
+        // Logout
         .addCase(logout.pending, (state) => {
           state.loading = true;
           state.error = null;
         })
         .addCase(logout.fulfilled, (state) => {
           state.loading = false;
-          state.user = null; 
+          state.user = null;
+          state.accessToken = null;
+          state.refreshToken = null;
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+          localStorage.removeItem('user');
         })
         .addCase(logout.rejected, (state, action) => {
           state.loading = false;
@@ -193,7 +261,8 @@ const authSlice = createSlice({
         });
     },
 });
-
+  
+export const { clearAuthData } = authSlice.actions;
   
 
 export default authSlice.reducer;

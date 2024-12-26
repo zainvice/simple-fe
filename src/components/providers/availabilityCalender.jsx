@@ -9,6 +9,7 @@ import {
   parse, 
   isValid
 } from "date-fns";
+import Spinner from "../../common/spinner";
 
 const AvailabilityCalendar = ({appointments}) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -129,8 +130,8 @@ const AvailabilityCalendar = ({appointments}) => {
 
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-4">
+    <div className="p-6 min-h-full">
+      <div className="flex justify-between items-center mb-4 ">
         <div className="flex items-center border border-[#707271] rounded-[10px] px-4 ">
          
           <h2 className="text-lg font-semibold text-[#1EBDB8]">
@@ -157,7 +158,7 @@ const AvailabilityCalendar = ({appointments}) => {
       {/* Calendar Grid */}
       <div
         ref={calendarRef}
-        className="relative overflow-auto border border-gray-200 rounded h-[500px]"
+        className="relative overflow-auto border border-gray-200 rounded h-[550px]"
       >
         <div className="grid grid-flow-col auto-cols-[200px] min-w-max">
           {/* Timezone Column */}

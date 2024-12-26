@@ -3,114 +3,43 @@ import SpecialtyDropdown from '../../dropdowns/patient/specialtySelector';
 import DoctorCard from '../../common/patient/doctorcard';
 import LoginDropdown from '../../dropdowns/loginDropdown';
 import Loginoverlay from '../../overlays/patient/loginoverlay';
+import { fetchProviders } from '../../api/api';
 
 const LandingPage = () => {
 
-    const [topDoctors, setTopDoctors] = useState([
-        {
-          id: 1,
-          name: 'Dr. Adam Cooper',
-          qualification: 'Dermatologist, Cosmetologist',
-          university: 'M.B.B.S., F.C.P.S. (Dermatology)',
-          rating: 4.8,
-          doctorImage: 'https://via.placeholder.com/100', 
-          reviews: [
-            {name: '', review: ''},
-            {name: '', review: ''},
-            {name: '', review: ''},
-            {name: '', review: ''},
-            {name: '', review: ''},
-    
-          ],
-          features: 'New Patient Appointments . Excellent wait time . Highly Recommended'
-        },
-        {
-          id: 2,
-          name: 'Dr. Adam Cooper',
-          qualification: 'Dermatologist, Cosmetologist',
-          university: 'M.B.B.S., F.C.P.S. (Dermatology)',
-          rating: 4.8,
-          doctorImage: 'https://via.placeholder.com/100',
-          reviews: [
-            {name: '', review: ''},
-            {name: '', review: ''},
-            {name: '', review: ''},
-            {name: '', review: ''},
-            {name: '', review: ''},
-    
-          ],
-          features: 'New Patient Appointments . Excellent wait time . Highly Recommended'
-        },
-        {
-            id: 1,
-            name: 'Dr. Adam Cooper',
-            qualification: 'Dermatologist, Cosmetologist',
-            university: 'M.B.B.S., F.C.P.S. (Dermatology)',
-            rating: 4.8,
-            doctorImage: 'https://via.placeholder.com/100', 
-            reviews: [
-              {name: '', review: ''},
-              {name: '', review: ''},
-              {name: '', review: ''},
-              {name: '', review: ''},
-              {name: '', review: ''},
-      
-            ],
-            features: 'New Patient Appointments . Excellent wait time . Highly Recommended'
-          },
-          {
-            id: 2,
-            name: 'Dr. Adam Cooper',
-            qualification: 'Dermatologist, Cosmetologist',
-            university: 'M.B.B.S., F.C.P.S. (Dermatology)',
-            rating: 4.8,
-            doctorImage: 'https://via.placeholder.com/100',
-            reviews: [
-              {name: '', review: ''},
-              {name: '', review: ''},
-              {name: '', review: ''},
-              {name: '', review: ''},
-              {name: '', review: ''},
-      
-            ],
-            features: 'New Patient Appointments . Excellent wait time . Highly Recommended'
-          },
-          {
-            id: 1,
-            name: 'Dr. Adam Cooper',
-            qualification: 'Dermatologist, Cosmetologist',
-            university: 'M.B.B.S., F.C.P.S. (Dermatology)',
-            rating: 4.8,
-            doctorImage: 'https://via.placeholder.com/100', 
-            reviews: [
-              {name: '', review: ''},
-              {name: '', review: ''},
-              {name: '', review: ''},
-              {name: '', review: ''},
-              {name: '', review: ''},
-      
-            ],
-            features: 'New Patient Appointments . Excellent wait time . Highly Recommended'
-          },
-          {
-            id: 2,
-            name: 'Dr. Adam Cooper',
-            qualification: 'Dermatologist, Cosmetologist',
-            university: 'M.B.B.S., F.C.P.S. (Dermatology)',
-            rating: 4.8,
-            doctorImage: 'https://via.placeholder.com/100',
-            reviews: [
-              {name: '', review: ''},
-              {name: '', review: ''},
-              {name: '', review: ''},
-              {name: '', review: ''},
-              {name: '', review: ''},
-      
-            ],
-            features: 'New Patient Appointments . Excellent wait time . Highly Recommended'
-          },
-      ]);
     const [isLoginDropdownOpen, setLoginDropdownOpen] = useState(false)
+
+
+    const [providers, setProviders] = useState([]);
+    const [topProviders, setTopProviders] = useState([])
+    const [loading, setLoading] = useState(true);
+  
+    useEffect(() => {
+     
+      const getProviders = async () => {
+        try {
+          const data = await fetchProviders();
+          setProviders(data);
+          
+        } catch (err) {
+          setError(err.message); 
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      getProviders();
+    }, []);
+
+    useEffect(() => {
+        if (providers.length > 0) {
+         
+          const sortedProviders = [...providers].sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating));
+          
+          const top6 = sortedProviders.slice(0, 6);
+          setTopProviders(top6);
+        }
+      }, [providers]); // Trigger when 'providers' state changes
 
     const toggleLoginDropdown = () => {
         setLoginDropdownOpen(!isLoginDropdownOpen)
@@ -170,18 +99,23 @@ const LandingPage = () => {
         <div className='w-screen m-0 p-0 flex flex-col items-center '>
             <div className='bg-[#1E232F] absolute top-0 left-0 w-full lg:h-[600px] h-[500px] z-[-1]'></div>
          
-                <header className='flex justify-between my-5 w-[80%] relative'>
+                <header className='flex justify-between my-5 w-[90%] relative'>
                     <div className='lg:ml-20 mt-4 w-[120px]'>
                         <img src="./logo.png" alt="LOGO_IMG" />
                     </div>
-                    <div className='hidden lg:flex w-[300px] text-white text-sm mt-8 justify-around'>
+                    <div className='hidden lg:flex space-x-8 text-white text-sm mt-8 justify-around'>
                       <a href="#experince">Experience</a>
-                      <a href="#global">Global&nbsp;Plans</a>
+                      <a href="#features">Features</a>
+                      <a href="#top-providers">Top Providers</a>
                       
-                      <a href="#consultation">Consultation</a>
+                      <a href="#treatments">Treatments</a>
                      
                     </div>
                     <div className='lg:mr-20 mt-5 space-x-6 hidden lg:flex'>
+                        <div className='flex cursor-pointer border-2 px-3 rounded-full' onClick={(e)=> window.location.href = 'auth/provider/signup'}>
+                            <a className='mt-2 text-white'>List your practice on Simple</a>
+                            
+                        </div>
                         <div className='flex cursor-pointer' onClick={toggleLoginDropdown}>
                             <a className='mt-2 text-white'>Login</a>
                             <span class="material-symbols-outlined mt-2 text-white mx-2 cursor-pointer" >keyboard_arrow_down</span>
@@ -201,7 +135,7 @@ const LandingPage = () => {
                             {viewFilter&& <SpecialtyDropdown setSearchTerm={setSearchValue} searchTerm = {searchTerm}/>}
                             <div className='flex lg:w-[90%]'>
                                 
-                                <input type="text" value={searchTerm} onChange={onSearchTermChange} onFocus={onViewFilter} className='bg-transparent placeholder-white ml-2 border-none outline-none focus:ring-0 caret-white'  placeholder ='Search disease, hospitals'/>
+                                <input type="text" value={searchTerm} onChange={onSearchTermChange} onFocus={onViewFilter} className='bg-transparent placeholder-white ml-2 border-none outline-none focus:ring-0 caret-white'  placeholder ='Browse Specialties'/>
                             </div>
                             <div className='flex'>
                                 <span className="material-symbols-outlined mt-1" style={{ fontSize: "24px" }}>
@@ -222,7 +156,7 @@ const LandingPage = () => {
                         <div className='flex flex-col mx-auto'>
                                 <div className='flex w-full'>
                                     
-                                    <input type="text" className='w-full bg-white rounded-full p-4 placeholder-gray-400 border-none outline-none focus:ring-0 caret-gray-400'  placeholder ='Search disease, hospitals'/>
+                                    <input type="text" className='w-full bg-white rounded-full p-4 placeholder-gray-400 border-none outline-none focus:ring-0 caret-gray-400'  placeholder ='Browse Specialties'/>
                                 </div>
                                 <div className='flex bg-white p-4 my-2 rounded-full text-[#1E232F] '>
                                     <span className="material-symbols-outlined mt-1" style={{ fontSize: "24px" }}>
@@ -251,24 +185,27 @@ const LandingPage = () => {
                     </p>
                 </div>
 
-                <div className='flex flex-col lg:flex-row justify-around w-[80%] relative my-20'>
-                    <div className='flex relative flex-col pb-20 bg-white text-center items-center p-5 py-8 mx-6 rounded-[30px] shadow-md my-4 lg:w-[33%]'>
-                        <span className="material-symbols-outlined text-[#1EBDB8] text-[56px]"> calendar_add_on </span>
-                        <h1 className='font-medium text-[24px] my-6'>Appointment Scheduling</h1>
-                        <p className='text-[#757575]'> Explore an intuitive platform to schedule, manage, and track healthcare appointments with ease.</p>
-                        <button className='bg-[#1EBDB8] shadow-md absolute -bottom-6 rounded-[30px] text-white px-5 py-3 text-sm'>Get Started</button>
-                    </div>
-                    <div className='flex relative flex-col pb-20 bg-white text-center items-center p-5 py-8 mx-6 rounded-[30px] shadow-md my-4 lg:w-[33%]'>
-                        <span className="material-symbols-outlined text-[#1EBDB8] text-[56px]"> settings_accessibility </span>
-                        <h1 className='font-medium text-[24px] my-6'>Personalized Care</h1>
-                        <p className='text-[#757575]'>Tailored experience based on patient history, and preferences for a truly unique experience.</p>
-                        <button className='bg-[#1EBDB8] shadow-md absolute -bottom-6 rounded-[30px] text-white px-5 py-3 text-sm' onClick={(e)=> window.location.href = '/signup'}>Get Started</button>
-                    </div>
-                    <div className='flex relative flex-col pb-20 bg-white text-center items-center p-5 py-8 mx-6 rounded-[30px] shadow-md my-4 lg:w-[33%]'>
-                        <span className="material-symbols-outlined text-[#1EBDB8] text-[56px]"> videocam </span>
-                        <h1 className='font-medium text-[24px] my-6'>24/7 Virtual Connect</h1>
-                        <p className='text-[#757575]'>Seamlessly connect with healthcare professionals anytime, anywhere, through our HIPPA Approved video consultation platform.</p>
-                        <button className='bg-[#1EBDB8] shadow-md absolute -bottom-6 rounded-[30px] text-white px-5 py-3 text-sm' onClick={(e)=> window.location.href = '/signup'}>Get Started</button>
+                <div className='flex flex-col lg:flex-col justify-around w-[80%] relative my-20 text-center' id='features'>
+                    <p className='poppins font-medium text-[#28574E] text-[40px] my-10'>Our Features</p>
+                    <div className='flex'>
+                        <div className='flex relative flex-col pb-20 bg-white text-center items-center p-5 py-8 mx-6 rounded-[30px] shadow-md my-4 lg:w-[33%]'>
+                            <span className="material-symbols-outlined text-[#1EBDB8] text-[56px]"> calendar_add_on </span>
+                            <h1 className='font-medium text-[24px] my-6'>Appointment Scheduling</h1>
+                            <p className='text-[#757575]'> Explore an intuitive platform to schedule, manage, and track healthcare appointments with ease.</p>
+                            <button className='bg-[#1EBDB8] shadow-md absolute -bottom-6 rounded-[30px] text-white px-5 py-3 text-sm'>Get Started</button>
+                        </div>
+                        <div className='flex relative flex-col pb-20 bg-white text-center items-center p-5 py-8 mx-6 rounded-[30px] shadow-md my-4 lg:w-[33%]'>
+                            <span className="material-symbols-outlined text-[#1EBDB8] text-[56px]"> settings_accessibility </span>
+                            <h1 className='font-medium text-[24px] my-6'>Personalized Care</h1>
+                            <p className='text-[#757575]'>Tailored experience based on patient history, and preferences for a truly unique experience.</p>
+                            <button className='bg-[#1EBDB8] shadow-md absolute -bottom-6 rounded-[30px] text-white px-5 py-3 text-sm' onClick={(e)=> window.location.href = '/signup'}>Get Started</button>
+                        </div>
+                        <div className='flex relative flex-col pb-20 bg-white text-center items-center p-5 py-8 mx-6 rounded-[30px] shadow-md my-4 lg:w-[33%]'>
+                            <span className="material-symbols-outlined text-[#1EBDB8] text-[56px]"> videocam </span>
+                            <h1 className='font-medium text-[24px] my-6'>24/7 Virtual Connect</h1>
+                            <p className='text-[#757575]'>Seamlessly connect with healthcare professionals anytime, anywhere, through our HIPPA Approved video consultation platform.</p>
+                            <button className='bg-[#1EBDB8] shadow-md absolute -bottom-6 rounded-[30px] text-white px-5 py-3 text-sm' onClick={(e)=> window.location.href = '/signup'}>Get Started</button>
+                        </div>
                     </div>
                 </div>
 
@@ -286,28 +223,26 @@ const LandingPage = () => {
                     </div>
                     <div className='hidden lg:block absolute top-[150px] left-0 w-full h-[70%] bg-[#1E232F] rounded-[40px] z-[-1]' id='rectangle'></div>
                 </div>
-                <div  className='flex flex-col justify-between w-[80%] my-20 items-center text-center'>
+                <div  className='flex flex-col justify-between w-[80%] my-20 items-center text-center' id='top-providers'>
                     <p className='poppins font-medium text-[#28574E] text-[40px] my-10'>Our Top Providers</p>
-                    <div className="grid mx-auto lg:grid-cols-3 grid-cols-1 gap-4 w-full">
-                        {topDoctors.map((doctor) => (
+                    <div className="grid mx-auto lg:grid-cols-3 grid-cols-1 gap-4 w-full text-left">
+                        {topProviders.map((doctor) => (
                             <DoctorCard doctor={doctor} schedule={(e)=> window.location.href = '/signup'} fav={false}/>
                         ))}
                     </div>
 
                 </div>
-                <div className='flex flex-col justify-between w-[80%] my-20'>
+                <div className='flex flex-col justify-between w-[80%] my-20' id='treatments'>
                     <p className='poppins font-medium text-[#28574E] lg:text-[40px] text-[25px] text-center lg:text-left lg:w-[380px]' >Explore Treatments<br/> across specialties</p>
-                    <div className='grid lg:grid-cols-5 grid-cols-2'>
-                        <div className='flex flex-col bg-white shadow-md cursor-pointer py-8 rounded-[30px] items-center text-center m-4'><div><img src="./1.png" alt="logo" /></div> <p>Onocology</p></div>
-                        <div className='flex flex-col bg-white shadow-md cursor-pointer py-8 rounded-[30px] items-center text-center m-4'><div><img src="./2.png" alt="logo" /></div> <p>Endocrinology</p></div>
-                        <div className='flex flex-col bg-white shadow-md cursor-pointer py-8 rounded-[30px] items-center text-center m-4'><div><img src="./3.png" alt="logo" /></div> <p>Infertility</p></div>
-                        <div className='flex flex-col bg-white shadow-md cursor-pointer py-8 rounded-[30px] items-center text-center m-4'><div><img src="./4.png" alt="logo" /></div> <p>Mental Health</p></div>
-                        <div className='flex flex-col bg-white shadow-md cursor-pointer py-8 rounded-[30px] items-center text-center m-4'><div><img src="./5.png" alt="logo" /></div> <p>Cardiology</p></div>
-                        <div className='flex flex-col bg-white shadow-md cursor-pointer py-8 rounded-[30px] items-center text-center m-4'><div><img src="./neo.png" alt="logo" /></div> <p>Neurology</p></div>
-                        <div className='flex flex-col bg-white shadow-md cursor-pointer py-8 rounded-[30px] items-center text-center m-4'><div><img src="./rhe.png" alt="logo" /></div> <p>Rheumatology</p></div>
-                        <div className='flex flex-col bg-white shadow-md cursor-pointer py-8 rounded-[30px] items-center text-center m-4'><div><img src="./ps.png" alt="logo" /></div> <p>Plastice Surgery</p></div>
-                        <div className='flex flex-col bg-white shadow-md cursor-pointer py-8 rounded-[30px] items-center text-center m-4'><div><img src="./rds.png" alt="logo" /></div> <p>Rare Diseases</p></div>
-                        <div className='flex flex-col bg-white shadow-md cursor-pointer py-8 rounded-[30px] items-center text-center m-4'><div><img src="./sg.png" alt="logo" /></div> <p>Surrogacy</p></div>
+                    <div className='grid lg:grid-cols-4 grid-cols-2'>
+                    <div className='flex flex-col bg-[#FFFFFF] cursor-pointer hover:bg-[#EAEAEA] duration-300 shadow-md py-4 h-32 rounded-[30px] items-center text-center m-4'><div><img src="/1.png" alt="logo" className='w-14 h-14 mb-4'/></div> <p>Primary Care </p></div>
+                        <div className='flex flex-col bg-[#FFFFFF] cursor-pointer hover:bg-[#EAEAEA] duration-300 shadow-md py-4 h-32 rounded-[30px] items-center text-center m-4'><div><img src="/ps.png" alt="logo" className='w-14 h-14 mb-4' /></div> <p>Dermatologist</p></div>
+                        <div className='flex flex-col bg-[#FFFFFF] cursor-pointer hover:bg-[#EAEAEA] duration-300 shadow-md py-4 h-32 rounded-[30px] items-center text-center m-4'><div><img src="/neo.png" alt="logo" className='w-14 h-14 mb-4' /></div> <p>Dentist</p></div>
+                        <div className='flex flex-col bg-[#FFFFFF] cursor-pointer hover:bg-[#EAEAEA] duration-300 shadow-md py-4 h-32 rounded-[30px] items-center text-center m-4'><div><img src="/5.png" alt="logo" className='w-14 h-14 mb-4' /></div> <p>Cardiologist</p></div>
+                        <div className='flex flex-col bg-[#FFFFFF] cursor-pointer hover:bg-[#EAEAEA] duration-300 shadow-md py-4 h-32 rounded-[30px] items-center text-center m-4'><div><img src="/rhe.png" alt="logo" className='w-14 h-14 mb-4' /></div> <p>Orthopedist</p></div>
+                        <div className='flex flex-col bg-[#FFFFFF] cursor-pointer hover:bg-[#EAEAEA] duration-300 shadow-md py-4 h-32 rounded-[30px] items-center text-center m-4'><div><img src="/4.png" alt="logo" className='w-14 h-14 mb-4' /></div> <p>Psychiatrist</p></div>
+                        <div className='flex flex-col bg-[#FFFFFF] cursor-pointer hover:bg-[#EAEAEA] duration-300 shadow-md py-4 h-32 rounded-[30px] items-center text-center m-4'><div><img src="/rds.png" alt="logo" className='w-14 h-14 mb-4' /></div> <p>Pediatrician</p></div>
+                        <div className='flex flex-col bg-[#FFFFFF] cursor-pointer hover:bg-[#EAEAEA] duration-300 shadow-md py-4 h-32 rounded-[30px] items-center text-center m-4'><div><img src="/3.png" alt="logo" className='w-14 h-14 mb-4' /></div> <p>Gynecologist</p></div>
 
                     </div>
 

@@ -62,17 +62,17 @@ const ViewAppointmentOverlay = ({ onClose, appointment }) => {
         <button className="absolute top-6 left-4 text-gray-600" onClick={onClose}>
           <span className="material-symbols-outlined text-[#1EBDB8]">chevron_left</span>
         </button>
-        <h2 className="text-center text-lg font-semibold text-[#1EBDB8]">{appointment?.date}</h2>
+        <h2 className="text-center text-lg font-semibold text-[#1EBDB8]">{appointment.date && new Date(appointment.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'})}</h2>
 
         <div className="flex flex-col items-center mt-4">
           <img
-            src={appointment?.doctor?.avatar} 
-            alt="Doctor"
+            src={appointment?.providerDetails?.providerAvatar} 
+            alt="ProviderDetails"
             className="w-20 h-20 rounded-full mb-3"
           />
-          <h3 className="text-2xl font-semibold text-gray-700">{appointment?.doctor?.name}</h3>
-          <p className="text-gray-500">{appointment?.doctor?.profession}</p>
-          <p className="text-yellow-500 mt-1">★ {appointment?.doctor?.rating}/5.0</p>
+          <h3 className="text-2xl font-semibold text-gray-700">{appointment?.providerDetails?.providerName}</h3>
+          <p className="text-gray-500">{appointment?.providerDetails?.profession}</p>
+          <p className="text-yellow-500 mt-1">★ {appointment?.providerDetails?.providerRating}/5.0</p>
         </div>
 
         <div className="bg-[#1EBDB8] text-white rounded-lg p-4 mt-6">

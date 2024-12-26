@@ -10,7 +10,7 @@ const Loginoverlay = ({onClose}) => {
         otp: '',
         role: 'user'
       });
-      const navigate = useNavigate(); // If you're using react-router
+      const navigate = useNavigate(); 
         
       const dispatch = useDispatch();
       const { loading, error } = useSelector((state) => state.auth);
@@ -90,10 +90,6 @@ const Loginoverlay = ({onClose}) => {
           setLoginError("Unable to connect to the server.")
         }else if (error === 'Invalid or expired OTP.'){
           setLoginError("You've entered an invalid OTP. Make sure it's correct.")
-          setOTPSender('')
-        }
-        else if (error === 'User not found!'){
-          setLoginError("User not registered. Please use sign up.")
           setOTPSender('')
         }
   

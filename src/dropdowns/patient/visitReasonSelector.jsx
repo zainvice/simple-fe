@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const VisitReasonDropdown = ({setReason, reason}) => {
+const VisitReasonDropdown = ({ setReason, reason }) => {
   const visitReasons = [
     {
       label: "Popular Visit Reasons",
@@ -165,41 +165,51 @@ const VisitReasonDropdown = ({setReason, reason}) => {
       ],
     },
   ];
-  
-  const [visitReasonsShow, setVisitReasonshow] = useState(visitReasons) 
-  useEffect(()=>{
 
-    if(searchTerm!=null){
-        const shadowCopy = visitReasons
-        setVisitReasonshow(shadowCopy.filter((visitReason)=> visitReason.toLowerCase().includes(searchTerm.toLowerCase())))
+  const [visitReasonsShow, setVisitReasonShow] = useState(visitReasons);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    if (searchTerm !== '') {
+      const filteredVisitReasons = visitReasons.map((group) => {
+        const filteredOptions = group.options.filter((option) =>
+          option.label.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        return { ...group, options: filteredOptions };
+      });
+      setVisitReasonShow(filteredVisitReasons);
+    } else {
+      setVisitReasonShow(visitReasons);
     }
-
-  }, [searchTerm])
-
+  }, [searchTerm]);
 
   return (
-    <div className="absolute -bottom-[330%] bg-white rounded-[10px] text-[#1E232F] px-4 py-2 h-[200px] border-2 text-left overflow-y-auto">
-     
-      
-        <div
-          className="dropdown-options"
-          role="listbox"
-          
-        >
-          <p className="text-[#888888]">All Visit Reasons (a-z)</p>
-          {visitReasonsShow.map((visitReason, index) => (
-            <div
-              key={index}
-              className="p-2 hover:bg-gray-200 cursor-pointer"
-              role="option"
-              tabIndex={index}
-              onClick={(e)=>  setSearchTerm(visitReason)}
-            >
-              {visitReason}
-            </div>
-          ))}
-        </div>
-     
+    <div className="absolute -bottom-[480%] bg-white rounded-[10px] text-[#1E232F] w-[400px] px-4 py-2 h-[200px] border-2 text-left overflow-y-auto">
+      <div className="dropdown-options" role="listbox">
+       
+        <input
+          type="text"
+          className="w-full px-2 py-1 mb-2 border border-gray-300 rounded"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        {visitReasonsShow.map((group, index) => (
+          <div key={index}>
+            <p className="font-bold">{group.label}</p>
+            {group.options.map((option) => (
+              <div
+                key={option.value}
+                className="p-2 hover:bg-gray-200 cursor-pointer"
+                role="option"
+                onClick={() => setReason(option)}
+              >
+                {option.label}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

@@ -23,7 +23,7 @@ function AppointmentCard({index, appointment, view}) {
             key={index}
             className="bg-white shadow-md rounded-[20px] shadow-lg py-8 px-4 border poppins"
         >
-            <h2 className="text-[22px] font-semibold text-[#1EBDB8]">{appointment.date}</h2>
+            <h2 className="text-[22px] font-semibold text-[#1EBDB8]">{appointment.date && new Date(appointment.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'})}</h2>
             <p className="text-gray-500 font-semibold">{appointment.time}</p>
             <p className="text-gray-500">{appointment.type}</p>
   
@@ -34,11 +34,11 @@ function AppointmentCard({index, appointment, view}) {
             <div className="flex items-center mt-6 justify-between">
                 <div className='flex mt-4'>
                     <img
-                        src={appointment.doctor.avatar} // Replace with actual doctor's image URL if available
-                        alt="Doctor"
+                        src={appointment?.providerDetails?.providerAvatar} 
+                        alt="Provider"
                         className="w-10 h-10 rounded-full mr-3"
                     />
-                    <span className="text-[#707271] text-sm font-medium mt-3">{appointment.doctor.name}</span>
+                    <span className="text-[#707271] text-sm font-medium mt-3">{appointment?.providerDetails?.providerName}</span>
                 </div>
                 <div className='mt-5'>
                     <Button text={'View'} onClick={(e)=>view(appointment)} />

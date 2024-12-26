@@ -46,8 +46,9 @@ const ChatArea = ({props}) => {
                     </div>
                 </>
             ):(
-                <>
-                </>
+                <div className='grid items-center'>
+                    CHOOSE A CONTACT TO START COVERSATION
+                </div>
             )}
       </div>
     );

@@ -47,7 +47,7 @@ const Sidebar = ({ userType, isExpanded, toggleSidebar, toggleShifter, shifter, 
           :
           <>
               <SidebarItem icon={<span className="material-symbols-outlined"> home </span>} text="Dashboard" isExpanded={isExpanded || showSidebar} isActive={activeItem === 'dashboard'} onClick={() => toggleShifter('dashboard')} />
-
+              <SidebarItem icon={<span className="material-symbols-outlined"> chat </span>} text="Chats" isExpanded={isExpanded || showSidebar} isActive={activeItem === 'chats'} onClick={() => toggleShifter('chats')} />
           </>
           }
 

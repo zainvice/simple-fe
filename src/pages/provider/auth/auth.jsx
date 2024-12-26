@@ -1,8 +1,12 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Button from '../../../common/patient/button';
 import Verificationoverlay from '../../../overlays/patient/verificationoverlay';
 import ProviderPracticesDropdown from '../../../dropdowns/provider/providerspecialtyselector';
 import { useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { signup, loginUser } from '../../../api/features/auth/patient/authSlice';
+import { sendOTP } from '../../../api/features/auth/patient/authSlice';
+import Spinner from '../../../common/spinner';
 
 
 
@@ -10,335 +14,348 @@ const ProviderAuthPage = () => {
   const [isLoginOpen, setLoginOpen] = useState(false) 
   const practices = [
     {
-      name: "Acupuncturist",
-      subtypes: []
+        name: "Primary Care Physician (PCP)",
+        subtypes: [
+            "Family Medicine Physician"
+        ]
     },
     {
-      name: "Allergist / Immunologist",
-      subtypes: []
+        name: "OB-GYN (Obstetrician-Gynecologist)",
+        subtypes: [
+            "Maternal-Fetal Medicine Specialist",
+            "Reproductive Endocrinologist",
+            "Gynecologic Oncologist",
+            "Urogynecologist"
+        ]
     },
     {
-      name: "Anesthesiologist",
-      subtypes: [
-        "Cardiothoracic Anesthesiologist",
-        "Critical Care Anesthesiologist",
-        "Obstetric Anesthesiologist",
-        "Pediatric Anesthesiologist",
-        "Pain Management Anesthesiologist"
-      ]
+        name: "Dermatologist",
+        subtypes: [
+            "Pediatric Dermatologist",
+            "Cosmetic Dermatologist",
+            "Mohs Surgeon",
+            "Medical Dermatologist"
+        ]
     },
     {
-      name: "Cardiologist",
-      subtypes: [
-        "Interventional Cardiologist",
-        "Electrophysiologist",
-        "Heart Failure Specialist",
-        "Preventive Cardiologist",
-        "Cardiac Imaging Specialist"
-      ]
+        name: "Dentist",
+        subtypes: [
+            "Pediatric Dentist",
+            "Orthodontist",
+            "Oral Surgeon",
+            "Prosthodontist"
+        ]
     },
     {
-      name: "Colon and Rectal Surgeon",
-      subtypes: []
+        name: "Ear, Nose & Throat Doctor (ENT / Otolaryngologist)",
+        subtypes: [
+            "Head and Neck Surgeon",
+            "Pediatric ENT",
+            "Rhinologist",
+            "Otologist / Neurotologist"
+        ]
     },
     {
-      name: "Dermatologist",
-      subtypes: [
-        "Pediatric Dermatologist",
-        "Cosmetic Dermatologist",
-        "Mohs Surgeon",
-        "Medical Dermatologist"
-      ]
+        name: "Eye Doctor",
+        subtypes: [
+            "Ophthalmologist",
+            "Optometrist"
+        ]
     },
     {
-      name: "Emergency Medicine Specialist",
-      subtypes: [
-        "Pediatric Emergency Medicine",
-        "Toxicology Specialist",
-        "Disaster Medicine Specialist",
-        "Critical Care Specialist"
-      ]
+        name: "Psychiatrist",
+        subtypes: [
+            "Child and Adolescent Psychiatrist",
+            "Forensic Psychiatrist",
+            "Geriatric Psychiatrist",
+            "Addiction Psychiatrist"
+        ]
     },
     {
-      name: "Endocrinologist",
-      subtypes: [
-        "Pediatric Endocrinologist",
-        "Reproductive Endocrinologist"
-      ]
+        name: "Orthopedic Surgeon (Orthopedist)",
+        subtypes: [
+            "Sports Medicine Orthopedist",
+            "Spine Surgeon",
+            "Joint Replacement Surgeon",
+            "Pediatric Orthopedist",
+            "Hand Surgeon"
+        ]
     },
     {
-      name: "Family Medicine Physician",
-      subtypes: []
+        name: "Acupuncturist",
+        subtypes: []
     },
     {
-      name: "Gastroenterologist",
-      subtypes: [
-        "Pediatric Gastroenterologist",
-        "Advanced Endoscopist",
-        "Hepatologist"
-      ]
+        name: "Allergist (Immunologist)",
+        subtypes: []
     },
     {
-      name: "Geneticist",
-      subtypes: [
-        "Medical Geneticist",
-        "Clinical Molecular Geneticist",
-        "Biochemical Geneticist",
-        "Cytogeneticist"
-      ]
+        name: "Audiologist",
+        subtypes: []
     },
     {
-      name: "Geriatrician",
-      subtypes: []
+        name: "Cardiologist (Heart Doctor)",
+        subtypes: [
+            "Interventional Cardiologist",
+            "Electrophysiologist",
+            "Heart Failure Specialist",
+            "Preventive Cardiologist",
+            "Cardiac Imaging Specialist"
+        ]
     },
     {
-      name: "Hematologist",
-      subtypes: [
-        "Hematologic Oncologist",
-        "Pediatric Hematologist"
-      ]
+        name: "Cardiothoracic Surgeon",
+        subtypes: []
     },
     {
-      name: "Hospice and Palliative Medicine Specialist",
-      subtypes: []
+        name: "Chiropractor",
+        subtypes: []
     },
     {
-      name: "Infectious Disease Specialist",
-      subtypes: [
-        "HIV Specialist",
-        "Tropical Medicine Specialist",
-        "Travel Medicine Specialist"
-      ]
+        name: "Colorectal Surgeon",
+        subtypes: []
     },
     {
-      name: "Internist",
-      subtypes: []
+        name: "Dietitian / Nutritionist",
+        subtypes: []
     },
     {
-      name: "Medical Oncologist",
-      subtypes: []
+        name: "Endocrinologist (incl Diabetes Specialists)",
+        subtypes: [
+            "Pediatric Endocrinologist",
+            "Reproductive Endocrinologist"
+        ]
     },
     {
-      name: "Nephrologist",
-      subtypes: []
+        name: "Gastroenterologist",
+        subtypes: [
+            "Pediatric Gastroenterologist",
+            "Advanced Endoscopist",
+            "Hepatologist"
+        ]
     },
     {
-      name: "Neurologist",
-      subtypes: [
-        "Vascular Neurologist",
-        "Epileptologist",
-        "Headache Specialist",
-        "Pediatric Neurologist",
-        "Neuroimmunologist"
-      ]
+        name: "Geriatrician",
+        subtypes: []
     },
     {
-      name: "Neurosurgeon",
-      subtypes: [
-        "Spine Surgeon",
-        "Pediatric Neurosurgeon",
-        "Neuro-oncologist"
-      ]
+        name: "Hematologist (Blood Specialist)",
+        subtypes: [
+            "Hematologic Oncologist",
+            "Pediatric Hematologist"
+        ]
     },
     {
-      name: "Nuclear Medicine Specialist",
-      subtypes: []
+        name: "Hospice and Palliative Medicine Specialist",
+        subtypes: []
     },
     {
-      name: "Obstetrician / Gynecologist",
-      subtypes: [
-        "Maternal-Fetal Medicine Specialist",
-        "Reproductive Endocrinologist",
-        "Gynecologic Oncologist",
-        "Urogynecologist"
-      ]
+        name: "Infectious Disease Specialist",
+        subtypes: [
+            "HIV Specialist",
+            "Tropical Medicine Specialist",
+            "Travel Medicine Specialist"
+        ]
     },
     {
-      name: "Ophthalmologist",
-      subtypes: [
-        "Retina Specialist",
-        "Cornea Specialist",
-        "Glaucoma Specialist",
-        "Pediatric Ophthalmologist",
-        "Oculoplastic Surgeon"
-      ]
+        name: "Infertility Specialist",
+        subtypes: []
     },
     {
-      name: "Orthopaedic Surgeon",
-      subtypes: [
-        "Sports Medicine Orthopedist",
-        "Spine Surgeon",
-        "Joint Replacement Surgeon",
-        "Pediatric Orthopedist",
-        "Hand Surgeon"
-      ]
+        name: "Midwife",
+        subtypes: []
     },
     {
-      name: "Otolaryngologist (ENT)",
-      subtypes: [
-        "Head and Neck Surgeon",
-        "Pediatric ENT",
-        "Rhinologist",
-        "Otologist / Neurotologist"
-      ]
+        name: "Naturopathic Doctor",
+        subtypes: []
     },
     {
-      name: "Pathologist",
-      subtypes: [
-        "Anatomic Pathologist",
-        "Clinical Pathologist",
-        "Forensic Pathologist",
-        "Hematopathologist",
-        "Molecular Pathologist"
-      ]
+        name: "Nephrologist (Kidney Specialist)",
+        subtypes: []
     },
     {
-      name: "Pediatrician",
-      subtypes: [
-        "Developmental Pediatrician",
-        "Neonatologist",
-        "Pediatric Cardiologist",
-        "Pediatric Endocrinologist",
-        "Pediatric Hematologist-Oncologist"
-      ]
+        name: "Neurologist (incl Headache Specialists)",
+        subtypes: [
+            "Vascular Neurologist",
+            "Epileptologist",
+            "Headache Specialist",
+            "Pediatric Neurologist",
+            "Neuroimmunologist"
+        ]
     },
     {
-      name: "Physiatrist (Physical Medicine and Rehabilitation)",
-      subtypes: [
-        "Pain Management Specialist",
-        "Sports Medicine Specialist",
-        "Spinal Cord Injury Specialist",
-        "Pediatric Physiatrist"
-      ]
+        name: "Neurosurgeon",
+        subtypes: [
+            "Spine Surgeon",
+            "Pediatric Neurosurgeon",
+            "Neuro-oncologist"
+        ]
     },
     {
-      name: "Plastic Surgeon",
-      subtypes: [
-        "Cosmetic Surgeon",
-        "Reconstructive Surgeon",
-        "Hand Surgeon",
-        "Craniofacial Surgeon"
-      ]
+        name: "Oncologist",
+        subtypes: []
     },
     {
-      name: "Podiatrist",
-      subtypes: [
-        "Surgical Podiatrist",
-        "Sports Medicine Podiatrist",
-        "Pediatric Podiatrist"
-      ]
+        name: "Ophthalmologist",
+        subtypes: [
+            "Retina Specialist",
+            "Cornea Specialist",
+            "Glaucoma Specialist",
+            "Pediatric Ophthalmologist",
+            "Oculoplastic Surgeon"
+        ]
     },
     {
-      name: "Preventive Medicine Specialist",
-      subtypes: [
-        "Aerospace Medicine Specialist",
-        "Occupational Medicine Specialist",
-        "Public Health Specialist"
-      ]
+        name: "Optometrist",
+        subtypes: []
     },
     {
-      name: "Psychiatrist",
-      subtypes: [
-        "Child and Adolescent Psychiatrist",
-        "Forensic Psychiatrist",
-        "Geriatric Psychiatrist",
-        "Addiction Psychiatrist"
-      ]
+        name: "Oral Surgeon",
+        subtypes: []
     },
     {
-      name: "Pulmonologist",
-      subtypes: [
-        "Critical Care Pulmonologist",
-        "Sleep Medicine Specialist",
-        "Pediatric Pulmonologist"
-      ]
+        name: "Orthodontist",
+        subtypes: []
     },
     {
-      name: "Radiologist",
-      subtypes: [
-        "Diagnostic Radiologist",
-        "Interventional Radiologist",
-        "Nuclear Medicine Specialist",
-        "Breast Imaging Specialist"
-      ]
+        name: "Pain Management Specialist",
+        subtypes: []
     },
     {
-      name: "Rheumatologist",
-      subtypes: []
+        name: "Pediatric Dentist",
+        subtypes: []
     },
     {
-      name: "Sleep Medicine Specialist",
-      subtypes: []
+        name: "Pediatrician",
+        subtypes: [
+            "Developmental Pediatrician",
+            "Neonatologist",
+            "Pediatric Cardiologist",
+            "Pediatric Endocrinologist",
+            "Pediatric Hematologist-Oncologist"
+        ]
     },
     {
-      name: "Sports Medicine Specialist",
-      subtypes: []
+        name: "Physiatrist (Physical Medicine)",
+        subtypes: [
+            "Pain Management Specialist",
+            "Sports Medicine Specialist",
+            "Spinal Cord Injury Specialist",
+            "Pediatric Physiatrist"
+        ]
     },
     {
-      name: "Surgeon",
-      subtypes: [
-        "General Surgeon",
-        "Trauma Surgeon",
-        "Bariatric Surgeon",
-        "Vascular Surgeon",
-        "Thoracic Surgeon"
-      ]
+        name: "Physical Therapist",
+        subtypes: []
     },
     {
-      name: "Urologist",
-      subtypes: [
-        "Pediatric Urologist",
-        "Oncologic Urologist",
-        "Female Pelvic Medicine Specialist"
-      ]
+        name: "Plastic Surgeon",
+        subtypes: [
+            "Cosmetic Surgeon",
+            "Reconstructive Surgeon",
+            "Hand Surgeon",
+            "Craniofacial Surgeon"
+        ]
     },
     {
-      name: "Chiropractor",
-      subtypes: []
+        name: "Podiatrist (Foot and Ankle Specialist)",
+        subtypes: [
+            "Surgical Podiatrist",
+            "Sports Medicine Podiatrist",
+            "Pediatric Podiatrist"
+        ]
     },
     {
-      name: "Physical Therapist",
-      subtypes: []
+        name: "Prosthodontist",
+        subtypes: []
     },
     {
-      name: "Occupational Therapist",
-      subtypes: []
+        name: "Psychologist",
+        subtypes: []
     },
     {
-      name: "Speech-Language Pathologist",
-      subtypes: []
+        name: "Pulmonologist (Lung Doctor)",
+        subtypes: [
+            "Critical Care Pulmonologist",
+            "Sleep Medicine Specialist",
+            "Pediatric Pulmonologist"
+        ]
     },
     {
-      name: "Nutritionist / Dietitian",
-      subtypes: []
+        name: "Radiologist",
+        subtypes: [
+            "Diagnostic Radiologist",
+            "Interventional Radiologist",
+            "Nuclear Medicine Specialist",
+            "Breast Imaging Specialist"
+        ]
     },
     {
-      name: "Pharmacist",
-      subtypes: []
+        name: "Rheumatologist",
+        subtypes: []
     },
     {
-      name: "Nurse Practitioner",
-      subtypes: []
+        name: "Sleep Medicine Specialist",
+        subtypes: []
     },
     {
-      name: "Physician Assistant",
-      subtypes: []
+        name: "Sports Medicine Specialist",
+        subtypes: []
     },
     {
-      name: "Optometrist",
-      subtypes: []
+        name: "Surgeon",
+        subtypes: [
+            "General Surgeon",
+            "Trauma Surgeon",
+            "Bariatric Surgeon",
+            "Vascular Surgeon",
+            "Thoracic Surgeon"
+        ]
     },
     {
-      name: "Audiologist",
-      subtypes: []
+        name: "Therapist / Counselor",
+        subtypes: []
+    },
+    {
+        name: "Urgent Care Specialist",
+        subtypes: []
+    },
+    {
+        name: "Urological Surgeon",
+        subtypes: [
+            "Pediatric Urologist",
+            "Oncologic Urologist",
+            "Female Pelvic Medicine Specialist"
+        ]
     }
   ];
-    
+
+  const [errors, setErrors] = useState({
+    zipCode: '',
+    phone: '',
+  });
+  const validateZipCode = (zipCode) => {
+    // US Zip Code: 5 digits or 5 digits + 4 (e.g., 90210 or 90210-1234)
+    const zipCodeRegex = /^\d{5}(-\d{4})?$/;
+    return zipCodeRegex.test(zipCode);
+  };
+
+  const validatePhone = (phone) => {
+    // US Phone Number: (XXX) XXX-XXXX or XXX-XXX-XXXX
+    const phoneRegex = /^(?:\(\d{3}\)\s?|\d{3}-)\d{3}-\d{4}$/;
+    return phoneRegex.test(phone);
+  };
   const { type } = useParams()
+  const [selectedItems, setSelectedItems] = useState([]);
 
   const [isVerificationOpen, setVerificationOpen] = useState(false) 
   const [isStepComplete, setStep] = useState(false) 
   const [isPhoneProvided, setPhoneProvided] = useState(true)
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.auth);
+
+  const [signupError, setSignupError] = useState('')
+  const [dobError, setdobError] = useState('');
 
   const onOpenCloseLogin = () =>{
     setLoginOpen(!isLoginOpen)
@@ -372,8 +389,12 @@ const ProviderAuthPage = () => {
     firstName: '',
     lastName: '',
     phone: '',
-    dob: '',
-    gender: '',
+    practiceName: '',
+    practiceSize: '1',
+    specialty: selectedItems,
+    zipCode: '',
+    reference: '',
+    role: 'provider',
   });
 
   const handleChange = (e) => {
@@ -385,24 +406,155 @@ const ProviderAuthPage = () => {
       }
     }
   };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    setStep(true)
-    if(isStepComplete){
-      console.log('Form submitted:', formData);
-      setVerificationOpen(true)
+  useEffect(()=>{
+    if(selectedItems){
+      setFormData({ ...formData, specialty: selectedItems });
     }
-    //
+  },[selectedItems])
+  useEffect(()=>{
+     console.log(formData)
+  },[formData])
+
+  const handlePhoneChange = (e) => {
+    const { name, value } = e.target;
+
+    // Remove all non-numeric characters
+    let formattedValue = value.replace(/\D/g, '');
+
+    // Format phone number as (XXX) XXX-XXXX or XXX-XXX-XXXX
+    if (formattedValue.length <= 3) {
+      formattedValue = formattedValue.replace(/(\d{1,3})/, '($1');
+    } else if (formattedValue.length <= 6) {
+      formattedValue = formattedValue.replace(/(\d{3})(\d{1,3})/, '($1) $2');
+    } else {
+      formattedValue = formattedValue.replace(/(\d{3})(\d{3})(\d{1,4})/, '($1) $2-$3');
+    }
+
+    // Update state with formatted phone number
+    setFormData({ ...formData, [name]: formattedValue });
   };
 
-  return (
-    <div className="flex flex-col poppins bg-[#FFFFFF] text-center h-screen overflow-y-auto border-4 border-red-600">
-  
-      {isVerificationOpen&&<Verificationoverlay onClose={onOpenCloseVerification} email={formData.email}/>}
 
-      <div className='w-full flex justify-between lg:p-8 p-4'>
+  const handleSubmit = async(e) => {
+    e.preventDefault();
+    
+    const zipCodeValid = validateZipCode(formData.zipCode);
+    const phoneValid = validatePhone(formData.phone);
+
+    if (!zipCodeValid) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        zipCode: 'Please enter a valid Zip Code (e.g., 90210 or 90210-1234).',
+      }));
+    } else {
+      setErrors((prevErrors) => ({ ...prevErrors, zipCode: '' }));
+    }
+
+    if (!phoneValid) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        phone: 'Please enter a valid US phone number (e.g., (123) 456-7890).',
+      }));
+    } else {
+      setErrors((prevErrors) => ({ ...prevErrors, phone: '' }));
+    }
+
+    // If all fields are valid, proceed with form submission
+    if (zipCodeValid && phoneValid) {
+     
+        try {
+          const actionResult = await dispatch(signup({ formData }));
+    
+          console.log(actionResult)
+          if (signup.fulfilled.match(actionResult)) {
+            
+            const response = actionResult.payload; 
+            console.log('Signup partially done!', response);
+            setSignupError('')
+            try {
+              const actionResult = await dispatch(sendOTP({ formData }));
+        
+              console.log(actionResult)
+              if (sendOTP.fulfilled.match(actionResult)) {
+               
+                const response = actionResult.payload; 
+                console.log('SendOTP successful:', response);
+                setVerificationOpen(true)
+                setSignupError('')
+                
+              } else if(sendOTP.rejected.match(actionResult)){
+                const response = actionResult.payload; 
+                console.log('Sign Up error', response);
+              }
+            } catch (error) {
+             
+              console.error('Error during signup:', error);
+            }
+            
+          } else if(signup.rejected.match(actionResult)){
+            const response = actionResult.payload; 
+            console.log('Sign Up error', response);
+            setSignupError("Something went wrong, please try again later.")
+          }
+        } catch (error) {
+         
+          console.error('Error during signup:', error);
+          setSignupError("Something went wrong, please try again later.")
+        }
+      
+
+       
+    }
+    
+  };
+  const handleLogin = async(e) => {
+      e.preventDefault();
+     
+        try {
+            const actionResult = await dispatch(loginUser({ formData }));
+      
+            console.log(actionResult)
+            if (loginUser.fulfilled.match(actionResult)) {
+              
+              const response = actionResult.payload; 
+              console.log('OTP Sucessfully sent', response);
+              setVerificationOpen(true)
+              setSignupError('')
+            
+              
+            } else if(loginUser.rejected.match(actionResult)){
+              const response = actionResult.payload; 
+              console.log('Sign Up error', response);
+            }
+          } catch (error) {
+          
+            console.error('Error during loginUser:', error);
+          }
+      
+        
+    };
+  useEffect(()=>{
+    if(error==='User already exists with this emailAddress.'){
+      setSignupError("This email is already associated with an account.")
+    } else if (error === 'Failed to fetch'){
+      setSignupError("Unable to connect to the server.")
+    }
+    else if (error === 'Role not authorized'){
+      setSignupError("This account is registered as a patient, please use the correct authentication.")
+    }
+    else if (error === 'User not found!'){
+      setSignupError("User not registered. Please use sign up.")
+      setOTPSender('')
+    }
+
+}, [error])
+
+  return (
+    <div className="flex flex-col poppins bg-[#FFFFFF] text-center h-screen overflow-y-auto">
+  
+      {isVerificationOpen&&<Verificationoverlay onClose={onOpenCloseVerification} email={formData.email} phone={formData.phone} role={formData.role}/>}
+
+      <div className='w-full flex justify-between lg:p-8 p-4 sticky top-0 bg-white z-20'>
           <a className='flex lg:ml-6' href='/'>
           <img src="/logodark-icon.png" alt="Logo" className="h-12 lg:ml-6 ml-3" />
           <p className='hidden lg:block text-[28px] ml-2 text-[#1EBDB8] font-medium'>Simple</p>
@@ -432,10 +584,15 @@ const ProviderAuthPage = () => {
           </div>
       </div>
       {type==='login' ? (
-        <div className='flex-grow'>
-        <p className='text-[40px] text-[#707271]'>Welcome to <span className='text-[#1EBDB8] font-bold'>Simple</span></p>
+        <div className='flex-grow mx-auto w-3/4'>
+          <div className='mx-auto sticky top-0 bg-white z-20'>
+            <p className='text-[40px] text-[#707271]'>Welcome to <span className='text-[#1EBDB8] font-bold'>Simple</span></p>
+            <div> {signupError && <p className="text-red-600 my-2 flex"><span className="material-symbols-outlined mr-2"> error </span>{signupError}</p>} </div>
+            
+          </div>
           <div className="lg:max-w-lg mx-auto p-6 text-[#707271] text-left mt-3">
             <h2 className="text-xl font-400 mb-3 text-3xl">To login, enter you email address</h2>
+            
            
             <form onSubmit={handleSubmit} className='my-8'>
               
@@ -459,8 +616,9 @@ const ProviderAuthPage = () => {
               <button
                 type="submit"
                 className="w-full py-2 px-4 bg-[#1EBDB8] my-6 border border-[#1EBDB8] text-white rounded-[20px] font-bold hover:text-[#1EBDB8] hover:bg-transparent transition"
+                onClick={handleLogin}
               >
-                Continue
+                {loading ? <Spinner/> : 'Continue'}
               </button>
               <p className='text-center my-2'>Don't have an account? <a href='/auth/provider/signup' className=' cursor-pointer text-[#1EBDB8] hover:font-semibold duration-300'>Sign Up</a></p>
             </form>
@@ -470,12 +628,17 @@ const ProviderAuthPage = () => {
         </div> 
       ): (
         <>
-         <p className='text-[40px] text-[#707271]'>Welcome to <span className='text-[#1EBDB8] font-bold'>Simple</span></p>
+          <div className='mx-auto sticky top-0 bg-white z-20'>
+            <p className='text-[40px] text-[#707271]'>Welcome to <span className='text-[#1EBDB8] font-bold'>Simple</span></p>
+            <div> {signupError && <p className="text-red-600 my-2 flex"><span className="material-symbols-outlined mr-2"> error </span>{signupError}</p>} </div>
+            
+          </div>
           <div className="lg:max-w-lg mx-auto p-6 text-[#707271] text-left mt-3">
             <h2 className="text-xl font-400 mb-3 text-[35px]">Let's get started</h2>
             <p className="text-gray-500 text-sm mb-6">
             Simple is the best way to reach the right patients for your practice. It's easy to join and there are no upfront fees or subscription costs.
             </p>
+           
             <form onSubmit={handleSubmit}>
               
               <div className="mb-4 flex gap-4">
@@ -516,11 +679,11 @@ const ProviderAuthPage = () => {
                 </label>
                 <input
                   type="text"
-                  id="praticeName"
-                  name="praticeName"
+                  id="practiceName"
+                  name="practiceName"
                   className="w-full p-3 bg-[#F5F5F5] rounded-[10px]"
                   placeholder="Enter your pratice name"
-                  value={formData.praticeName}
+                  value={formData.practiceName}
                   onChange={handleChange}
                   required
                 />
@@ -532,7 +695,7 @@ const ProviderAuthPage = () => {
                 <label className="text-sm text-[#707271] mb-4" htmlFor="specialty">
                   Select up to 3
                 </label>
-                <ProviderPracticesDropdown practices={practices}/>
+                <ProviderPracticesDropdown practices={practices} selectedItems={selectedItems} setSelectedItems={setSelectedItems}/>
               </div>
               <div className="mb-4">
                 <label className=" font-semibold block text-sm font-medium " htmlFor="specialty">
@@ -544,9 +707,11 @@ const ProviderAuthPage = () => {
                 
                   <select
                     id="practiceSize"
-                    value={formData?.practiceSize}
+                    name='practiceSize'
+                    value={formData.practiceSize}
                     onChange={handleChange}
-                    className='w-full p-3 bg-[#F5F5F5] rounded-[10px]'
+                    required
+                    className='custom-select w-full p-3 bg-[#F5F5F5] rounded-[10px]'
                   >
                     
                     {[...Array(15)].map((_, index) => (
@@ -575,26 +740,27 @@ const ProviderAuthPage = () => {
                 />
               </div>
               <div className="mb-4">
-                <label className=" font-semibold block text-sm font-medium mb-2" htmlFor="phone">
+                <label className="font-semibold block text-sm font-medium mb-2" htmlFor="phone">
                   Phone Number
                 </label>
                 <input
-                  type="phone"
+                  type="text" // Using 'text' to handle formatting for phone number
                   id="phone"
                   name="phone"
                   className="w-full p-3 bg-[#F5F5F5] rounded-[10px]"
                   placeholder="Enter your phone number"
                   value={formData.phone}
-                  onChange={handleChange}
+                  onChange={handlePhoneChange}
                   required
                 />
+                {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
               </div>
               <div className="mb-4">
-                <label className=" font-semibold block text-sm font-medium mb-2" htmlFor="zipCode">
+                <label className="font-semibold block text-sm font-medium mb-2" htmlFor="zipCode">
                   Zip Code
                 </label>
                 <input
-                  type="number"
+                  type="text" // Change to 'text' to handle the hyphen in ZIP+4 format
                   id="zipCode"
                   name="zipCode"
                   className="w-full p-3 bg-[#F5F5F5] rounded-[10px]"
@@ -603,6 +769,7 @@ const ProviderAuthPage = () => {
                   onChange={handleChange}
                   required
                 />
+                {errors.zipCode && <p className="text-red-500 text-sm mt-1">{errors.zipCode}</p>}
               </div>
               
               <div className="mb-8">
@@ -612,20 +779,28 @@ const ProviderAuthPage = () => {
               
                 
                   <select
-                    id="practiceSize"
-                    value={formData?.practiceSize}
+                    id="reference"
+                    name='reference'
+                    value={formData.reference}
                     onChange={handleChange}
-                    className='w-full p-3 bg-[#F5F5F5] rounded-[10px]'
+                    className='custom-select w-full p-3 bg-[#F5F5F5] rounded-[10px]'
+                    required
                   >
-                    
-                    {[...Array(15)].map((_, index) => (
-                      <option key={index + 1} value={index + 1}>
-                        {index + 1}
-                      </option>
-                    ))}
+                      <option value="">Select an option</option>
+                      <option value="friend">A friend or family member</option>
+                      <option value="socialMedia">Social media (Facebook, Instagram, etc.)</option>
+                      <option value="searchEngine">Search engine (Google, Bing, etc.)</option>
+                      <option value="advertisement">Advertisement (TV, Radio, etc.)</option>
+                      <option value="email">Email marketing</option>
+                      <option value="wordOfMouth">Word of mouth</option>
+                      <option value="blog">Blog or article</option>
+                      <option value="onlineReview">Online review site (Yelp, Trustpilot, etc.)</option>
+                      <option value="event">Event or conference</option>
+                      <option value="partnership">Partnership or collaboration</option>
+                      <option value="other">Other</option>
+                   
 
-                    
-                    <option value="moreThan15">More than 15</option>
+                  
                   </select>
               </div>
               <div className='flex max-w-lg text-justify mb-4'>
@@ -636,7 +811,7 @@ const ProviderAuthPage = () => {
                 type="submit"
                 className="w-full py-2 px-4 bg-[#1EBDB8] border border-[#1EBDB8] text-white rounded-[20px] font-bold hover:text-[#1EBDB8] hover:bg-transparent transition"
               >
-                Sign up
+                {loading ? <Spinner/> : 'Sign up'}
               </button>
               <p className='text-center my-2'>Already have an account? <a href='/auth/provider/login' className=' cursor-pointer text-[#1EBDB8] hover:font-semibold duration-300'>Login</a></p>
             </form>

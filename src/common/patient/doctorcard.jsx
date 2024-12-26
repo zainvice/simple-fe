@@ -31,14 +31,14 @@ function DoctorCard({doctor, schedule, fav}) {
          }
          <div className='flex w-full'>
             <img
-            src={doctor.doctorImage}
+            src={doctor.avatar ? doctor.avatar : doctor?.gender?.toUpperCase() === "MALE" ? 'https://pngimg.com/d/doctor_PNG15992.png': 'https://static.vecteezy.com/system/resources/previews/041/409/059/non_2x/ai-generated-a-female-doctor-with-a-stethoscope-isolated-on-transparent-background-free-png.png'}
             alt="Doctor"
             className="w-24 h-24 rounded-full mb-2"
             />
             <div className='text-left ml-4'>
-                <h3 className="text-lg font-semibold text-[#1EBDB8]">{doctor.name}</h3>
-                <p className="text-sm text-[#333333] font-medium">{doctor.type}</p>
-                <p className="text-sm text-[#888888] whitespace-nowrap">{doctor.university}</p>
+                <h3 className="text-lg font-semibold text-[#1EBDB8]"> {'Dr. '} {doctor?.firstName} {' '} {doctor?.lastName}</h3>
+                <p className="text-sm text-[#333333] font-medium">{doctor.practiceName}</p>
+                <p className="text-sm text-[#888888] whitespace-nowrap">{doctor?.specialties && doctor?.specialties[0]}</p>
              
                 <p className="text-sm text-[#333333] whitespace-nowrap">⭐ {doctor.rating} . {doctor?.reviews?.length} reviews</p>
             </div>

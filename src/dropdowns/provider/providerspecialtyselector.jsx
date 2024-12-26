@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
-const ProviderPracticesDropdown = ({ practices, handleSelect }) => {
+const ProviderPracticesDropdown = ({ practices, selectedItems, setSelectedItems }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedItems, setSelectedItems] = useState([]);
+  
 
   const toggleDropdown = () => setIsOpen(!isOpen);
 
