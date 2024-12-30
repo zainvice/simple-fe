@@ -23,3 +23,4 @@
 // Fix typo in component on 2024-12-26
 // Update header style on 2024-12-28
 // Refactor navbar on 2024-12-29
+// Clean up code on 2024-12-30
