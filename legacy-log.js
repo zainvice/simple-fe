@@ -30,3 +30,4 @@
 // Adjust padding on 2025-01-05
 // Polish UI on 2025-01-07
 // Change font size on 2025-01-09
+// Improve error messages on 2025-01-10
