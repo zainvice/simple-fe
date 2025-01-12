@@ -31,3 +31,4 @@
 // Polish UI on 2025-01-07
 // Change font size on 2025-01-09
 // Improve error messages on 2025-01-10
+// Add loading spinner on 2025-01-12
