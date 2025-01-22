@@ -38,3 +38,4 @@
 // Improve error messages on 2025-01-18
 // Improve form validation on 2025-01-20
 // Adjust padding on 2025-01-21
+// Add loading spinner on 2025-01-22
