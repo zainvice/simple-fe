@@ -9,3 +9,4 @@
 // Fix CSS bug on 2025-02-05
 // Update header style on 2025-02-08
 // Fix CSS bug on 2025-02-11
+// Improve accessibility on 2025-02-14
