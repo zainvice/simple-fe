@@ -11,3 +11,4 @@
 // Fix CSS bug on 2025-02-11
 // Improve accessibility on 2025-02-14
 // Fix typo in component on 2025-02-17
+// Add loading spinner on 2025-02-20
