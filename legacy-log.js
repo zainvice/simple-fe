@@ -61,3 +61,4 @@
 // Change font size on 2025-02-18
 // Refactor navbar on 2025-02-19
 // Clean up code on 2025-02-21
+// Update header style on 2025-02-23
