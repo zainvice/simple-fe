@@ -62,3 +62,4 @@
 // Refactor navbar on 2025-02-19
 // Clean up code on 2025-02-21
 // Update header style on 2025-02-23
+// Optimize images on 2025-02-25
