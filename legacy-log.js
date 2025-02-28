@@ -64,3 +64,4 @@
 // Update header style on 2025-02-23
 // Optimize images on 2025-02-25
 // Improve form validation on 2025-02-26
+// Refactor navbar on 2025-02-28
