@@ -18,3 +18,4 @@
 // Refactor navbar on 2025-03-02
 // Add loading spinner on 2025-03-04
 // Fix typo in component on 2025-03-07
+// Improve accessibility on 2025-03-10
