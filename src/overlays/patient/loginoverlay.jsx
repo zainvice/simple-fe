@@ -19,11 +19,26 @@ const Loginoverlay = ({onClose}) => {
       const [loginError, setLoginError] = useState('')
       const [isPhoneVerification, setPhoneVerification] = useState()
       const [isOTPSend, setOTPSend] = useState(false)
+      const [resendTimer, setResendTimer] = useState(60);
+      const [isTimerActive, setIsTimerActive] = useState(true);
 
       const handlePhoneVerification = () => {
         setPhoneVerification(!isPhoneVerification)
       }
     
+      useEffect(() => {
+        let timer;
+        if (isTimerActive && resendTimer > 0) {
+          timer = setInterval(() => {
+            setResendTimer((prev) => prev - 1);
+          }, 1000);
+        } else if (resendTimer === 0) {
+          setIsTimerActive(false);
+        }
+        return () => clearInterval(timer);
+      }, [isTimerActive, resendTimer]);
+    
+      
       useEffect(()=>{
         if(formData.email){
             setOTPSender(`We sent a code to ${formData?.email}. To keep your account safe, do not share this code with anyone`)
@@ -50,6 +65,8 @@ const Loginoverlay = ({onClose}) => {
               if(state==='Resend OTP'){
                 setOTPSender(`We sent a code to ${formData?.email} again. To keep your account safe, do not share this code with anyone`)
                 setLoginError('')
+                setResendTimer(60);
+                setIsTimerActive(true);
             }
               
             } else if(loginUser.rejected.match(actionResult)){
@@ -129,7 +146,15 @@ const Loginoverlay = ({onClose}) => {
                             required
                         />
                         </div>
-                    <p className="text-[14px] text-[#707271] mb-4">Didn’t receive your code? <span className='font-semibold text-[#1EBDB8] underline cursor-pointer' onClick={(e)=> handleSubmit(e, 'Resend OTP')}>Resend Code</span></p>
+                    <p className="text-[14px] text-[#707271] mb-4">Didn’t receive your code? 
+                    {isTimerActive ? (
+                        <span className="text-gray-400">Resend in {resendTimer}s</span>
+                      ) : (
+                        <span className="font-semibold text-teal-600 underline cursor-pointer" onClick={(e) => handleSubmit(e, 'Resend OTP')}>
+                          Resend Code
+                        </span>
+                      )}
+                    </p>
                     <button
                         type="submit"
                         className="w-full py-2 px-4 bg-[#1EBDB8] border border-[#1EBDB8] text-white rounded-[20px] font-bold hover:text-[#1EBDB8] hover:bg-transparent transition"

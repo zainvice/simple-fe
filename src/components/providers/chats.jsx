@@ -9,18 +9,10 @@ const messages = [
   {type: 'incoming', content: `How's everything else!`, time: '11:37AM', status: 'unread'}
 ]
 const contacts = [
-  { id: 1, avatar: 'https://pngimg.com/d/doctor_PNG15992.png', name: 'Dr. Lisa Roy', messages: messages,  counter: '1', active: false },
-  { id: 2, avatar: 'https://pngimg.com/d/doctor_PNG15992.png', name: 'Dr. Jamie Taylor', messages: messages, active: true  },
-  { id: 3, avatar: 'https://pngimg.com/d/doctor_PNG15992.png', name: 'Dr. Jason Roy', messages: messages, active: false,  counter: '10'},
-  { id: 4, avatar: 'https://pngimg.com/d/doctor_PNG15992.png', name: 'Dr. Amy Frost', messages: messages, active: false },
-  { id: 5, avatar: 'https://pngimg.com/d/doctor_PNG15992.png', name: 'Dr. Paul Wilson', messages: messages, active: false },
-  { id: 6, avatar: 'https://pngimg.com/d/doctor_PNG15992.png', name: 'Dr. Ana Williams', messages: messages, active: false },
-  { id: 7, avatar: 'https://pngimg.com/d/doctor_PNG15992.png', name: 'Dr. Lisa Roy', messages: messages,  counter: '1', active: false },
-  { id: 8, avatar: 'https://pngimg.com/d/doctor_PNG15992.png', name: 'Dr. Jamie Taylor', messages: messages, active: true  },
-  { id: 9, avatar: 'https://pngimg.com/d/doctor_PNG15992.png', name: 'Dr. Jason Roy', messages: messages, active: false,  counter: '10'},
-  { id: 10, avatar: 'https://pngimg.com/d/doctor_PNG15992.png', name: 'Dr. Amy Frost', messages: messages, active: false },
-  { id: 11, avatar: 'https://pngimg.com/d/doctor_PNG15992.png', name: 'Dr. Paul Wilson', messages: messages, active: false },
-  { id: 12, avatar: 'https://pngimg.com/d/doctor_PNG15992.png', name: 'Dr. Ana Williams', messages: messages, active: false },
+  { id: 1, avatar: 'https://pngimg.com/d/doctor_PNG15992.png', name: 'Dr. Lisa Roy',  email: 'zainvicee@gmail.com',  counter: '1', active: false },
+  { id: 2, avatar: 'https://pngimg.com/d/doctor_PNG15992.png', name: 'Dr. Jamie Taylor', email: 'zainvicee@gmail.com', active: true  },
+  { id: 3, avatar: 'https://pngimg.com/d/doctor_PNG15992.png', name: 'Dr. Jason Roy', email: 'zainvicee@gmail.com', active: false,  counter: '10'},
+
 ];
 
 const ProviderChatPage = () => {

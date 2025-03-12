@@ -120,11 +120,13 @@ const PatientAuthPage = () => {
           const actionResult = await dispatch(sendOTP({ formData }));
     
           console.log(actionResult)
+          setVerificationOpen(true)
           if (signup.fulfilled.match(actionResult)) {
            
             const response = actionResult.payload; 
             console.log('Signup successful:', response);
             setStep(true)
+            
             
           } else if(signup.rejected.match(actionResult)){
             const response = actionResult.payload; 
