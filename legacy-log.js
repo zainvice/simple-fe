@@ -72,3 +72,4 @@
 // Polish UI on 2025-03-09
 // Improve accessibility on 2025-03-11
 // Improve input handling on 2025-03-12
+// Improve error messages on 2025-03-13
