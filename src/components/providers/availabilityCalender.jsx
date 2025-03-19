@@ -10,11 +10,13 @@ import {
   isValid
 } from "date-fns";
 import Spinner from "../../common/spinner";
+import EditAvailabilityOverlay from "../../overlays/provider/editAvailabilityOverlay";
 
 const AvailabilityCalendar = ({appointments}) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const calendarRef = useRef(null); 
   const currentTimeRef = useRef(null); 
+  const [editAvailibiltyOpen, setEditAvailibilityOpen] = useState()
 
   const times = Array.from({ length: 24 }, (_, i) => {
     const hour = i % 12 === 0 ? 12 : i % 12;
@@ -79,11 +81,12 @@ const AvailabilityCalendar = ({appointments}) => {
       }
     }
   }, [currentMonth]);
-  
+  const toggleEditAvailibilityOpen = () => {
+    setEditAvailibilityOpen(!editAvailibiltyOpen)
+  }
 
 
   const getAppointmentsForSlot = (day, time) => {
-    console.log("Appointments", appointments, "for DAY AND TIME", day, time);
 
     const timezone = day.toString().match(/([A-Z]+[-+][0-9]+(?:[:][0-9]{2})?)/)?.[0] || 'UTC';
 
@@ -116,8 +119,6 @@ const AvailabilityCalendar = ({appointments}) => {
 
             
 
-            console.log("MATCHING: ", formattedDay, "AND", formattedAppointmentDate, "AND TIME", standardizedUserTime, "TO:", standardizedAppointmentTime);
-            
             
             return formattedDay === formattedAppointmentDate && standardizedUserTime === standardizedAppointmentTime;
         } catch (error) {
@@ -150,10 +151,11 @@ const AvailabilityCalendar = ({appointments}) => {
             <span className="material-symbols-outlined mt-2">chevron_right</span>
           </button>
         </div>
-        <button className="bg-[#1EBDB8] text-white px-4 py-2 rounded shadow-md">
+        <button className="bg-[#1EBDB8] text-white px-4 py-2 rounded shadow-md" onClick={(e)=> setEditAvailibilityOpen(!editAvailibiltyOpen)}>
           Edit Schedule
         </button>
       </div>
+      {editAvailibiltyOpen && <EditAvailabilityOverlay onClose={toggleEditAvailibilityOpen}/>}
 
       {/* Calendar Grid */}
       <div

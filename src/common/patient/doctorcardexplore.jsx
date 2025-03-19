@@ -11,7 +11,7 @@ function DoctorCardExplore({doctor, schedule, fav}) {
          }
             <div className='flex cursor-pointer' onClick={(e)=> window.location.href = `/patient/explore/providerDetails`}>
                 <img
-                src={doctor.avatar ? doctor.avatar : doctor.gender.toUpperCase() === "MALE" ? 'https://pngimg.com/d/doctor_PNG15992.png': 'https://static.vecteezy.com/system/resources/previews/041/409/059/non_2x/ai-generated-a-female-doctor-with-a-stethoscope-isolated-on-transparent-background-free-png.png'}
+                src={doctor.avatar ? doctor.avatar : doctor?.gender?.toUpperCase() === "MALE" ? 'https://pngimg.com/d/doctor_PNG15992.png': 'https://static.vecteezy.com/system/resources/previews/041/409/059/non_2x/ai-generated-a-female-doctor-with-a-stethoscope-isolated-on-transparent-background-free-png.png'}
                 alt="Doctor"
                 className="w-60 h-60 rounded-full mb-2"
             

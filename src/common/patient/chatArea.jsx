@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Message from './message';
 import axios from 'axios';
 import { io } from "socket.io-client";
 import { useSelector } from 'react-redux';
 const socket = io("http://localhost:3001");
+import VideoCall from '../videoCall';
 
 const ChatArea = ({props}) => {
     const [message, setMessage] = useState("");
@@ -11,6 +12,59 @@ const ChatArea = ({props}) => {
     const receiverEmail = props?.email
     const { user, accessToken } = useSelector((state) => state.auth);
 
+    const localVideoRef = useRef(null);
+    const remoteVideoRef = useRef(null);
+    const peerConnection = useRef(null);
+    const [incomingCall, setIncomingCall] = useState()
+    const [videoCallOn, setVideoCall] = useState(false)
+    const [isRinging, setIsRinging] = useState(false);
+
+
+    useEffect(() => {
+        socket.on("incoming_call", ({ from, offer }) => {
+            setIncomingCall({ from, offer }); // Store call details in state to trigger popup
+        });
+
+        socket.on("call_answered", async ({ answer }) => {
+            await peerConnection.current.setRemoteDescription(new RTCSessionDescription(answer));
+        });
+
+        socket.on("ice_candidate", (candidate) => {
+            peerConnection.current.addIceCandidate(new RTCIceCandidate(candidate));
+        });
+        socket.on("call_rejected", () => {
+            alert("Call was rejected.");
+        });
+        socket.on("call_ended", () => {
+            handleEndCall();
+        });
+    }, []);
+
+    const startCall = async () => {
+        peerConnection.current = new RTCPeerConnection();
+        setVideoCall(true);
+    
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        localVideoRef.current.srcObject = stream;
+    
+        stream.getTracks().forEach((track) => peerConnection.current.addTrack(track, stream));
+    
+        peerConnection.current.ontrack = (event) => {
+            remoteVideoRef.current.srcObject = event.streams[0];
+        };
+    
+        peerConnection.current.onicecandidate = (event) => {
+            if (event.candidate) {
+                socket.emit("ice_candidate", { to: receiverEmail,  candidate: event.candidate });
+            }
+        };
+    
+        const offer = await peerConnection.current.createOffer();
+        await peerConnection.current.setLocalDescription(offer);
+    
+        socket.emit("call_user", { to: receiverEmail, from: user?.email, offer });
+    };
+    
     useEffect(() => {
         const senderEmail = user?.email
         socket.emit("join", senderEmail);
@@ -46,8 +100,79 @@ const ChatArea = ({props}) => {
            
         }
     };
+
+    const acceptCall = async () => {
+        if (!incomingCall) return;
+    
+        setVideoCall(true)
+        peerConnection.current = new RTCPeerConnection();
+    
+        peerConnection.current.ontrack = (event) => {
+            remoteVideoRef.current.srcObject = event.streams[0];
+        };
+    
+        peerConnection.current.onicecandidate = (event) => {
+            if (event.candidate) {
+                socket.emit("ice_candidate", { to: incomingCall.from.id, candidate: event.candidate });
+            }
+        };
+    
+        await peerConnection.current.setRemoteDescription(new RTCSessionDescription(incomingCall.offer));
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    
+        stream.getTracks().forEach((track) => peerConnection.current.addTrack(track, stream));
+        localVideoRef.current.srcObject = stream;
+    
+        const answer = await peerConnection.current.createAnswer();
+        await peerConnection.current.setLocalDescription(answer);
+    
+        socket.emit("answer_call", { to: incomingCall.from.id, answer });
+    
+        setIncomingCall(null); // Hide popup
+    };
+    
+    const rejectCall = () => {
+        if (!incomingCall) return;
+        socket.emit("call_rejected", { to: incomingCall.from.caller.id }); // Notify caller
+        setIncomingCall(null); // Hide popup
+    };
+    const handleEndCall = () => {
+        if (peerConnection.current) {
+            peerConnection.current.close();
+            peerConnection.current = null;
+        }
+    
+        if (localVideoRef.current?.srcObject) {
+            localVideoRef.current.srcObject.getTracks().forEach(track => track.stop());
+            localVideoRef.current.srcObject = null;
+        }
+    
+        if (remoteVideoRef.current?.srcObject) {
+            remoteVideoRef.current.srcObject.getTracks().forEach(track => track.stop());
+            remoteVideoRef.current.srcObject = null;
+        }
+    
+        socket.emit("end_call", { to: receiverEmail });
+        setVideoCall(false)
+    
+        setIncomingCall(null); // Hide incoming call UI
+    };
+    
     return (
         <div className="flex-1 flex flex-col shadow-md rounded-[10px]">
+            {videoCallOn && <VideoCall onEndCall={handleEndCall} peerConnection={peerConnection} localVideoRef={localVideoRef} remoteVideoRef={remoteVideoRef}/>}
+
+            {incomingCall && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                        <div className="bg-white p-5 rounded-lg shadow-lg text-center">
+                            <p className="text-lg font-semibold">{incomingCall.from.caller} is calling...</p>
+                            <div className="mt-4 flex justify-center space-x-4">
+                                <button onClick={acceptCall} className="bg-green-500 text-white px-4 py-2 rounded">Accept</button>
+                                <button onClick={rejectCall} className="bg-red-500 text-white px-4 py-2 rounded">Reject</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             {props?(
                 <>
                    <div className="flex items-center justify-between p-4 bg-white shadow">
@@ -57,7 +182,7 @@ const ChatArea = ({props}) => {
                    </div>
                     <div className='flex space-x-4 text-gray-600 mt-3 mr-6'>
                         <span class="material-symbols-outlined hover:text-[#1EBDB8] cursor-pointer"> call </span>
-                        <span class="material-symbols-outlined hover:text-[#1EBDB8] cursor-pointer"> video_call </span>
+                        <span class="material-symbols-outlined hover:text-[#1EBDB8] cursor-pointer" onClick={startCall}> video_call </span>
                     {/*  <button onClick={handleStartCall} className="p-2 mx-1 rounded-full bg-green-500 text-white"><FaPhoneAlt /></button>
                         <button onClick={handleStartCall} className="p-2 mx-1 rounded-full bg-green-500 text-white"><FaVideo /></button> */}
                     </div>
@@ -87,6 +212,8 @@ const ChatArea = ({props}) => {
                         <button className="p-3 mx-2 rounded-full bg-[#1EBDB8] text-white flex" onClick={sendMessage}><span class="material-symbols-outlined"> send </span></button>
                         
                     </div>
+                   
+
                 </>
             ):(
                 <div className='grid items-center'>
