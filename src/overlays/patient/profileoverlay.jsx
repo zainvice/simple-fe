@@ -44,7 +44,7 @@ const ProfileOverlay = ({user}) => {
                 </div>
             </div>
             <div className='text-lg text-[#888888]'>
-                <p className='p-2  text-sm hover:bg-gray-200 hover:text-gray-500 duration-300 rounded-[10px] cursor-pointer'>Profile</p>
+                <p className='p-2  text-sm hover:bg-gray-200 hover:text-gray-500 duration-300 rounded-[10px] cursor-pointer' > <a href={`/${user?.role==='provider' ? 'provider': 'patient'}/profile`} className='w-full h-full'>Profile</a></p>
                 <p className='p-2  text-sm hover:bg-gray-200 hover:text-gray-500 duration-300 rounded-[10px] cursor-pointer'>Settings</p>
                 <p className='p-2  text-sm hover:bg-gray-200 hover:text-gray-500 duration-300 rounded-[10px] cursor-pointer'>Refer A Friend</p>
                 <p className='my-4 p-2  text-sm hover:bg-gray-200 hover:text-gray-500 duration-300 rounded-[10px] cursor-pointer' onClick={logoutUser}>Logout</p>

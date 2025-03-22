@@ -6,13 +6,13 @@ export const signup = createAsyncThunk(
   'auth/signup',
   async ({ formData }, { rejectWithValue }) => {
     try {
-      const { email, phone, dob, gender, firstName, lastName, role, specialty, practiceName, practiceSize, zipCode, reference} = formData
+      const { email, phone, dob, gender, firstName, lastName, role, avatar, specialty, practiceName, practiceSize, zipCode, reference} = formData
 
       console.log("FORM DATA", formData)
       const response = await fetch(`${API_BASE_URL}/sign-up`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ emailAddress: email, phoneNumber: phone, dateOfBirth: dob, gender, specialty, practiceName, reference, practiceSize, firstName, lastName, zipCode, role }),
+        body: JSON.stringify({ email: email, phoneNumber: phone, dateOfBirth: dob, gender, avatar, specialty, practiceName, reference, practiceSize, firstName, lastName, zipCode, role }),
       });
 
       console.log("Response: ", response)
@@ -38,7 +38,7 @@ export const sendOTP = createAsyncThunk(
       const response = await fetch(`${API_BASE_URL}/request-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ emailAddress: email, method: 'emailAddress' }),
+        body: JSON.stringify({ email: email, method: 'email' }),
       });
 
       if (!response.ok) {
@@ -62,7 +62,7 @@ export const loginUser = createAsyncThunk(
         const response = await fetch(`${API_BASE_URL}/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ emailAddress: email, method: 'emailAddress', role }),
+          body: JSON.stringify({ email: email, method: 'email', role }),
         });
   
         if (!response.ok) {
@@ -86,7 +86,7 @@ export const verifyOTP = createAsyncThunk(
         const response = await fetch(`${API_BASE_URL}/login/verify-otp`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ emailAddress: email, otp: otp }),
+          body: JSON.stringify({ email: email, otp: otp }),
         });
   
         if (!response.ok) {

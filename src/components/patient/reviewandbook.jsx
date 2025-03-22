@@ -53,6 +53,8 @@ const ReviewAndBook = ({ appointment, openNewAppointment, doctor }) => {
       patientDetails: {
         ...prevDetails.patientDetails,
         [field]: value,
+        name: user.firstName + ' ' + user.lastName,
+        avatar: user.avatar
       },
     }));
   };

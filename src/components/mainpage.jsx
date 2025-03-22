@@ -13,6 +13,7 @@ import ProviderMainDash from './providers/maindash';
 import ProviderChatPage from './providers/chats';
 import { fetchProviders } from '../api/api';
 import { fetchAppointmentsByEmail } from '../api/api';
+import ProfilePageProv from './providers/profile';
 
 const visitReasons = [
     {
@@ -179,10 +180,6 @@ const visitReasons = [
     },
 ];
 
-
-
-
-
 const MainPage = ({userType, type, isExpanded, showHideSidebar}) => {
 
     const [isNewAppointmentOpen, setIsNewAppointmentOpen] = useState(false);
@@ -199,9 +196,7 @@ const MainPage = ({userType, type, isExpanded, showHideSidebar}) => {
         patientType: ""
       },
       patientDetails: {
-        firstName: "",
-        lastName: "",
-        address: "",
+        name: "",
         email: "",
         insuranceinfo: "",
         memberID: "",
@@ -269,7 +264,6 @@ const MainPage = ({userType, type, isExpanded, showHideSidebar}) => {
           const user = JSON.parse(localStorage.getItem('user'));
           const role = user.role;
           const email = user.email;
-          console.log("EMAIL", email, " ROLE", role)
           
           if (email && role) {
             const appointmentsData = await fetchAppointmentsByEmail(email, role);
@@ -321,9 +315,7 @@ const MainPage = ({userType, type, isExpanded, showHideSidebar}) => {
             ...prevDetails.providerDetails,
             providerName: 'Dr. ' + doctorToBookWith.firstName + ' ' + doctorToBookWith.lastName,
             providerEmail: doctorToBookWith.email,
-            providerAvatar: doctorToBookWith.gender === 'female' 
-              ? 'https://static.vecteezy.com/system/resources/previews/041/409/059/non_2x/ai-generated-a-female-doctor-with-a-stethoscope-isolated-on-transparent-background-free-png.png'
-              : 'https://pngimg.com/d/doctor_PNG15992.png',
+            providerAvatar: doctorToBookWith.avatar,
             providerType: doctorToBookWith.practiceName,
             providerRating: doctorToBookWith.rating
           }
@@ -332,8 +324,9 @@ const MainPage = ({userType, type, isExpanded, showHideSidebar}) => {
     }, [doctorToBookWith]);
     
     
-    const toggleNewAppointmentOpen = ({doctor}) => {
+    const toggleNewAppointmentOpen = (doctor) => {
       setIsNewAppointmentOpen(!isNewAppointmentOpen)
+      console.log("DOCTOR", doctor)
       setDoctorTOBookWith(doctor)
     };
     const handleViewAppointmentOpen = (appointment) => {
@@ -353,7 +346,7 @@ const MainPage = ({userType, type, isExpanded, showHideSidebar}) => {
                 <>
                     <Header props ={type} showSideBar={showHideSidebar} />
                     {type.state === 'dashboard' && <MainDash handleNewAppointmentOpen= {toggleNewAppointmentOpen} handleViewAppointmentOpen= {handleViewAppointmentOpen} appointments={appointments} providers={providers}/>}
-                    {type.state === 'chats' && <ChatPage/>}
+                    {type.state === 'chats' && <ChatPage appointments={appointments}/>}
                     {type.state === 'profile' && <ProfilePage/>}
                     {type.state === 'explore' && <ExplorePage handleNewAppointmentOpen= {toggleNewAppointmentOpen} location={location} setLocation={setLocation} providers={providers} error={error}/>}
                     {type.state === 'appointments' && <Appointments handleNewAppointmentOpen= {toggleNewAppointmentOpen} handleViewAppointmentOpen= {handleViewAppointmentOpen} appointments={appointments}/>}
@@ -369,6 +362,7 @@ const MainPage = ({userType, type, isExpanded, showHideSidebar}) => {
                   <Header props ={type} showSideBar={showHideSidebar} />
                   {type.state === 'dashboard' && <ProviderMainDash appointments={appointments}/>}
                   {type.state === 'chats' && <ProviderChatPage appointments={appointments}/>}
+                  {type.state === 'profile' && <ProfilePageProv/>}
                 </>
             }
         </div>

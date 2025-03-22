@@ -1,25 +1,38 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { FaPhoneAlt, FaVideo, FaMicrophone, FaMicrophoneSlash, FaVideoSlash, FaPaperclip, FaRegImages } from 'react-icons/fa';
 
 import ChatArea from '../../common/patient/chatArea';
 
-const messages = [
-  {type: 'incoming', content: `Hey, how is it going!`, time: '11:37AM', status: 'read'},
-  {type: 'outgoing', content: `Hey, i'm good thanks for asking!`, time: '11:37AM', status: 'delivered'},
-  {type: 'incoming', content: `How's everything else!`, time: '11:37AM', status: 'unread'}
-]
-const contacts = [
-  { id: 1, avatar: 'https://pngimg.com/d/doctor_PNG15992.png', name: 'Dr. Lisa Roy',  email: 'zainvicei@gmail.com',  counter: '1', active: false },
-  { id: 2, avatar: 'https://pngimg.com/d/doctor_PNG15992.png', name: 'Dr. Jamie Taylor', email: 'zainvicei@gmail.com', active: true  },
-  { id: 3, avatar: 'https://pngimg.com/d/doctor_PNG15992.png', name: 'Dr. Jason Roy', email: 'zainvicei@gmail.com', active: false,  counter: '10'},
 
-];
 
-const ChatPage = () => {
+const ChatPage = ({ appointments }) => {
   const [showCallUI, setShowCallUI] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOn, setIsVideoOn] = useState(true);
+  const [contacts, setContacts] = useState([]);
   
+  useEffect(() => {
+    if (appointments.length > 0) {
+      setContacts((prev) => {
+
+        const existingEmails = new Set(prev.map((contact) => contact.email));
+
+        const newContacts = appointments
+          .filter((appointment) => 
+            appointment.providerDetails && !existingEmails.has(appointment.providerDetails.providerEmail)
+          )
+          .map((appointment, index) => ({
+            id: prev.length + index + 1, 
+            avatar: appointment.providerDetails.providerAvatar,
+            name: appointment.providerDetails.providerName,
+            email: appointment.providerDetails.providerEmail,
+          }));
+  
+        return [...prev, ...newContacts];
+      });
+    }
+  }, [appointments]);
+
   const [attachedFile, setAttachedFile] = useState(null);
   const [viewContact, setContact] = useState()
   const [sender, setSender] = useState({avatar: 'https://pngimg.com/d/doctor_PNG15992.png', name: 'Zane', active: true})
@@ -60,15 +73,16 @@ const ChatPage = () => {
   }
 
   return (
-    <div className="flex h-[85%] mx-2 lg:mx-8 mt-8 rounded-[10px] shadow-md bg-white p-6 ">
+    <div className="flex h-[85%] mx-2 lg:mx-8 lg:mt-8 mt-4 rounded-[10px] shadow-md bg-white lg:p-6 ">
       {/* Sidebar */}
-      <div className="w-1/4 p-4 shadow-md rounded-[10px] mr-2 ">
+      <div className="w-1/4 p-4 shadow-md rounded-[10px] mr-2 hidden lg:block">
         <div className='w-full p-2 mt-4 rounded-full bg-white flex border shadow-md'>
           <span class="material-symbols-outlined text-[#1EBDB8] mx-2">search</span>
           <input type="text" placeholder="Search Here..." className="focus:outline-none placholder-[#CDCDCD] w-[80%]" />
         </div>
        
         <div className="mt-4 overflow-y-auto h-[80%] ">
+          <p className='font-normal text-[#1EBDB8]'>Available Contacts</p>
           {contacts.map((contact, index) => (
             <div key={index} className={`flex items-center p-2 my-2 rounded-lg border  ${contact?.id === viewContact?.id ? 'bg-[#1EBDB8] text-white' : 'hover:shadow hover:bg-gray-100 transition-all duration-300'} cursor-pointer relative`} onClick={(e)=> viewMessage(contact)}>
               <img src={contact.avatar} alt="Sender" className="w-14 h-14 bg-white rounded-full"/>

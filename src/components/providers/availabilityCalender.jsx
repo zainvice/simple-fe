@@ -12,7 +12,7 @@ import {
 import Spinner from "../../common/spinner";
 import EditAvailabilityOverlay from "../../overlays/provider/editAvailabilityOverlay";
 
-const AvailabilityCalendar = ({appointments}) => {
+const AvailabilityCalendar = ({appointments, availability}) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const calendarRef = useRef(null); 
   const currentTimeRef = useRef(null); 

@@ -14,7 +14,14 @@ const Loginoverlay = ({onClose}) => {
         
       const dispatch = useDispatch();
       const { loading, error } = useSelector((state) => state.auth);
+      const { user, accessToken } = useSelector((state) => state.auth);
       const [otpSender, setOTPSender] = useState(``)
+      useEffect(()=>{
+        if(user&&accessToken){
+            navigate(`/patient/dashboard`)
+        }
+       
+    },[user])
     
       const [loginError, setLoginError] = useState('')
       const [isPhoneVerification, setPhoneVerification] = useState()
@@ -101,7 +108,7 @@ const Loginoverlay = ({onClose}) => {
         
     };
     useEffect(()=>{
-        if(error==='User already exists with this emailAddress.'){
+        if(error==='User already exists with this email.'){
           setLoginError("This email is already associated with an account.")
         } else if (error === 'Failed to fetch'){
           setLoginError("Unable to connect to the server.")

@@ -60,6 +60,7 @@ const PatientAuthPage = () => {
     firstName: '',
     lastName: '',
     phone: '',
+    avatar: 'https://cdn-icons-png.flaticon.com/512/3607/3607444.png',
     dob: '',
     gender: '',
     role: 'user'
@@ -78,7 +79,7 @@ const PatientAuthPage = () => {
   };
 
   useEffect(()=>{
-      if(error==='User already exists with this emailAddress.'){
+      if(error==='User already exists with this email.'){
         setSignupError("This email is already associated with an account.")
       } else if (error === 'Failed to fetch'){
         setSignupError("Unable to connect to the server.")

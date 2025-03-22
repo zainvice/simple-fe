@@ -14,19 +14,42 @@ const Appointments = ( {handleNewAppointmentOpen, handleViewAppointmentOpen, app
         <Button icon={'add'} text={'Book New Appointment'} onClick={(e)=> window.location.href = `/patient/explore`}/>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[50%] overflow-y-auto ">
-        {appointments.map((appointment, index) => (
-          <AppointmentCard index={index} appointment={appointment} view={handleViewAppointmentOpen}/>
-        ))}
+    {appointments.filter(appointment=>  appointment.status !== 'Completed' && appointment.status !== 'Cancelled' ).length > 0 ?
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto">
+        {appointments
+          .filter(appointment => appointment.status !== 'Completed' && appointment.status !== 'Cancelled')
+          .map((appointment, index) => (
+            <AppointmentCard key={index} index={index} appointment={appointment} view={handleViewAppointmentOpen} />
+          ))}
       </div>
-      <div className='w-full h-[1px] rounded-full bg-gray-300 mb-4'></div>
+       :
+       <div className='flex w-full text-center'>
+             <p className='font-semibold text-xl text-[#1EBDB8] m-auto my-8'>NO SCHEDULED APPOINTMENTS YET</p> 
+       </div>
+     }
+
       <div className="flex justify-between items-center my-4">
         <h1 className="text-2xl font-semibold text-[#1EBDB8]">Completed Appointments</h1>
        
       </div>
-      {appointments.filter(appointment=> appointment.status === 'Completed').length > 0 ?
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[50%] overflow-y-auto">
+      {appointments.filter(appointment=> appointment.status === 'Completed' ).length > 0 ?
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto">
           {appointments.filter(appointment=> appointment.status === 'Completed').map((appointment, index) => (
+            <AppointmentCard index={index} appointment={appointment} view={handleViewAppointmentOpen}/>
+          ))}
+        </div>
+        :
+        <div className='flex w-full text-center'>
+              <p className='font-semibold text-xl text-[#1EBDB8] m-auto my-8'>NO COMPLETED APPOINTMENTS YET</p> 
+        </div>
+      }
+      <div className="flex justify-between items-center my-4">
+        <h1 className="text-2xl font-semibold text-[#1EBDB8]">Cancelled Appointments</h1>
+       
+      </div>
+      {appointments.filter(appointment=> appointment.status === 'Cancelled').length > 0 ?
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto">
+          {appointments.filter(appointment=> appointment.status === 'Cancelled').map((appointment, index) => (
             <AppointmentCard index={index} appointment={appointment} view={handleViewAppointmentOpen}/>
           ))}
         </div>

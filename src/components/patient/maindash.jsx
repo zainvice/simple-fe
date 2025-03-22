@@ -29,7 +29,7 @@ const MainDash = ({handleNewAppointmentOpen, handleViewAppointmentOpen, appointm
           </div>
         :
           <div className='flex w-full text-center'>
-                <img src="https://i.gifer.com/4Snj.gif" alt="hello" /> <p className='font-semibold text-3xl text-[#1EBDB8] m-auto'>WELCOME ABOARD, START BOOKING APPOINTMENTS</p> 
+                <p className='font-semibold text-3xl text-[#1EBDB8] m-auto'>WELCOME ABOARD, START BOOKING APPOINTMENTS</p> 
           </div>
         }
       </div>
@@ -45,7 +45,7 @@ const MainDash = ({handleNewAppointmentOpen, handleViewAppointmentOpen, appointm
           </div>
           :
           <div className='flex w-full text-center'>
-               <img src="https://i.pinimg.com/originals/ae/47/c6/ae47c6219b5ef4793bc6d9cb7a113998.gif" alt="hello" className='w-60 h-60'/> <p className='font-semibold text-3xl text-[#1EBDB8] m-auto'>NO FAVORITES YET</p> 
+              <p className='font-semibold text-xl text-[#1EBDB8] m-auto my-8'>NO FAVORITES YET</p> 
           </div>
         }
       </div>

@@ -353,6 +353,14 @@ const ProviderAuthPage = () => {
   const [isPhoneProvided, setPhoneProvided] = useState(true)
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.auth);
+  const { user, accessToken } = useSelector((state) => state.auth);
+  useEffect(()=>{
+    if(user&&accessToken){
+        navigate(`/provider/dashboard`)
+    }
+   
+  },[user])
+      
 
   const [signupError, setSignupError] = useState('')
   const [dobError, setdobError] = useState('');
@@ -392,6 +400,7 @@ const ProviderAuthPage = () => {
     practiceName: '',
     practiceSize: '1',
     specialty: selectedItems,
+    avatar: 'https://images.vexels.com/media/users/3/151709/isolated/preview/098c4aad185294e67a3f695b3e64a2ec-doctor-avatar-icon.png?w=360',
     zipCode: '',
     reference: '',
     role: 'provider',

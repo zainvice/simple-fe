@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { FaPhoneAlt, FaVideo, FaMicrophone, FaMicrophoneSlash, FaVideoSlash, FaPaperclip, FaRegImages } from 'react-icons/fa';
 
 import ChatArea from '../../common/patient/chatArea';
@@ -8,14 +8,9 @@ const messages = [
   {type: 'outgoing', content: `Hey, i'm good thanks for asking!`, time: '11:37AM', status: 'delivered'},
   {type: 'incoming', content: `How's everything else!`, time: '11:37AM', status: 'unread'}
 ]
-const contacts = [
-  { id: 1, avatar: 'https://pngimg.com/d/doctor_PNG15992.png', name: 'Dr. Lisa Roy',  email: 'zainvicee@gmail.com',  counter: '1', active: false },
-  { id: 2, avatar: 'https://pngimg.com/d/doctor_PNG15992.png', name: 'Dr. Jamie Taylor', email: 'zainvicee@gmail.com', active: true  },
-  { id: 3, avatar: 'https://pngimg.com/d/doctor_PNG15992.png', name: 'Dr. Jason Roy', email: 'zainvicee@gmail.com', active: false,  counter: '10'},
 
-];
 
-const ProviderChatPage = () => {
+const ProviderChatPage = ({ appointments }) => {
   const [showCallUI, setShowCallUI] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOn, setIsVideoOn] = useState(true);
@@ -33,6 +28,38 @@ const ProviderChatPage = () => {
     setShowVideoPreview(!showVideoPreview);
   };
   const handleEndCall = () => setShowCallUI(false);
+
+  const [contacts, setContacts] = useState([]);
+
+  useEffect(() => {
+    if (appointments.length > 0) {
+      setContacts((prev) => {
+        const existingEmails = new Set(prev.map((contact) => contact.email));
+  
+        const newContacts = appointments
+          .filter((appointment) => 
+            appointment.providerDetails && 
+            !existingEmails.has(appointment.providerDetails.providerEmail)
+          )
+          .reduce((acc, appointment) => {
+            if (!existingEmails.has(appointment.patientDetails.email)) {
+              acc.push({
+                id: prev.length + acc.length + 1, 
+                avatar: appointment.patientDetails.avatar,
+                name: appointment.patientDetails.name,
+                email: appointment.patientDetails.email,
+              });
+              existingEmails.add(appointment.patientDetails.email); // Add email to set dynamically
+            }
+            return acc;
+          }, []);
+  
+        return [...prev, ...newContacts];
+      });
+    }
+  }, [appointments]);
+  
+  
 
   const handleFileAttach = (e) => {
     const file = e.target.files[0];

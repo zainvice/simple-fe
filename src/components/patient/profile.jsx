@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { getUserByEmail } from '../../api/userCalls';
 
 const ProfilePage = () => {
+
+  const { user } = useSelector((state) => state.auth);
   const [profile, setProfile] = useState({
     fullName: 'Zane Ul Hassan',
     nickName: '',
@@ -12,6 +16,19 @@ const ProfilePage = () => {
     avatar: 'https://via.placeholder.com/100', // Placeholder avatar
     emails: [{ email: 'zainvicee@gmail.com', addedAt: '1 month ago' }],
   });
+  useEffect(()=> {
+    const fetchUser = async( user ) => {
+        try {
+            const response = await getUserByEmail(user.email)
+            setProfile(response)
+        } catch (error) {
+            console.error("Error", error)
+        }
+    }
+    if(user){
+       fetchUser(user)
+    }
+  }, [user])
 
   const [isEditing, setIsEditing] = useState(false);
   const [newEmail, setNewEmail] = useState('');
@@ -42,49 +59,67 @@ const ProfilePage = () => {
     }
   };
 
+  const onSave = () => {
+
+  }
+
   return (
-    <div className="px-6 mx-auto bg-white rounded-lg shadow-md">
+    <div className="p-6 bg-white shadow-md rounded-[10px] mt-8 mx-8 overflow-y-auto max-h-[84%]">
       {/* Banner */}
-      <div className="h-20 w-full bg-gradient-to-r from-green-200 to-yellow-200 rounded-t-lg"></div>
+      <div className="h-24 w-full bg-gradient-to-r from-[#1EBDB8] to-[#FAF6E0] rounded-t-lg"></div>
 
       {/* Profile Details */}
-      <div className="flex items-center mt-[-50px] mb-4">
-        <img
-          src={profile.avatar}
-          alt="Avatar"
-          className="w-24 h-24 rounded-full border-4 border-white object-cover"
-        />
+      <div className="flex items-center mb-4 mt-2">
+        {/* Avatar with Hover Upload */}
+        <div className="relative w-24 h-24">
+          <img
+            src={profile.avatar}
+            alt="Avatar"
+            className="w-24 h-24 rounded-full border-4 border-white object-cover"
+          />
+          {/* Hover Effect */}
+          <label className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-full opacity-0 hover:opacity-100 transition-opacity cursor-pointer">
+            <span className="text-white text-sm"><span class="material-symbols-outlined"> photo_camera </span></span>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleAvatarChange}
+              className="absolute inset-0 opacity-0 cursor-pointer"
+            />
+          </label>
+        </div>
+
         <div className="ml-4">
-          <h2 className="text-2xl font-semibold">{profile.fullName}</h2>
+          <h2 className="text-2xl font-semibold">{profile.firstName} {profile.lastName}</h2>
           <p className="text-gray-500">{profile.email}</p>
         </div>
         <button
-          onClick={() => setIsEditing(!isEditing)}
-          className="ml-auto px-4 py-2 bg-blue-500 text-white rounded-lg"
+          onClick={() => onSave()}
+          className="ml-auto mr-2 px-4 flex py-4 bg-[#1EBDB8] text-white rounded-full"
+          title='Save'
         >
-          {isEditing ? 'Save' : 'Edit'}
+         <span class="material-symbols-outlined my-auto"> save </span>
         </button>
+        
       </div>
 
-      {/* Form Fields */}
-      {isEditing ? (
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-gray-700">Full Name</label>
+            <label className="block text-gray-700">First Name</label>
             <input
               type="text"
-              name="fullName"
-              value={profile.fullName}
+              name="firstName"
+              value={profile.firstName}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-lg"
             />
           </div>
           <div>
-            <label className="block text-gray-700">Nick Name</label>
+            <label className="block text-gray-700">Last Name</label>
             <input
               type="text"
-              name="nickName"
-              value={profile.nickName}
+              name="lastName"
+              value={profile.lastName}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-lg"
             />
@@ -130,75 +165,10 @@ const ProfilePage = () => {
             />
           </div>
 
-          {/* Avatar Upload */}
-          <div className="col-span-2">
-            <label className="block text-gray-700">Change Avatar</label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleAvatarChange}
-              className="w-full p-2 border rounded-lg"
-            />
-          </div>
+         
         </div>
-      ) : (
-        <div className="grid grid-cols-2 gap-4 text-gray-700">
-          <div>
-            <label>Full Name</label>
-            <p className="border p-2 rounded-lg">{profile.fullName}</p>
-          </div>
-          <div>
-            <label>Nick Name</label>
-            <p className="border p-2 rounded-lg">{profile.nickName}</p>
-          </div>
-          <div>
-            <label>Gender</label>
-            <p className="border p-2 rounded-lg">{profile.gender}</p>
-          </div>
-          <div>
-            <label>Country</label>
-            <p className="border p-2 rounded-lg">{profile.country}</p>
-          </div>
-          <div>
-            <label>Language</label>
-            <p className="border p-2 rounded-lg">{profile.language}</p>
-          </div>
-          <div>
-            <label>Time Zone</label>
-            <p className="border p-2 rounded-lg">{profile.timeZone}</p>
-          </div>
-        </div>
-      )}
-
-      {/* Email List */}
-      <div className="mt-6">
-        <h3 className="text-lg font-semibold text-gray-700">My Email Address</h3>
-        <ul className="mt-2">
-          {profile.emails.map((email, index) => (
-            <li key={index} className="flex items-center mb-2">
-              <span className="text-gray-700">{email.email}</span>
-              <span className="ml-2 text-sm text-gray-500">{email.addedAt}</span>
-            </li>
-          ))}
-        </ul>
-        {isEditing && (
-          <div className="flex items-center mt-4">
-            <input
-              type="email"
-              value={newEmail}
-              onChange={(e) => setNewEmail(e.target.value)}
-              placeholder="Add Email Address"
-              className="flex-1 p-2 border rounded-lg mr-2"
-            />
-            <button
-              onClick={handleAddEmail}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-            >
-              + Add Email Address
-            </button>
-          </div>
-        )}
-      </div>
+      
+    
     </div>
   );
 };

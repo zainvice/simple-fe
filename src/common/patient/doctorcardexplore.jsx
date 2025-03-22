@@ -1,5 +1,4 @@
 import React from 'react';
-import Button from './button';
 
 function DoctorCardExplore({doctor, schedule, fav}) {
     console.log('DOCTOR', doctor)
@@ -42,9 +41,9 @@ function DoctorCardExplore({doctor, schedule, fav}) {
        
             {doctor?.availability?.length> 0 ? 
                     <div className='grid grid-cols-7 gap-2 ' id='availibility'>
-                        {doctor?.availability?.map((available)=>(
+                        {doctor?.availability?.slice(0, 14).map((available)=>(
                     
-                            <div className={`flex-1 px-3 text-center  py-6 rounded-[10px]  ${available?.availableAppointments?.length>0 ? 'bg-[#1EBDB8] text-white cursor-pointer': 'text-[#707271] bg-[#F6F3F3] cursor-disabled'}`} onClick={(e)=>schedule({doctor: doctor})}>
+                            <div className={`flex-1 px-3 text-center  py-6 rounded-[10px]  ${available?.availableAppointments?.length>0 ? 'bg-[#1EBDB8] text-white cursor-pointer': 'text-[#707271] bg-[#F6F3F3] cursor-disabled'}`} onClick={(e)=>schedule(doctor)}>
                                 
                                     <p>{available?.day.slice(0, 3)}</p> 
                                     <p className='mb-4'>

@@ -5,6 +5,7 @@ import MainPage from '../../components/mainpage';
 import { useNavigate, useParams } from 'react-router-dom';
 import LostPage from '../404';
 import { useSelector } from 'react-redux';
+import socket from '../../utils/socket';
 
 const Dashboard = () => {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -14,10 +15,18 @@ const Dashboard = () => {
     const { user, accessToken } = useSelector((state) => state.auth);
 
     useEffect(()=>{
-        console.log("user", user)
+        console.log("Connecting to server", user)
         if(!user||!accessToken){
             navigate(`/auth/${userType}/signup`)
         }
+        if (user?.email) {
+            socket.connect();
+            socket.emit("join", user.email); 
+      
+            return () => {
+              socket.disconnect();
+            };
+          }
     },[user])
 
     const showHideSidebar = () => {
