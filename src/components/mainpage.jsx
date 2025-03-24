@@ -14,6 +14,8 @@ import ProviderChatPage from './providers/chats';
 import { fetchProviders } from '../api/api';
 import { fetchAppointmentsByEmail } from '../api/api';
 import ProfilePageProv from './providers/profile';
+import HelpCenter from './patient/helpcenter';
+
 
 const visitReasons = [
     {
