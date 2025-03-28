@@ -84,3 +84,4 @@
 // Improve error messages on 2025-03-25
 // Fix typo in component on 2025-03-26
 // Optimize images on 2025-03-27
+// Improve input handling on 2025-03-28
