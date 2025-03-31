@@ -87,3 +87,4 @@
 // Improve input handling on 2025-03-28
 // Add mobile nav support on 2025-03-29
 // Tweak animation speed on 2025-03-30
+// Improve form validation on 2025-03-31
