@@ -26,3 +26,4 @@
 // Update header style on 2025-03-23
 // Fix CSS bug on 2025-03-26
 // Fix typo in component on 2025-03-28
+// Add loading spinner on 2025-03-31
