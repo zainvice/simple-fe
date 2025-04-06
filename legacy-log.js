@@ -91,3 +91,4 @@
 // Refactor navbar on 2025-04-02
 // Tweak animation speed on 2025-04-03
 // Change font size on 2025-04-04
+// Improve error messages on 2025-04-06
