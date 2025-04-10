@@ -30,3 +30,4 @@
 // Update header style on 2025-04-02
 // Fix CSS bug on 2025-04-05
 // Refactor navbar on 2025-04-08
+// Refactor navbar on 2025-04-10
