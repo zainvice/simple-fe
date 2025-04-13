@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FaPhoneAlt, FaVideo, FaMicrophone, FaMicrophoneSlash, FaVideoSlash, FaPaperclip, FaRegImages } from 'react-icons/fa';
 
-import ChatArea from '../../common/patient/chatArea';
+import ChatArea from '../../common/chatArea';
+import { useSelector } from 'react-redux';
+import { getMessages } from '../../api/messageCalls';
 
 
 
@@ -9,29 +11,38 @@ const ChatPage = ({ appointments }) => {
   const [showCallUI, setShowCallUI] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOn, setIsVideoOn] = useState(true);
-  const [contacts, setContacts] = useState([]);
+  const { user } = useSelector((state) => state.auth);
   
+ 
   useEffect(() => {
-    if (appointments.length > 0) {
-      setContacts((prev) => {
-
-        const existingEmails = new Set(prev.map((contact) => contact.email));
-
-        const newContacts = appointments
-          .filter((appointment) => 
-            appointment.providerDetails && !existingEmails.has(appointment.providerDetails.providerEmail)
-          )
-          .map((appointment, index) => ({
-            id: prev.length + index + 1, 
-            avatar: appointment.providerDetails.providerAvatar,
-            name: appointment.providerDetails.providerName,
-            email: appointment.providerDetails.providerEmail,
-          }));
+      if (appointments.length > 0) {
+        setContacts((prev) => {
+          const existingEmails = new Set(prev.map((contact) => contact.email));
+    
+          const newContacts = appointments
+            .filter((appointment) => 
+              appointment.providerDetails && 
+              !existingEmails.has(appointment.providerDetails.providerEmail)
+            )
+            .reduce((acc, appointment) => {
+              if (!existingEmails.has(appointment.providerDetails.providerEmail)) {
+                acc.push({
+                  id: prev.length + acc.length + 1, 
+                  avatar: appointment.providerDetails.providerAvatar,
+                  name: appointment.providerDetails.providerName,
+                  email: appointment.providerDetails.providerEmail,
+                });
+                existingEmails.add(appointment.providerDetails.providerEmail); // Add email to set dynamically
+              }
+              return acc;
+            }, []);
+    
+          return [...prev, ...newContacts];
+        });
+      }
+    }, [appointments]);
+    
   
-        return [...prev, ...newContacts];
-      });
-    }
-  }, [appointments]);
 
   const [attachedFile, setAttachedFile] = useState(null);
   const [viewContact, setContact] = useState()
@@ -39,6 +50,32 @@ const ChatPage = ({ appointments }) => {
   const [attachedImage, setAttachedImage] = useState(null);
   const [showVideoPreview, setShowVideoPreview] = useState(false);
   const videoRef = useRef(null);
+  
+  const [contacts, setContacts] = useState([]);
+  const [messages, setMessages] = useState({});
+
+  const getMessagesforContact = async(contact) => {
+      try {
+         const response = await getMessages(user.email, contact.email)
+         return response.data
+      } catch (error) {
+         console.error("error")
+         return []
+      }
+  } 
+
+  console.log("SET CONTACTS", contacts)
+  useEffect(() => {
+    const fetchMessages = async () => {
+      const updatedMessages = {};
+      for (const contact of contacts) { 
+        updatedMessages[contact.id] = await getMessagesforContact(contact);
+      }
+      setMessages(updatedMessages);
+    };
+
+    fetchMessages();
+  }, [contacts, user]);
 
   const handleToggleMute = () => setIsMuted(!isMuted);
   const handleToggleVideo = () => {
@@ -83,20 +120,44 @@ const ChatPage = ({ appointments }) => {
        
         <div className="mt-4 overflow-y-auto h-[80%] ">
           <p className='font-normal text-[#1EBDB8]'>Available Contacts</p>
-          {contacts.map((contact, index) => (
-            <div key={index} className={`flex items-center p-2 my-2 rounded-lg border  ${contact?.id === viewContact?.id ? 'bg-[#1EBDB8] text-white' : 'hover:shadow hover:bg-gray-100 transition-all duration-300'} cursor-pointer relative`} onClick={(e)=> viewMessage(contact)}>
-              <img src={contact.avatar} alt="Sender" className="w-14 h-14 bg-white rounded-full"/>
-              <div className='flex flex-col ml-2'>
-                <span className={`font-semibold ${contact?.id === viewContact?.id ? 'text-white' : 'text-[#1EBDB8]'} `}>{contact.name}</span>
-                <span className={`text-[12px]  ${contact?.id === viewContact?.id ? 'text-white' : 'text-[#959595]'} whitespace-nowrap`}> {contact?.messages?.[contact.messages.length - 1]?.content || "No messages"}</span>
+
+          {contacts.length === 0 ? (
+            <div className="text-gray-400 text-center mt-8 italic">No contacts available yet</div>
+          ) : (
+            contacts.map((contact, index) => (
+              <div
+                key={index}
+                className={`flex items-center p-2 my-2 rounded-lg border ${
+                  contact?.id === viewContact?.id
+                    ? 'bg-[#1EBDB8] text-white'
+                    : 'hover:shadow hover:bg-gray-100 transition-all duration-300'
+                } cursor-pointer relative`}
+                onClick={() => viewMessage(contact)}
+              >
+                <img src={contact.avatar} alt="Sender" className="w-14 h-14 bg-white rounded-full" />
+                <div className='flex flex-col ml-2'>
+                  <span className={`font-semibold ${contact?.id === viewContact?.id ? 'text-white' : 'text-[#1EBDB8]'}`}>
+                    {contact.name}
+                  </span>
+                  <span className={`text-[12px] ${contact?.id === viewContact?.id ? 'text-white' : 'text-[#959595]'} whitespace-nowrap`}>
+                    {messages[contact.id]?.length
+                      ? (messages[contact.id].at(-1)?.senderEmail === user.email
+                        ? `You: ${messages[contact.id].at(-1)?.content}`
+                        : messages[contact.id].at(-1)?.content)
+                      : "No messages"}
+                  </span>
+                </div>
+                <div className='absolute flex flex-col right-1 top-3'>
+                  <span className="text-[#BABABA] text-[12px] whitespace-nowrap">{contact.time}</span>
+                  <span className="text-[12px] text-white text-center rounded-full bg-[#1E232F] w-5 absolute top-6 right-2 ">
+                    {contact.counter}
+                  </span>
+                </div>
               </div>
-              <div className='absolute flex flex-col right-1 top-3'>
-                <span className=" text-[#BABABA] text-[12px] whitespace-nowrap">{contact.time}</span>
-                <span className="text-[12px] text-white text-center rounded-full bg-[#1E232F] w-5 absolute top-6 right-2 ">{contact.counter}</span>
-              </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
+
       </div>
 
       {/* Chat Area */}

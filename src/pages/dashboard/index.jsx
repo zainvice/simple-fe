@@ -68,7 +68,7 @@ const Dashboard = () => {
     return (
         <div className='flex-1 lg:flex w-full '>
              {userType==='patient'||'provider' ?
-                !['dashboard', 'chats', 'profile', 'explore', 'appointments', 'history', 'provider details', 'lab reports', 'favorites', 'review and book'].includes(shifter.state) ? <LostPage /> : <>
+                !['dashboard', 'chats', 'profile', 'explore', 'appointments', 'history', 'provider details', 'lab reports', 'favorites', 'review and book', 'verification', 'subscriptions'].includes(shifter.state) ? <LostPage /> : <>
                     <Sidebar toggleSidebar={toggleSidebar} userType={userType} isExpanded={isExpanded} toggleShifter={toggleShifter} shifter={shifter} showSidebar={showSideBar} showHideSidebar={showHideSidebar}/>
                     <MainPage isExpanded={isExpanded} type={shifter} userType={userType} showHideSidebar={showHideSidebar}/>
                    

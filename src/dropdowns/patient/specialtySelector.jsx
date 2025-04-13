@@ -69,7 +69,7 @@ const SpecialtyDropdown = ({ setSearchTerm, searchTerm }) => {
   }, [searchTerm]);
 
   return (
-    <div className="absolute -bottom-[330%] bg-white rounded-[10px] text-[#1E232F] px-4 py-2 h-[200px] border-2 text-left overflow-y-auto">
+    <div className="absolute -bottom-[330%] bg-white rounded-[10px] text-[#1E232F] px-4 py-2 h-[200px] border-2 text-left overflow-y-auto z-40">
       <div className="dropdown-options" role="listbox">
         <p className="text-[#888888]">All Specialties (a-z)</p>
         {specialtiesShow.map((specialty, index) => (

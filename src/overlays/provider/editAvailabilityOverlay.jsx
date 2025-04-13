@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { updateUserByEmail } from "../../api/userCalls"
 import { useSelector } from "react-redux";
 import { getUserByEmail } from "../../api/userCalls";
+import Spinner from "../../common/spinner";
 
 const EditAvailabilityOverlay = ({ onClose }) => {
   const [availability, setAvailability] = useState([]);
@@ -10,6 +11,9 @@ const EditAvailabilityOverlay = ({ onClose }) => {
   const [selectedHours, setSelectedHours] = useState("24/7");
   const { user } = useSelector((state) => state.auth);
   const [userData, setUserData] = useState()
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState(null);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   const hourOptions = {
     "24/7": { start: 0, end: 24 },
@@ -43,13 +47,19 @@ const EditAvailabilityOverlay = ({ onClose }) => {
 
 
   const onSave  = async() => {
+    setIsSaving(true);
+    setSaveError(null);
      try {
         const userData = { availability: availability}
         const response = await updateUserByEmail(user.email, userData)
-        console.log("RESPONSE", response)
+        setShowSuccessPopup(true);
+        setIsSaving(false)
+        setTimeout(() => setShowSuccessPopup(false), 2000); 
 
      } catch (error) {
         console.error("error", error)
+        setIsSaving(false)
+        setSaveError("⚠️ Server error. Please try again.");
      }
   }
   const handleTimeClick = (time, date) => {
@@ -118,7 +128,13 @@ const EditAvailabilityOverlay = ({ onClose }) => {
   };
   
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50">
+       {showSuccessPopup && (
+        <div className="fixed top-20 right-10 bg-[#1EBDB8] text-white px-6 py-3 rounded-xl shadow-lg z-50 animate-slideIn">
+          Availability updated successfully!
+        </div>
+      )}
+
       <div className="bg-white w-full max-w-lg rounded-lg shadow-lg relative">
         <button className="absolute top-4 right-4 text-gray-500 hover:text-gray-700" onClick={onClose}>X</button>
         <div className="p-6 border-b border-gray-300">
@@ -182,7 +198,7 @@ const EditAvailabilityOverlay = ({ onClose }) => {
 
         <div className="p-6 border-t border-gray-300 flex justify-end space-x-4">
           <button className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300" onClick={onClose}>Cancel</button>
-          <button className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600" onClick={onSave}>Save</button>
+          <button className="bg-teal-500 text-white px-4 py-2 w-24 rounded hover:bg-teal-600" onClick={onSave}>{isSaving ? <Spinner/>: 'Save'}</button>
         </div>
       </div>
     </div>

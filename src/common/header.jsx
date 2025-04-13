@@ -76,7 +76,7 @@ const Header = ({props, showSideBar}) => {
             
             <div className='lg:flex poppins text-sm mt-2 mr-14 hidden'>
                 <p className="mx-4 text-[#1EBDB8] font-bold text-md">
-                    {userTime ? `${userTime} (${timezone})` : "Loading time..."}
+                    {userTime ? `${userTime} ` : "Loading time..."}
                 </p>
                 <p className='mx-4 text-[#1E232F]'>{user?.role==='provider'&&'Dr. '}{user ? user?.firstName +' '+ user?.lastName : 'username'}</p>
                 <span className="material-symbols-outlined text-[#888888] mx-2 cursor-pointer" onClick={toggleProfile}>keyboard_arrow_down</span>

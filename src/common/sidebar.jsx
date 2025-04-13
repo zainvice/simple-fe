@@ -35,22 +35,31 @@ const Sidebar = ({ userType, isExpanded, toggleSidebar, toggleShifter, shifter, 
       </div>
 
       <div className="flex-1 my-16 text-sm">
-          {userType==='patient' ? 
-            <>
-                <SidebarItem icon={<span className="material-symbols-outlined"> home </span>} text="Dashboard" isExpanded={isExpanded || showSidebar} isActive={activeItem === 'dashboard'} onClick={() => toggleShifter('dashboard')} />
-                <SidebarItem icon={<span className="material-symbols-outlined"> book_online </span>} text="Appointments" isExpanded={isExpanded || showSidebar} isActive={activeItem === 'appointments'} onClick={() => toggleShifter('appointments')} />
-                <SidebarItem icon={<span className="material-symbols-outlined"> chat </span>} text="Chats" isExpanded={isExpanded || showSidebar} isActive={activeItem === 'chats'} onClick={() => toggleShifter('chats')} />
-                <SidebarItem icon={<span className="material-symbols-outlined"> diversity_1 </span>} text="Explore" isExpanded={isExpanded || showSidebar} isActive={activeItem === 'explore'} onClick={() => toggleShifter('explore')} />
-                <SidebarItem icon={<span className="material-symbols-outlined"> bookmark_heart </span>} text="Favorites" isExpanded={isExpanded || showSidebar} isActive={activeItem === 'favorites'} onClick={() => toggleShifter('favorites')} />
-                <SidebarItem icon={<span className="material-symbols-outlined"> biotech </span>} text="Lab Reports" isExpanded={isExpanded || showSidebar} isActive={activeItem === 'lab reports'} onClick={() => toggleShifter('labreports')} />
-                
-            </>
-          :
+      {userType === 'patient' && (
           <>
-              <SidebarItem icon={<span className="material-symbols-outlined"> home </span>} text="Dashboard" isExpanded={isExpanded || showSidebar} isActive={activeItem === 'dashboard'} onClick={() => toggleShifter('dashboard')} />
-              <SidebarItem icon={<span className="material-symbols-outlined"> chat </span>} text="Chats" isExpanded={isExpanded || showSidebar} isActive={activeItem === 'chats'} onClick={() => toggleShifter('chats')} />
+            <SidebarItem icon={<span className="material-symbols-outlined">home</span>} text="Dashboard" isExpanded={isExpanded || showSidebar} isActive={activeItem === 'dashboard'} onClick={() => toggleShifter('dashboard')} />
+            <SidebarItem icon={<span className="material-symbols-outlined">book_online</span>} text="Appointments" isExpanded={isExpanded || showSidebar} isActive={activeItem === 'appointments'} onClick={() => toggleShifter('appointments')} />
+            <SidebarItem icon={<span className="material-symbols-outlined">chat</span>} text="Chats" isExpanded={isExpanded || showSidebar} isActive={activeItem === 'chats'} onClick={() => toggleShifter('chats')} />
+            <SidebarItem icon={<span className="material-symbols-outlined">diversity_1</span>} text="Explore" isExpanded={isExpanded || showSidebar} isActive={activeItem === 'explore'} onClick={() => toggleShifter('explore')} />
+            <SidebarItem icon={<span className="material-symbols-outlined">bookmark_heart</span>} text="Favorites" isExpanded={isExpanded || showSidebar} isActive={activeItem === 'favorites'} onClick={() => toggleShifter('favorites')} />
+            <SidebarItem icon={<span className="material-symbols-outlined">biotech</span>} text="Lab Reports" isExpanded={isExpanded || showSidebar} isActive={activeItem === 'lab reports'} onClick={() => toggleShifter('labreports')} />
           </>
-          }
+        )}
+
+        {userType === 'provider' && (
+          <>
+            <SidebarItem icon={<span className="material-symbols-outlined">home</span>} text="Dashboard" isExpanded={isExpanded || showSidebar} isActive={activeItem === 'dashboard'} onClick={() => toggleShifter('dashboard')} />
+            <SidebarItem icon={<span className="material-symbols-outlined">book_online</span>} text="Appointments" isExpanded={isExpanded || showSidebar} isActive={activeItem === 'appointments'} onClick={() => toggleShifter('appointments')} />
+            <SidebarItem icon={<span className="material-symbols-outlined">chat</span>} text="Chats" isExpanded={isExpanded || showSidebar} isActive={activeItem === 'chats'} onClick={() => toggleShifter('chats')} />
+            <SidebarItem icon={<span className="material-symbols-outlined">card_membership</span>} text="Subscriptions" isExpanded={isExpanded || showSidebar} isActive={activeItem === 'subscriptions'} onClick={() => toggleShifter('subscriptions')} />
+          </>
+        )}
+
+        {userType === 'admin' && (
+          <>
+            <SidebarItem icon={<span className="material-symbols-outlined">home</span>} text="Dashboard" isExpanded={isExpanded || showSidebar} isActive={activeItem === 'dashboard'} onClick={() => toggleShifter('dashboard')} />
+          </>
+        )}
 
       
       </div>

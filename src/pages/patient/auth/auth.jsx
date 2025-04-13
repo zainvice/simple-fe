@@ -2,9 +2,9 @@ import React, {useEffect, useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { signup } from '../../../api/features/auth/patient/authSlice';
 import { sendOTP } from '../../../api/features/auth/patient/authSlice';
-import Button from '../../../common/patient/button';
+import Button from '../../../common/button';
 import Loginoverlay from '../../../overlays/patient/loginoverlay';
-import Verificationoverlay from '../../../overlays/patient/verificationoverlay';
+import Verificationoverlay from '../../../overlays/provider/verificationoverlay';
 
 
 

@@ -32,10 +32,28 @@ const Verificationoverlay = ({ onClose, phone, email, role }) => {
     return () => clearInterval(timer);
   }, [isTimerActive, resendTimer]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+  const handleOTPChange = (e, index) => {
+    const value = e.target.value.replace(/\D/, ""); // Only digits
+    if (!value) return;
+  
+    const otp = formData.otp.split("");
+    otp[index] = value;
+  
+    setFormData({
+      ...formData,
+      otp: otp.join(""),
+    });
+  
+    // Move to next input
+    if (e.target.nextSibling) {
+      e.target.nextSibling.focus();
+    }
   };
+  useEffect(()=>{
+          if(formData.email){
+              setOTPSender(`We sent a code to ${formData?.email}. To keep your account safe, do not share this code with anyone`)
+          }
+  },[formData])
 
   const handleSubmit = async (e, state) => {
     e.preventDefault();
@@ -64,38 +82,43 @@ const Verificationoverlay = ({ onClose, phone, email, role }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-30">
-      <div className="bg-white text-gray-900 rounded-lg shadow-lg p-8 w-[350px] md:w-[500px] lg:w-[600px] relative">
+    <div className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="bg-white text-gray-900 rounded-lg shadow-lg p-8 text-left w-[350px] md:w-[500px] lg:w-[600px] relative">
         <button className="absolute top-4 right-4 text-gray-500 hover:text-gray-700" onClick={onClose}>X</button>
         <h2 className="text-2xl font-medium">Enter the 6-digit code</h2>
         {error && <p className="text-red-600 my-2">{error}</p>}
         <p className="text-sm text-gray-600 mb-4">{otpSender}</p>
         <div className="mb-4 text-gray-600">
           <label className="font-semibold block text-sm mb-2" htmlFor="otp">Verification Code</label>
-          <input
-            type="number"
-            id="otp"
-            name="otp"
-            className="w-full p-3 bg-gray-200 rounded-lg"
-            placeholder="------"
-            value={formData.otp}
-            onChange={handleChange}
-            required
-          />
+          <div className="flex justify-between mx-10 gap-2">
+            {[...Array(6)].map((_, index) => (
+              <input
+                key={index}
+                type="text"
+                inputMode="numeric"
+                maxLength="1"
+                className="w-12 h-12 text-center text-xl bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1EBDB8] transition"
+                value={formData.otp[index] || ""}
+                onChange={(e) => handleOTPChange(e, index)}
+                onFocus={(e) => e.target.select()}
+              />
+            ))}
+          </div>
         </div>
+
         <p className="text-sm text-gray-600 mb-4">
           Didn’t receive your code?{' '}
           {isTimerActive ? (
             <span className="text-gray-400">Resend in {resendTimer}s</span>
           ) : (
-            <span className="font-semibold text-teal-600 underline cursor-pointer" onClick={(e) => handleSubmit(e, 'Resend OTP')}>
+            <span className="font-semibold text-[#1EBDB8] underline cursor-pointer" onClick={(e) => handleSubmit(e, 'Resend OTP')}>
               Resend Code
             </span>
           )}
         </p>
         <button
           type="submit"
-          className="w-full py-2 px-4 bg-teal-600 text-white rounded-lg font-bold hover:bg-teal-500 transition"
+          className="w-full py-2 px-4 bg-[#1EBDB8] text-white rounded-lg font-bold hover:bg-teal-500 transition"
           onClick={handleSubmit}
         >
           {loading ? <Spinner /> : 'Continue'}

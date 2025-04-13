@@ -1,62 +1,65 @@
 import React, {useState} from "react";
 import { updateAppointment } from "../../api/api";
+
 import Spinner from "../../common/spinner";
 import LeaveReviewOverlay from "../leaveReviewOverlay";
 
-const ViewAppointmentOverlay = ({ onClose, appointment }) => {
+const ViewAppointmentOverlayP = ({ onClose, appointment, findVisitReason }) => {
 
-    const [appointmentToModify, setAppointmentToModify] = useState(appointment);
-    const [isSaving, setIsSaving] = useState(false);
-    const [saveError, setSaveError] = useState(null);
-    const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [appointmentToModify, setAppointmentToModify] = useState(appointment);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState(null);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [reviewOverlayOpen, setReviewOverlayOpen] = useState(false)
+
+  // derive completed flag
+  const isCompleted = appointmentToModify.providerDetails?.status === 'completed';
+
+  const toggleReviewOverlay = () => {
+    setReviewOverlayOpen(!reviewOverlayOpen)
+  }
+
+
+  // handle toggle flip
+  const handleToggle = (next) => {
+    // ensure providerDetails exists
+    const pd = appointmentToModify.providerDetails || {};
+    pd.status = next ? 'completed' : undefined;
+
+    setAppointmentToModify({
+      ...appointmentToModify,
+      providerDetails: pd,
+    });
+  };
+
+  console.log(appointment)
+  // stub: save to backend
+  const onSave = async() => {
+    // e.g. fetch('/api/update-appointment', { method: 'POST', body: JSON.stringify(appointmentToModify) })
+    setIsSaving(true);
+    setSaveError(null);
+    const updatedAppointment = { ...appointmentToModify };
+
+    const isPatientDone = updatedAppointment.patientDetails?.status === 'completed';
+    const isProviderDone = updatedAppointment.providerDetails?.status === 'completed';
   
-    const [reviewOverlayOpen, setReviewOverlayOpen] = useState(false)
-    // derive completed flag
-    const isCompleted = appointmentToModify.patientDetails?.status === 'completed';
-
-    const toggleReviewOverlay = () => {
-      setReviewOverlayOpen(!reviewOverlayOpen)
+    if (isPatientDone && isProviderDone) {
+      updatedAppointment.status = 'Completed';
     }
-  
-    console.log(appointment)
-    // handle toggle flip
-    const handleToggle = (next) => {
-      // ensure patientDetails exists
-      const pd = appointmentToModify.patientDetails || {};
-      pd.status = next ? 'completed' : undefined;
-  
-      setAppointmentToModify({
-        ...appointmentToModify,
-        patientDetails: pd,
-      });
-    };
-  
-    // stub: save to backend
-    const onSave = async() => {
-      // e.g. fetch('/api/update-appointment', { method: 'POST', body: JSON.stringify(appointmentToModify) })
-      setIsSaving(true);
-      setSaveError(null);
-      const updatedAppointment = { ...appointmentToModify };
 
-      const isPatientDone = updatedAppointment.patientDetails?.status === 'completed';
-      const isProviderDone = updatedAppointment.providerDetails?.status === 'completed';
-    
-      if (isPatientDone && isProviderDone) {
-        updatedAppointment.status = 'Completed';
-      }
-  
-      try {
-          await updateAppointment(updatedAppointment._id, updatedAppointment);
-          setShowSuccessPopup(true);
-          setIsSaving(false)
-          setTimeout(() => setShowSuccessPopup(false), 2000); 
-      } catch (error) {
-          console.error("error", error)
-          setIsSaving(false)
-          setSaveError("⚠️ Server error. Please try again.");
-      }
-      console.log('Saving appointment:', appointmentToModify);
-    };
+
+    try {
+        await updateAppointment(updatedAppointment._id, updatedAppointment);
+        setShowSuccessPopup(true);
+        setIsSaving(false)
+        setTimeout(() => setShowSuccessPopup(false), 2000); 
+    } catch (error) {
+        console.error("error", error)
+        setIsSaving(false)
+        setSaveError("⚠️ Server error. Please try again.");
+    }
+    console.log('Saving appointment:', appointmentToModify);
+  };
   const getStatusColor = (status) => {
     switch (status) {
         case 'Booked':
@@ -77,7 +80,7 @@ const ViewAppointmentOverlay = ({ onClose, appointment }) => {
         case 'Booked':
             return 'Chat Now'; 
         case 'Completed':
-            const message = appointment.patientDetails?.review ? 'Appointment Completed' :  'Leave a review'
+            const message = appointment.providerDetails?.review ? 'Appointment Completed' :  'Leave a review'
             return message; 
         case 'Payment Failed':
             return 'Retry Payment'; 
@@ -90,11 +93,18 @@ const ViewAppointmentOverlay = ({ onClose, appointment }) => {
     }
   };
 
-  const handleActionButtonClick = (status) => {
+  const handleActionButtonClick = (status, email) => {
     switch (status) {
         case 'Booked':
          
-            console.log("Chat with doctor");
+            {
+              const emailParam = encodeURIComponent(email); 
+              if(emailParam && emailParam !== 'undefined'){
+                const currentUrl = `/provider/chats?email=${emailParam}`; 
+
+                window.location.href = currentUrl;
+              }
+            };
             break;
         case 'Completed':
          
@@ -119,8 +129,8 @@ const ViewAppointmentOverlay = ({ onClose, appointment }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-      {reviewOverlayOpen && <LeaveReviewOverlay appointment={appointment} onClose={onClose} side={'patient'}/>}
+    <div className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+       {reviewOverlayOpen && <LeaveReviewOverlay appointment={appointment} onClose={onClose} side={'provider'}/>}
       <div className="bg-white rounded-3xl p-6 w-full max-w-md shadow-lg relative">
         <button className="absolute top-6 left-4 text-gray-600" onClick={onClose}>
           <span className="material-symbols-outlined text-[#1EBDB8]">chevron_left</span>
@@ -128,11 +138,6 @@ const ViewAppointmentOverlay = ({ onClose, appointment }) => {
         {showSuccessPopup && (
         <div className="fixed top-20 right-10 bg-[#1EBDB8] text-white px-6 py-3 rounded-xl shadow-lg z-50 animate-slideIn">
           Appointment Status Updated!
-        </div>
-      )}
-        {saveError && (
-        <div className="fixed top-20 right-10 bg-[#1EBDB8] text-white px-6 py-3 rounded-xl shadow-lg z-50 animate-slideIn">
-          Server Error, please try again later!
         </div>
       )}
         {appointment.status !== 'Cancelled' && appointment.status !== 'Completed' &&
@@ -153,13 +158,14 @@ const ViewAppointmentOverlay = ({ onClose, appointment }) => {
 
         <div className="flex flex-col items-center mt-4">
           <img
-            src={appointment?.providerDetails?.providerAvatar} 
-            alt="ProviderDetails"
+            src={appointment?.patientDetails?.avatar} 
+            alt="PatientDetails"
             className="w-20 h-20 rounded-full mb-3"
           />
-          <h3 className="text-2xl font-semibold text-gray-700">{appointment?.providerDetails?.providerName}</h3>
-          <p className="text-gray-500">{appointment?.providerDetails?.providerType}</p>
-          {appointment.status === 'Completed' && appointment.patientDetails?.review && (
+          <h3 className="text-2xl font-semibold text-gray-700">{appointment?.patientDetails?.name}</h3>
+          <p className="text-gray-500">{appointment?.patientDetails?.email}</p>
+          <span className="text-[#1EBDB8] text-sm font-medium ">{appointment?.schedulingDetails?.patientType?.toUpperCase()} PATIENT</span>
+          {appointment.status === 'Completed' && appointment.providerDetails?.review && (
             <div className="text-center mt-2">
              
               <div className="flex justify-center ">
@@ -167,7 +173,7 @@ const ViewAppointmentOverlay = ({ onClose, appointment }) => {
                   <svg
                     key={i}
                     xmlns="http://www.w3.org/2000/svg"
-                    fill={i < appointment.patientDetails.review.rating ? '#FBBF24' : 'none'}
+                    fill={i < appointment.providerDetails.review.rating ? '#FBBF24' : 'none'}
                     viewBox="0 0 24 24"
                     stroke="#FBBF24"
                     className="w-5 h-5"
@@ -182,15 +188,15 @@ const ViewAppointmentOverlay = ({ onClose, appointment }) => {
                 ))}
               </div>
               <p className="text-yellow-500 mt-2 font-bold">
-                Rated {appointment.patientDetails.review.rating} Star{appointment.patientDetails.review.rating > 1 ? 's' : ''}
+                Rated {appointment.providerDetails.review.rating} Star{appointment.providerDetails.review.rating > 1 ? 's' : ''}
               </p>
               <span className='text-gray-600 text-sm italic'>"{appointment.patientDetails?.review?.comment}"</span>
             </div>
           )}
         </div>
         {appointment.status !== 'Cancelled' && appointment.status !== 'Completed'  &&  <CompleteToggle isCompleted={isCompleted} onToggle={handleToggle} />}
-        {appointment.patientDetails.status==='completed' && appointment.providerDetails.status!=='completed' && <p className="text-center bg-[#1EBDB8] text-white rounded-full px-2 py-1 my-2">Appointment was marked completed by you.</p>}
-        {appointment.providerDetails.status==='completed' && appointment.patientDetails.status!=='completed' && <p className="text-center bg-[#1EBDB8] text-white rounded-full px-2 py-1 my-2">Appointment was marked completed by your provider.</p>}
+        {appointment.patientDetails.status==='completed' && appointment.providerDetails.status!=='completed' && <p className="text-center bg-[#1EBDB8] text-white rounded-full px-2 py-1 my-2">Appointment was marked completed by your patient.</p>}
+        {appointment.providerDetails.status==='completed' && appointment.patientDetails.status!=='completed' && <p className="text-center bg-[#1EBDB8] text-white rounded-full px-2 py-1 my-2">Appointment was marked completed by you.</p>}
 
         {appointment.providerDetails.status==='completed' && appointment.patientDetails.status==='completed' && appointment.status !== 'Completed' && <p className="text-center bg-[#1EBDB8] text-white rounded-full px-2 py-1 my-2">Warning: this action will complete current appointment and trigger review process.</p>}
         <div className="bg-[#1EBDB8] text-white rounded-lg p-4 mt-6">
@@ -198,6 +204,12 @@ const ViewAppointmentOverlay = ({ onClose, appointment }) => {
             <p>Status:</p>
             <p className={`${getStatusColor(appointment.status)} font-semibold bg-white px-2 rounded-full`}>
                 {appointment.status}
+            </p>
+          </div>
+          <div className="flex justify-between mt-2">
+            <p>Visit Reason:</p>
+            <p className={`font-semibold`}>
+                {findVisitReason(appointment?.schedulingDetails?.visitReason)}
             </p>
           </div>
           <div className="flex justify-between mt-2">
@@ -213,19 +225,38 @@ const ViewAppointmentOverlay = ({ onClose, appointment }) => {
           <div className="mt-2 flex w-full justify-center rounded-[20px] hover:bg-white hover:text-[#1EBDB8] transition-all duration-300 border shadow-md">
             <button 
               className={`w-full p-2 text-center font-semibold ${appointment.status === 'Cancelled' ? 'cursor-not-allowed opacity-50' : ''}`}
-              onClick={() => handleActionButtonClick(appointment.status)}
-              disabled={appointment.status === 'Cancelled' || appointment.status === 'Pending' || getActionButtonText(appointment.status) === 'Appointment Completed'}
+              onClick={() => handleActionButtonClick(appointment.status, appointment?.patientDetails?.email)}
+              disabled={appointment.status === 'Cancelled' || appointment.status === 'Pending'}
             >
               {getActionButtonText(appointment.status)}
             </button>
           </div>
+          {appointment.status !== 'Cancelled' && appointment.status !== 'Completed' &&
+            <div className="mt-2 flex w-full justify-center rounded-[20px] hover:bg-white hover:text-[#1EBDB8] transition-all duration-300 border shadow-md">
+              <button 
+                className={`w-full p-2 text-center font-semibold ${appointment.status === 'Cancelled' ? 'cursor-not-allowed opacity-50' : ''}`}
+                onClick={() => {
+                  window.open(
+                    'https://zoom.us/start/videomeeting',
+                    '_blank',
+                    'noopener,noreferrer'
+                  );
+                }}
+                disabled={appointment.status === 'Cancelled' || appointment.status === 'Pending'}
+              >
+                Consult over zoom
+              </button>
+            </div>
+          }
         </div>
+        
+     
       </div>
     </div>
   );
 };
 
-export default ViewAppointmentOverlay;
+export default ViewAppointmentOverlayP;
 
 const CompleteToggle = ({ isCompleted, onToggle }) => (
   <div className="flex items-center justify-center space-x-3">

@@ -1,27 +1,67 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FaPhoneAlt, FaVideo, FaMicrophone, FaMicrophoneSlash, FaVideoSlash, FaPaperclip, FaRegImages } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
 
-import ChatArea from '../../common/patient/chatArea';
+import ChatArea from '../../common/chatArea';
+import { getMessages } from '../../api/messageCalls';
+import { useLocation } from 'react-router-dom';
 
-const messages = [
-  {type: 'incoming', content: `Hey, how is it going!`, time: '11:37AM', status: 'read'},
-  {type: 'outgoing', content: `Hey, i'm good thanks for asking!`, time: '11:37AM', status: 'delivered'},
-  {type: 'incoming', content: `How's everything else!`, time: '11:37AM', status: 'unread'}
-]
 
 
 const ProviderChatPage = ({ appointments }) => {
   const [showCallUI, setShowCallUI] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOn, setIsVideoOn] = useState(true);
+  const { user } = useSelector((state) => state.auth);
   
   const [attachedFile, setAttachedFile] = useState(null);
   const [viewContact, setContact] = useState()
   const [sender, setSender] = useState({avatar: 'https://pngimg.com/d/doctor_PNG15992.png', name: 'Zane', active: true})
   const [attachedImage, setAttachedImage] = useState(null);
   const [showVideoPreview, setShowVideoPreview] = useState(false);
+  const [recentAppointment, setRecentAppointment] = useState(null)
   const videoRef = useRef(null);
+  const [contacts, setContacts] = useState([]);
+  const [messages, setMessages] = useState({});
+  const location = useLocation()
 
+  const getMessagesforContact = async(contact) => {
+      try {
+         const response = await getMessages(user.email, contact.email)
+         return response.data
+      } catch (error) {
+         console.error("error")
+         return []
+      }
+  } 
+
+  const getEmailFromUrl = () => {
+    const params = new URLSearchParams(location.search); // Extract query parameters from URL
+    return params.get('email'); // Get the 'email' parameter
+  };
+
+
+  useEffect(() => {
+    const email = getEmailFromUrl(); 
+    if (email && contacts) {
+      const foundContact = contacts.find(c => c?.email === decodeURIComponent(email));
+      viewMessage(foundContact); 
+    }
+  }, [location.search, contacts]); 
+
+  
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      const updatedMessages = {};
+      for (const contact of contacts) { 
+        updatedMessages[contact.id] = await getMessagesforContact(contact);
+      }
+      setMessages(updatedMessages);
+    };
+
+    fetchMessages();
+  }, [contacts, user]);
   const handleToggleMute = () => setIsMuted(!isMuted);
   const handleToggleVideo = () => {
     setIsVideoOn(!isVideoOn);
@@ -29,7 +69,7 @@ const ProviderChatPage = ({ appointments }) => {
   };
   const handleEndCall = () => setShowCallUI(false);
 
-  const [contacts, setContacts] = useState([]);
+
 
   useEffect(() => {
     if (appointments.length > 0) {
@@ -82,9 +122,32 @@ const ProviderChatPage = ({ appointments }) => {
   };
 
   const viewMessage = (contact) => {
+    // Update the contact state
+    setContact(contact);
 
-      setContact(contact)
-  }
+    const emailParam = encodeURIComponent(contact?.email); 
+    if(emailParam && emailParam !== 'undefined'){
+      const currentUrl = window.location.origin + window.location.pathname; 
+      const newUrl = `${currentUrl}?email=${emailParam}`;
+
+      window.history.pushState({}, '', newUrl);
+    }
+
+    const filteredAppointments = appointments.filter(
+      (appt) => appt.patientDetails?.email === contact.email
+    );
+  
+    if (filteredAppointments.length > 0) {
+      const latestAppointment = filteredAppointments.reduce((latest, current) => {
+        return new Date(current.date) > new Date(latest.date) ? current : latest;
+      });
+      setRecentAppointment(latestAppointment);
+    } else {
+      setRecentAppointment(null); 
+    }
+  };
+  
+  console.log("R", recentAppointment)
 
   return (
     <div className="flex h-[85%] mx-2 lg:mx-8 mt-8 rounded-[10px] shadow-md bg-white p-6 ">
@@ -101,7 +164,14 @@ const ProviderChatPage = ({ appointments }) => {
               <img src={contact.avatar} alt="Sender" className="w-14 h-14 bg-white rounded-full"/>
               <div className='flex flex-col ml-2'>
                 <span className={`font-semibold ${contact?.id === viewContact?.id ? 'text-white' : 'text-[#1EBDB8]'} `}>{contact.name}</span>
-                <span className={`text-[12px]  ${contact?.id === viewContact?.id ? 'text-white' : 'text-[#959595]'} whitespace-nowrap`}> {contact?.messages?.[contact.messages.length - 1]?.content || "No messages"}</span>
+                <span className={`text-[12px] ${contact?.id === viewContact?.id ? 'text-white' : 'text-[#959595]'} whitespace-nowrap`}>
+                    {messages[contact.id]?.length
+                      ? (messages[contact.id].at(-1)?.senderEmail === user.email
+                          ? `You: ${messages[contact.id].at(-1)?.content}`
+                          : messages[contact.id].at(-1)?.content)
+                      : "No messages"}
+                  </span>
+
               </div>
               <div className='absolute flex flex-col right-1 top-3'>
                 <span className=" text-[#BABABA] text-[12px] whitespace-nowrap">{contact.time}</span>
@@ -113,7 +183,7 @@ const ProviderChatPage = ({ appointments }) => {
       </div>
 
       {/* Chat Area */}
-        <ChatArea props={viewContact}/>
+        <ChatArea props={viewContact} recentAppointment={recentAppointment}/>
       {/* Audio/Video Call UI */}
       {showCallUI && (
         <div className="absolute inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center text-white">

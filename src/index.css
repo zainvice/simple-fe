@@ -60,4 +60,98 @@ body {
   transition: order 0.5s ease;
 }
 
+.animate-slideIn {
+  animation: slideIn 0.3s ease-out;
+}
 
+@keyframes slideIn {
+  0% {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.shining-border {
+  border: 2px solid #1EBDB8;
+  box-shadow: 0 0 10px #1EBDB8, 0 0 20px #1EBDB8, 0 0 30px #1EBDB8;
+  animation: shineGlow 2s infinite alternate;
+}
+
+@keyframes shineGlow {
+  from {
+    box-shadow: 0 0 10px #1EBDB8, 0 0 20px #1EBDB8, 0 0 30px #1EBDB8;
+  }
+  to {
+    box-shadow: 0 0 15px #1EBDB8, 0 0 30px #1EBDB8, 0 0 40px #1EBDB8;
+  }
+}
+
+.border-animation {
+  background: conic-gradient(
+    from 0deg,
+    #1EBDB8,
+    transparent 90deg,
+    #1EBDB8,
+    transparent 180deg,
+    #1EBDB8,
+    transparent 270deg,
+    #1EBDB8
+  );
+  animation: spin-border 4s linear infinite;
+  border-radius: 0.75rem;
+  padding: 2px;
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: destination-out;
+}
+
+@keyframes spin-border {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.border-box-glow {
+  padding: 2px;
+  border-radius: 2rem;
+  position: relative;
+  background: #ffffff;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.border-box-glow::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(90deg, #1ebdb8, #a5bcfa, #1ebdb8, #00ffff);
+  background-size: 300% 300%;
+  animation: borderShine 4s linear infinite;
+  z-index: -1;
+  filter: blur(8px);
+  border-radius: inherit;
+}
+
+@keyframes borderShine {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

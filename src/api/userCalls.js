@@ -55,6 +55,21 @@ export const getUserByEmail = async (email) => {
     }
   }
 };
+export const getUserById = async (id) => {
+  try {
+    const response = await api.get(`/users/id/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user by id:", error);
+    if (error.response) {
+      throw new Error(`Error: ${error.response.status} - ${error.response.data.message || error.response.statusText}`);
+    } else if (error.request) {
+      throw new Error("No response from the server.");
+    } else {
+      throw new Error("Request setup error: " + error.message);
+    }
+  }
+};
 export const getUserActiveStatus = async (email) => {
   try {
     const response = await api.get(`/users/status/${email}`);

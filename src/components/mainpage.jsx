@@ -14,6 +14,15 @@ import ProviderChatPage from './providers/chats';
 import { fetchProviders } from '../api/api';
 import { fetchAppointmentsByEmail } from '../api/api';
 import ProfilePageProv from './providers/profile';
+import Verification from './providers/verification';
+import AppointmentsP from './providers/appointments';
+import ViewAppointmentOverlayP from '../overlays/provider/viewappointmentoverlay';
+import Subscriptions from './providers/subscriptions';
+import { useSelector } from 'react-redux';
+import { getUserByEmail } from '../api/userCalls';
+import Favorites from './patient/favorites';
+import LabReports from './patient/labReports';
+import AdminDashboard from './admin/maindash';
 
 const visitReasons = [
     {
@@ -179,11 +188,58 @@ const visitReasons = [
       ],
     },
 ];
+const subscriptions = [
+  {
+    title: "Silver Tier — “Starter Care”",
+    description: "For small clinics or new providers looking to get visibility",
+    features: [
+      "Basic Patient Sponsorship Slots (up to 10/month)",
+      "Listed in Sponsored Providers Section",
+      "Basic Profile Page",
+      "Monthly Engagement Report",
+      "Community Spotlight (1/quarter)",
+      "Email Support Only",
+    ],
+    price: 49,
+  },
+  {
+    title: "Gold Tier — “Trusted Provider”",
+    description: "For established clinics seeking higher visibility",
+    features: [
+      "50 Patient Sponsorships/month",
+      "Priority Listing",
+      "Enhanced Profile Page",
+      "Patient Follow-up Integration",
+      "Advanced Analytics",
+      "Quarterly Webinar Spot",
+      "Priority Email + Chat Support",
+    ],
+    price: 129,
+  },
+  {
+    title: "Diamond Tier — “Elite Healthcare Partner”",
+    description: "Top-tier providers focused on outreach & brand trust",
+    features: [
+      "Unlimited Patient Sponsorships",
+      "Top Placement + Partner Badge",
+      "Co-branded Educational Campaigns",
+      "Custom Mobile Landing Page",
+      "AI-driven Patient Targeting",
+      "Direct Messaging",
+      "Video Stories on Home Page",
+      "24/7 Dedicated Support",
+    ],
+    price: 299,
+  },
+];
+
 
 const MainPage = ({userType, type, isExpanded, showHideSidebar}) => {
 
+    const { user } = useSelector((state) => state.auth);
     const [isNewAppointmentOpen, setIsNewAppointmentOpen] = useState(false);
     const [isViewAppointmentOpen, setIsViewAppointmentOpen] = useState(false);
+    const [isViewAppointmentPOpen, setIsViewAppointmentPOpen] = useState(false);
     const [currentView, setCurrentView] = useState()
     const [doctorToBookWith, setDoctorTOBookWith] = useState()
     const [newAppointmentDetails, setNewAppointmentDetails] = useState({
@@ -211,41 +267,17 @@ const MainPage = ({userType, type, isExpanded, showHideSidebar}) => {
       },
       paymentStatus: "Completed"
     })
+    const [profile, setProfile] = useState({});
 
-    const handleChange = (e) => {
-      const { name, value } = e.target;
-      const nameParts = name.split('.'); 
-  
-      if (nameParts.length === 1) {
-        // Update top-level fields
-        setNewAppointmentDetails((prevDetails) => ({
-          ...prevDetails,
-          [name]: value,
-        }));
-      } else if (nameParts.length === 2) {
-        // Update nested fields like schedulingDetails or patientDetails
-        setNewAppointmentDetails((prevDetails) => ({
-          ...prevDetails,
-          [nameParts[0]]: {
-            ...prevDetails[nameParts[0]],
-            [nameParts[1]]: value,
-          },
-        }));
-      } else if (nameParts.length === 3) {
-        // Update even more deeply nested fields like patientDetails.avatar, providerDetails.providerAvatar
-        setNewAppointmentDetails((prevDetails) => ({
-          ...prevDetails,
-          [nameParts[0]]: {
-            ...prevDetails[nameParts[0]],
-            [nameParts[1]]: {
-              ...prevDetails[nameParts[0]][nameParts[1]],
-              [nameParts[2]]: value,
-            },
-          },
-        }));
+    const findVisitReason = (value) => {
+      for (const category of visitReasons) {
+        const found = category.options.find(option => option?.value === value?.toString());
+        if (found) {
+          return found.label;
+        }
       }
+      return "Visit reason not found"; 
     };
-   
 
     const [location, setLocation] = useState("");
     const [error, setError] = useState("");
@@ -258,6 +290,8 @@ const MainPage = ({userType, type, isExpanded, showHideSidebar}) => {
      
       const getProviders = async () => {
         try {
+          console.log("set load")
+          setLoading(true)
           const data = await fetchProviders();
           setProviders(data);
        
@@ -271,6 +305,7 @@ const MainPage = ({userType, type, isExpanded, showHideSidebar}) => {
           } else {
             setError('Email and role are required');
           }
+          setLoading(false);
 
         } catch (err) {
           setError(err.message); 
@@ -281,7 +316,26 @@ const MainPage = ({userType, type, isExpanded, showHideSidebar}) => {
 
       getProviders();
     }, []);
-
+ 
+    useEffect(()=> {
+        const fetchUser = async( user ) => {
+            
+            try {
+                
+                const response = await getUserByEmail(user.email)
+                setProfile(response)
+                
+            } catch (error) {
+                console.error("Error", error)
+               
+            }
+        }
+        if(user){
+           fetchUser(user)
+        }
+       
+    }, [user])
+    
   
     useEffect(() => {
 
@@ -329,6 +383,11 @@ const MainPage = ({userType, type, isExpanded, showHideSidebar}) => {
       console.log("DOCTOR", doctor)
       setDoctorTOBookWith(doctor)
     };
+
+    const handleViewAppointmentPOpen = (appointment) => {
+        setCurrentView(appointment)
+        setIsViewAppointmentPOpen(true)
+    }
     const handleViewAppointmentOpen = (appointment) => {
         setCurrentView(appointment)
         setIsViewAppointmentOpen(true)
@@ -338,31 +397,60 @@ const MainPage = ({userType, type, isExpanded, showHideSidebar}) => {
     const handleCloseOverlay = () => {
         setIsNewAppointmentOpen(false);
         setIsViewAppointmentOpen(false);
+        setIsViewAppointmentPOpen(false);
     };
+
     return (
         <div className={`${isExpanded ? 'w-[85%]': 'lg:w-[95%] w-full'} transition-all duration-300 h-screen flex flex-col relative `}>
 
-            {userType === 'patient' ? 
+            {userType === 'patient' && 
                 <>
                     <Header props ={type} showSideBar={showHideSidebar} />
-                    {type.state === 'dashboard' && <MainDash handleNewAppointmentOpen= {toggleNewAppointmentOpen} handleViewAppointmentOpen= {handleViewAppointmentOpen} appointments={appointments} providers={providers}/>}
+                    {type.state === 'dashboard' && <MainDash loading={loading} handleNewAppointmentOpen={toggleNewAppointmentOpen} user={profile} handleViewAppointmentOpen= {handleViewAppointmentOpen} appointments={appointments}
+                        favoriteDoctors={providers.filter((provider) =>
+                          profile.favoriteProviders?.includes(provider.email)
+                        )}/>
+                    }
                     {type.state === 'chats' && <ChatPage appointments={appointments}/>}
                     {type.state === 'profile' && <ProfilePage/>}
-                    {type.state === 'explore' && <ExplorePage handleNewAppointmentOpen= {toggleNewAppointmentOpen} location={location} setLocation={setLocation} providers={providers} error={error}/>}
+                    {type.state === 'explore' && <ExplorePage handleNewAppointmentOpen={toggleNewAppointmentOpen} user={profile} location={location} setLocation={setLocation} providers={providers} error={error}/>}
+                    {type.state === 'favorites' && (
+                      <Favorites
+                        favoriteDoctors={providers.filter((provider) =>
+                          profile.favoriteProviders?.includes(provider.email)
+                        )}
+                        user={profile}
+                        handleNewAppointmentOpen={toggleNewAppointmentOpen}
+                      />
+                    )}
+
+                    {type.state === 'lab reports' && <LabReports labReports={''}/>}
                     {type.state === 'appointments' && <Appointments handleNewAppointmentOpen= {toggleNewAppointmentOpen} handleViewAppointmentOpen= {handleViewAppointmentOpen} appointments={appointments}/>}
                     {type.state === 'provider details' && <ProviderDetails handleNewAppointmentOpen= {toggleNewAppointmentOpen} handleViewAppointmentOpen= {handleViewAppointmentOpen} doctor={providers[0]} visitReasons={visitReasons}/>}
-                    {type.state === 'review and book' && <ReviewAndBook appointment={newAppointmentDetails} openNewAppointment={toggleNewAppointmentOpen} doctor={doctorToBookWith}/>}
+                    {type.state === 'review and book' && <ReviewAndBook appointment={newAppointmentDetails} openNewAppointment={toggleNewAppointmentOpen} doctor={doctorToBookWith} setAppointmentDetails={setNewAppointmentDetails} getVisitReason={findVisitReason}/>}
                   
                     {isNewAppointmentOpen && <NewAppointmentOverlay onClose={handleCloseOverlay} doctor={doctorToBookWith} visitReasons={visitReasons} newAppointmentDetails={newAppointmentDetails} setNewAppointmentDetails= {setNewAppointmentDetails}/>}
 
                     {isViewAppointmentOpen && <ViewAppointmentOverlay onClose={handleCloseOverlay} appointment={currentView}/>}
                 </> 
-                : 
+            }
+            {userType === 'provider' && 
                 <>
                   <Header props ={type} showSideBar={showHideSidebar} />
                   {type.state === 'dashboard' && <ProviderMainDash appointments={appointments}/>}
+                  {type.state === 'appointments' && <AppointmentsP appointments={appointments} handleViewAppointmentOpen={handleViewAppointmentPOpen}/>}
                   {type.state === 'chats' && <ProviderChatPage appointments={appointments}/>}
                   {type.state === 'profile' && <ProfilePageProv/>}
+                  {type.state === 'verification' && <Verification/>}
+                  {type.state === 'subscriptions' && <Subscriptions subscriptions={subscriptions}/>}
+                  {isViewAppointmentPOpen && <ViewAppointmentOverlayP onClose={handleCloseOverlay} appointment={currentView} findVisitReason={findVisitReason}/>}
+                </>
+            }
+            {userType === 'admin' && 
+                <>
+                  <Header props ={type} showSideBar={showHideSidebar} />
+                  {type.state === 'dashboard' && <AdminDashboard loading={loading}/>}
+                 
                 </>
             }
         </div>

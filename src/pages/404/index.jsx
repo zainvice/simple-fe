@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from '../../common/patient/button';
+import Button from '../../common/button';
 
 const LostPage = () => {
     return (

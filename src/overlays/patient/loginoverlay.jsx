@@ -56,7 +56,23 @@ const Loginoverlay = ({onClose}) => {
         setFormData({ ...formData, [name]: value });
         setLoginError('')
       };
-    
+      const handleOTPChange = (e, index) => {
+        const value = e.target.value.replace(/\D/, ""); // Only digits
+        if (!value) return;
+      
+        const otp = formData.otp.split("");
+        otp[index] = value;
+      
+        setFormData({
+          ...formData,
+          otp: otp.join(""),
+        });
+      
+        // Move to next input
+        if (e.target.nextSibling) {
+          e.target.nextSibling.focus();
+        }
+      };
     const handleSubmit = async(e, state) => {
         e.preventDefault();
        if(!isOTPSend||state==='Resend OTP'){
@@ -94,7 +110,17 @@ const Loginoverlay = ({onClose}) => {
                 const response = actionResult.payload; 
                 console.log('Verified OTP', response);
                 
-                navigate('/patient/dashboard');
+                const role = response?.message?.user?.role;
+
+                // Map roles to their respective dashboards
+                const roleToRouteMap = {
+                  user: '/patient/dashboard',
+                  provider: '/provider/dashboard',
+                  admin: '/admin/dashboard'
+                };
+              
+                const route = roleToRouteMap[role] || '/';
+                navigate(route);
                 
             } else if(verifyOTP.rejected.match(actionResult)){
               const response = actionResult.payload; 
@@ -137,21 +163,19 @@ const Loginoverlay = ({onClose}) => {
                     <h2 className="text-[24px] font-medium">Enter the 6 digit code</h2>
                     {loginError && <p className="text-red-600 my-2 flex"><span className="material-symbols-outlined mr-2"> error </span>{loginError}</p>} 
                     <p className="text-[14px] text-[#707271] mb-4">{otpSender}</p>
-                    <div className="mb-4 text-[#707271]">
-                        <label className=" font-semibold block text-sm font-medium mb-2" htmlFor="email">
-                            Verification Code
-                        </label>
-                        <input
-                            type="number"
-                            id="otp"
-                            name="otp"
-                        
-                            className="w-full p-3 bg-[#F5F5F5] rounded-[10px]"
-                            placeholder="------"
-                            value={formData.otp}
-                            onChange={handleChange}
-                            required
-                        />
+                    <div className="flex justify-between mx-10 gap-2 mb-4">
+                          {[...Array(6)].map((_, index) => (
+                            <input
+                              key={index}
+                              type="text"
+                              inputMode="numeric"
+                              maxLength="1"
+                              className="w-12 h-12 text-center text-xl bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1EBDB8] transition"
+                              value={formData.otp[index] || ""}
+                              onChange={(e) => handleOTPChange(e, index)}
+                              onFocus={(e) => e.target.select()}
+                            />
+                          ))}
                         </div>
                     <p className="text-[14px] text-[#707271] mb-4">Didn’t receive your code? 
                     {isTimerActive ? (

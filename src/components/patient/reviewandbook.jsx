@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import Spinner from "../../common/spinner";
 import { createAppointment } from "../../api/api";
 
-const ReviewAndBook = ({ appointment, openNewAppointment, doctor }) => {
+const ReviewAndBook = ({ appointment, openNewAppointment, doctor, setAppointmentDetails, getVisitReason }) => {
  
   const { user } = useSelector((state) => state.auth);
   const [newAppointmentDetails, setNewAppointmentDetails] = useState(appointment);
@@ -48,16 +48,33 @@ const ReviewAndBook = ({ appointment, openNewAppointment, doctor }) => {
   // Handle changes in patient details
   const handlePatientDetailsChange = (e, field) => {
     const value = e.target.value;
-    setNewAppointmentDetails((prevDetails) => ({
-      ...prevDetails,
-      patientDetails: {
+  
+    setNewAppointmentDetails((prevDetails) => {
+      const updatedPatientDetails = {
         ...prevDetails.patientDetails,
         [field]: value,
         name: user.firstName + ' ' + user.lastName,
-        avatar: user.avatar
-      },
-    }));
+        avatar: user.avatar,
+      };
+  
+      const fullAddress = [
+        updatedPatientDetails.streetAddress,
+        updatedPatientDetails.apt,
+        updatedPatientDetails.city,
+        updatedPatientDetails.state,
+        updatedPatientDetails.zip,
+      ].filter(Boolean).join(", ");
+  
+      return {
+        ...prevDetails,
+        patientDetails: {
+          ...updatedPatientDetails,
+          address: fullAddress,
+        },
+      };
+    });
   };
+  
 
   // Handle address changes
   const handleAddressChange = () => {
@@ -78,6 +95,16 @@ const ReviewAndBook = ({ appointment, openNewAppointment, doctor }) => {
     }));
   };
 
+  useEffect(() => {
+    if(appointment){
+      setNewAppointmentDetails(appointment)
+    }
+  }, [appointment])
+  useEffect(() => {
+    if(newAppointmentDetails){
+      setAppointmentDetails(newAppointmentDetails)
+    }
+  }, [newAppointmentDetails])
   // Handle payment method change
   const handlePaymentMethodChange = (method) => {
     setPaymentMethod(method);
@@ -108,6 +135,10 @@ const ReviewAndBook = ({ appointment, openNewAppointment, doctor }) => {
     try {
       if (!newAppointmentDetails.type) {
         alert("Please select an appointment type.");
+        return;
+      }
+      if (!newAppointmentDetails.schedulingDetails.visitReason) {
+        alert("Please select a visit reason.");
         return;
       }
       console.log(newAppointmentDetails);
@@ -141,11 +172,11 @@ const ReviewAndBook = ({ appointment, openNewAppointment, doctor }) => {
       }
     }
   }, [user]);
-  
+  console.log("Appointment", newAppointmentDetails)
 
   return (
-    <div className="p-6 mt-8 mx-2 border4 lg:mx-8 bg-white shadow-md rounded-[10px] max-h-[84%] min-h-[84%] overflow-y-auto">
-      <div className="max-w-xl mx-auto bg-white shadow-md rounded-lg p-6 h-[100%] overflow-y-auto relative mb-4">
+    <div className="p-6 mt-8 mx-2 border4 flex lg:mx-8 bg-white shadow-md rounded-[10px] max-h-[84%] min-h-[84%] overflow-y-auto">
+       <div className="max-w-1/2 w-1/2 bg-white shadow-md rounded-lg p-6 h-[100%] overflow-y-auto relative mb-4">
         {/* Doctor Info */}
         <div className="flex items-center mb-6 p-6 border-2 shadow-md sticky top-0 bg-white">
           <img
@@ -158,14 +189,27 @@ const ReviewAndBook = ({ appointment, openNewAppointment, doctor }) => {
             <p className="text-gray-500">{appointment.providerDetails.providerType}</p>
             <p className="text-gray-500">
               {appointment.date}{' '}{appointment.time}{" "}
-              <span className="text-teal-500 font-semibold cursor-pointer" onClick={(e) => openNewAppointment({ doctor })}>Update</span>
+              {!isAppointmentBooked && <span className="text-teal-500 font-semibold cursor-pointer" onClick={(e) => openNewAppointment(doctor)}>Update</span>}
+              
             </p>
           </div>
         </div>
 
         {/* Patient Information */}
-        <h3 className="text-lg font-semibold mb-4">Patient Information</h3>
-        <div className="flex mb-4">
+       
+       
+         {/* Appointment Type */}
+       
+        
+        {isAppointmentBooked ? 
+          <div className="flex flex-col text-center h-60 justify-center text-[#1EBDB8] p-4 mb-4 rounded-md ">
+            <span className="material-symbols-outlined text-[104px] my-4"> new_releases </span>
+            <p className="text-center font-semibold text-2xl">Appointment successfully booked</p>
+          </div>
+        : 
+          <>
+           <h3 className="text-lg font-semibold mb-4">Patient Information</h3>
+           <div className="flex mb-4">
           <button
             className={`flex-1 py-2 ${newAppointmentDetails.schedulingDetails.patientType === 'new' ? 'bg-teal-500 text-white' : 'bg-gray-200 text-black'} rounded-l-md`}
             onClick={() => handlePatientTypeChange('new')}
@@ -179,9 +223,8 @@ const ReviewAndBook = ({ appointment, openNewAppointment, doctor }) => {
             Returning Patient
           </button>
         </div>
-         {/* Appointment Type */}
-         <h3 className="text-lg font-semibold mb-4">Appointment Type</h3>
-        <div className="flex mb-4">
+        <h3 className="text-lg font-semibold mb-4">Appointment Type</h3>
+            <div className="flex mb-4">
           <button
             className={`flex-1 py-2 ${newAppointmentDetails.type === 'In-Person Appointment' ? 'bg-teal-500 text-white' : 'bg-gray-200 text-black'} rounded-l-md`}
             onClick={() => handleAppointmentTypeChange('In-Person Appointment')}
@@ -189,19 +232,12 @@ const ReviewAndBook = ({ appointment, openNewAppointment, doctor }) => {
             In Person Appointment 
           </button>
           <button
-            className={`flex-1 py-2 ${newAppointmentDetails.type === 'video Appointment' ? 'bg-teal-500 text-white' : 'bg-gray-200 text-black'} rounded-r-md`}
-            onClick={() => handleAppointmentTypeChange('video Appointment')}
+            className={`flex-1 py-2 ${newAppointmentDetails.type === 'Video Appointment' ? 'bg-teal-500 text-white' : 'bg-gray-200 text-black'} rounded-r-md`}
+            onClick={() => handleAppointmentTypeChange('Video Appointment')}
           >
             Video Appointment
           </button>
         </div>
-        {isAppointmentBooked ? 
-          <div className="bg-teal-500 text-white p-4 mb-4 rounded-md">
-            <p className="text-center font-semibold">Appointment successfully booked!</p>
-          </div>
-        : 
-          <>
-            
         {/* Contact Information */}
         <h3 className="text-lg font-semibold mb-4">Contact Information</h3>
         {/* Email Field */}
@@ -344,6 +380,33 @@ const ReviewAndBook = ({ appointment, openNewAppointment, doctor }) => {
         
         
         }
+      </div>
+      <div className="max-w-1/2 p-6 h-[100%] overflow-y-auto w-1/2 shadow-md text-center flex flex-col">
+          <h1 className="text-[22px] font-semibold text-[#1EBDB8]">Appointment Details</h1>
+          <div className=" my-2 shadow-md p-4 text-center">
+            <p className="text-[20px] font-semibold text-[#1EBDB8]">Your Details</p>
+            <div className='flex flex-col items-center  mt-4'>
+                      <img
+                          src={newAppointmentDetails?.patientDetails?.avatar} 
+                          alt="Patient"
+                          className="w-14 h-14 rounded-full mr-3"
+                      />
+                      <span className="text-lg font-semibold text-[#1EBDB8] font-medium mt-3">{newAppointmentDetails?.patientDetails?.name}</span>
+                  </div>
+            <p>{newAppointmentDetails.schedulingDetails.patientType?.toUpperCase()} PATIENT</p>
+            <p>{newAppointmentDetails.patientDetails.email}</p>
+            <p>{newAppointmentDetails.patientDetails.phone}</p>
+            <p>{newAppointmentDetails.patientDetails.streetAddress}</p>
+            <p>{newAppointmentDetails.patientDetails.state}</p>
+            <p>{newAppointmentDetails.patientDetails.zip}</p>
+          </div>
+          <div className=" my-2 shadow-md p-4 text-center">
+            <p className="text-[20px] font-semibold text-[#1EBDB8]">Booking Information</p>
+            <p>{getVisitReason(newAppointmentDetails.schedulingDetails.visitReason)}</p>
+            <p>{newAppointmentDetails.type}</p>
+            <p>{newAppointmentDetails.date}(yyyy-mm-dd)</p>
+            <p>{newAppointmentDetails.time}</p>
+          </div>
       </div>
     </div>
   );

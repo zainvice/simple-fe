@@ -3,21 +3,22 @@ import React from 'react';
 function DoctorCardExplore({doctor, schedule, fav}) {
     console.log('DOCTOR', doctor)
     return (
-        <div key={doctor.id}  className="bg-white w-full my-2 flex relative border rounded-[20px] shadow-lg py-8 px-4 poppins mx-auto">
+        <div key={doctor.id}  className="bg-white w-full my-2 flex relative border flex justify-between pr-8 lg:pr-24 rounded-[20px] shadow-lg py-8 px-4 poppins mx-auto">
          {fav && <div className='absolute right-4 top-4'>
             <img src="/heart.png" alt="fav" />
          </div>
          }
-            <div className='flex cursor-pointer' onClick={(e)=> window.location.href = `/patient/explore/providerDetails`}>
+            <div className='flex cursor-pointer' onClick={()=> window.location.href = `/patient/explore/providerDetails?id=${doctor._id}`}>
                 <img
                 src={doctor.avatar ? doctor.avatar : doctor?.gender?.toUpperCase() === "MALE" ? 'https://pngimg.com/d/doctor_PNG15992.png': 'https://static.vecteezy.com/system/resources/previews/041/409/059/non_2x/ai-generated-a-female-doctor-with-a-stethoscope-isolated-on-transparent-background-free-png.png'}
                 alt="Doctor"
                 className="w-60 h-60 rounded-full mb-2"
             
                 />
-                <div className='text-left ml-4 text-lg w-1/2 ' >
+                <div className='text-left ml-4 mt-6 text-lg w-1/2 ' >
                     <h3 className="text-2xl font-semibold text-[#1EBDB8]"> {'Dr. '} {doctor?.firstName} {' '} {doctor?.lastName}</h3>
-                    <p className=" text-[#333333] font-medium">{doctor.type}</p>
+                    <p className="text-sm text-[#333333] font-medium">{doctor.practiceName}</p>
+                    <p className="text-sm text-[#888888] whitespace-nowrap">{doctor?.specialty && doctor?.specialty[0]}</p>
                     <p className="text-[#333333] whitespace-nowrap flex">⭐ {doctor.rating} . {doctor?.reviews?.length} reviews <p className='ml-2 flex px-2 bg-[#FFC3C3] text-[#FF4747] rounded-[10px]'><img src="/heart.png" alt="" className='h-4 mt-1 mr-2'/>LOYAL PATIENTS</p></p>
                     {doctor?.videoVisits && <p className="text-[#333333] flex font-medium"> <span className="material-symbols-outlined mt-0.5 mr-2">hangout_video</span> Video Visits</p>}
                     <div className="flex mb-2">
@@ -39,7 +40,8 @@ function DoctorCardExplore({doctor, schedule, fav}) {
             </div>
         
        
-            {doctor?.availability?.length> 0 ? 
+           <div>
+           {doctor?.availability?.length> 0 ? 
                     <div className='grid grid-cols-7 gap-2 ' id='availibility'>
                         {doctor?.availability?.slice(0, 14).map((available)=>(
                     
@@ -70,6 +72,7 @@ function DoctorCardExplore({doctor, schedule, fav}) {
                 </div>
             )}
             
+           </div>
         
       </div>
     );

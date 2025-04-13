@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import socket from '../../utils/socket';
 
 const formatDate = (timestamp) => {
     const messageDate = new Date(timestamp);
     const now = new Date();
+
     
     const isSameDay = now.toDateString() === messageDate.toDateString();
     const yesterday = new Date();
@@ -24,7 +26,26 @@ const formatDate = (timestamp) => {
     }
 };
 
+const getStatusIcon = (status) => {
+    switch (status) {
+        case "sent":
+            return <span class="material-symbols-outlined text-gray-400"> check </span>; // One gray tick
+        case "delivered":
+            return <span class="material-symbols-outlined text-gray-400"> done_all </span>; // Two gray ticks
+        case "read":
+            return <span class="material-symbols-outlined text-blue-500"> done_all </span>; // Two blue ticks
+        default:
+            return null;
+    }
+};
 const Message = ({ props, avatar }) => {
+    useEffect(() => {
+        
+        if (props?.type === "incoming" && props?.status !== "read") {
+            socket.emit("mark_as_read", { messageId: props?._id, senderEmail: props?.senderEmail });
+        }
+    }, [props?._id, props?.status]); 
+   
     return (
         <div className="flex flex-col w-full">
          
@@ -42,8 +63,9 @@ const Message = ({ props, avatar }) => {
                     >
                         {props?.content}
                     </div>
-                    <div className="text-sm text-gray-500 mt-1">
+                    <div className="text-sm flex text-gray-500 mt-1">
                         {formatDate(props?.createdAt)}
+                        {props?.type !== 'incoming' && <span className="ml-1">{getStatusIcon(props?.status)}</span>}
                     </div>
                 </div>
                 

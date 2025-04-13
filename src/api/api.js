@@ -11,7 +11,7 @@ const api = axios.create({
 
 export const fetchProviders = async () => {
   try {
-    const response = await api.get('/providers'); 
+    const response = await api.get('/users/providers'); 
     return response.data; 
   } catch (error) {
     console.error('Error fetching providers:', error);
@@ -25,13 +25,27 @@ export const fetchProviders = async () => {
   }
 };
 
+let isFetchingAppointments = false; // 🚫 Prevents duplicate fetches
 
 export const fetchAppointments = async () => {
+  if (isFetchingAppointments) {
+    console.warn("⏱️ Fetch already in progress, skipping duplicate request");
+    return;
+  }
+
+  isFetchingAppointments = true;
+  console.log("⏳ Waiting before sending request...");
+
   try {
-    const response = await api.get('/appointments'); 
+    // Artificial delay – wait 1 second 💤
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    const response = await api.get('/appointments');
+    console.log("✅ Appointments fetched successfully");
     return response.data;
+
   } catch (error) {
-    console.error('Error fetching appointments:', error);
+    console.error('❌ Error fetching appointments:', error);
     if (error.response) {
       throw new Error(`Error: ${error.response.status} - ${error.response.data.message || error.response.statusText}`);
     } else if (error.request) {
@@ -39,24 +53,66 @@ export const fetchAppointments = async () => {
     } else {
       throw new Error('Request setup error: ' + error.message);
     }
+  } finally {
+    isFetchingAppointments = false; // 🔓 Reset flag
   }
 };
 
-export const fetchAppointmentsByEmail = async ({email, role}) => {
+export const uploadFile = async (file, uniqueName) => {
   try {
-    const response = await api.get('/appointments', {email, role}); 
+    const formData = new FormData();
+    formData.append('file', file); // Add file
+
+    const response = await api.post(`/upload?uniqueName=${uniqueName}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
     return response.data;
   } catch (error) {
-    console.error('Error fetching appointments by email and role:', error);
-    if (error.response) {
-      throw new Error(`Error: ${error.response.status} - ${error.response.data.message || error.response.statusText}`);
-    } else if (error.request) {
-      throw new Error('No response from the server.');
-    } else {
-      throw new Error('Request setup error: ' + error.message);
-    }
+    throw error.response?.data || error.message;
   }
 };
+
+let isFetchingAppointmentsByEmail = false;
+
+export const fetchAppointmentsByEmail = async (email, role) => {
+  if (isFetchingAppointmentsByEmail) {
+    console.warn("⏱️ Already fetching appointments by email, skipping duplicate request...");
+    return;
+  }
+
+  isFetchingAppointmentsByEmail = true;
+  console.log("⏳ Waiting a moment before sending request for email:", email, "role:", role);
+
+  try {
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Optional pre-delay
+    console.time('fetchAppointmentsByEmail');
+
+    const response = await api.get('/appointments/filter', {
+      params: { email, role },
+      timeout: 10000 // increase timeout to 10 seconds
+    });
+
+    console.timeEnd('fetchAppointmentsByEmail');
+    console.log("✅ Appointments fetched!");
+    return response.data;
+
+  } catch (error) {
+    console.error('❌ Error fetching appointments:', error);
+    if (error.response) {
+      throw new Error(`Error: ${error.response.status} - ${error.response.data.message || error.response.statusText}`);
+    } else if (error.code === 'ECONNABORTED') {
+      throw new Error('Request timed out. Try again later 😓');
+    } else {
+      throw new Error('Unexpected error: ' + error.message);
+    }
+  } finally {
+    isFetchingAppointmentsByEmail = false;
+  }
+};
+
 
 
 export const createAppointment = async (appointmentData) => {

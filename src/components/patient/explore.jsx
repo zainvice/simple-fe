@@ -7,14 +7,16 @@ import TimeOfDaySelector from '../../dropdowns/patient/timeOfDaySelector.jsx';
 import VisitReasonDropdown from '../../dropdowns/patient/visitReasonSelector.jsx';
 import DistanceSelector from '../../dropdowns/patient/distanceSelector.jsx';
 import VisitTypeSelector from '../../dropdowns/patient/perferredASelector.jsx';
+import { useLocation } from 'react-router-dom';
 
-const ExplorePage = ({handleNewAppointmentOpen, providers, location, setLocation, error}) => {
+const ExplorePage = ({handleNewAppointmentOpen, providers, user, location, setLocation, error}) => {
  
     const [searchActive, setSearchActive] = useState(false)
     
       const [currentDate, setCurrentDate] = useState(Date.now());
 
       const [searchTerm, setSearchTerm] = useState('')
+
 
       const [searchFilters, setFilters] = useState({
         timeframe: 'flexible',
@@ -33,7 +35,27 @@ const ExplorePage = ({handleNewAppointmentOpen, providers, location, setLocation
       const [distanceOverlay, setDistanceOverlay] = useState(false);
       const [visitTypeOverlay, setVisitTypeOverlay] = useState(false);
 
+      const getFilterFromUrl = () => {
+        const params = new URLSearchParams(location.search); // Extract query parameters from URL
+        return params.get('specialty'); // Get the 'specialty' parameter
+      };
+
+      const searchLocation = useLocation(); // ← alias it instead of overwriting
+
+      useEffect(() => {
+        const params = new URLSearchParams(searchLocation.search);
+        const specialty = params.get('specialty');
       
+        if (specialty) {
+          console.log("found specialty", specialty);
+          setSearchActive(true);
+          setSearchTerm(specialty);
+        } else {
+          setSearchActive(false);
+          setSearchTerm('');
+        }
+      }, [searchLocation.search]); // ← depend on just the changing part
+
       const closeAllOverlays = () => {
         setTimeframeOverlay(false);
         setTimeOfDayOverlay(false);
@@ -88,11 +110,15 @@ const ExplorePage = ({handleNewAppointmentOpen, providers, location, setLocation
       },[searchFilters])
 
       const handlePrevious = () => {
-          setCurrentDate((prevDate) => {
-              const twoWeeksBack = prevDate - 14 * 24 * 60 * 60 * 1000;
-              return twoWeeksBack > Date.now() ? twoWeeksBack : prevDate;
-          });
+        setCurrentDate((prevDate) => {
+          const twoWeeksBack = prevDate - 14 * 24 * 60 * 60 * 1000;
+          const today = new Date();
+          today.setHours(0, 0, 0, 0); // Normalize to start of day
+      
+          return twoWeeksBack >= today.getTime() ? twoWeeksBack : today.getTime();
+        });
       };
+      
 
       const [viewFilter, setFilter] = useState(false)
       
@@ -113,6 +139,15 @@ const ExplorePage = ({handleNewAppointmentOpen, providers, location, setLocation
       const setSearchValue = (speciality) => {
           setSearchTerm(speciality)
           onHideFilter()
+      }
+      const handleSearch = () => {
+        const searchTermParam = encodeURIComponent(searchTerm); 
+        const locationParam = encodeURIComponent(location); 
+        const currentUrl = window.location.origin + window.location.pathname; 
+        let newUrl = `${currentUrl}?specialty=${searchTermParam}&location=${locationParam}`;
+  
+        window.history.pushState({}, '', newUrl);
+        setSearchActive(true)
       }
 
     return (
@@ -221,7 +256,7 @@ const ExplorePage = ({handleNewAppointmentOpen, providers, location, setLocation
          </div>
        ):(
         <div className='mt-2 overflow-y-auto'>
-           <div className='hidden mt-2 text-sm font-normal lg:flex flex-col lg:flex-row w-[94%] items-center mx-auto relative z-0'>
+           <div className='hidden mt-2 text-sm font-normal lg:flex flex-col lg:flex-row w-[94%] items-center mx-auto relative z-10'>
                {viewFilter&& <SpecialtyDropdown setSearchTerm={setSearchValue} searchTerm = {searchTerm}/>}
                         <div className='flex rounded-l-full px-4 py-3 bg-[#1E232F] w-full'>
                             <div className='flex w-full '>
@@ -241,26 +276,28 @@ const ExplorePage = ({handleNewAppointmentOpen, providers, location, setLocation
                                 />
                             </div>
                         </div>
-                        <button className='bg-[#1EBDB8] text-[16px] -ml-8 px-3 py-4 text-white rounded-full' onClick={(e)=> setSearchActive(true)} ><span class="material-symbols-outlined mx-2 mt-1">search</span></button>
+                        <button className='bg-[#1EBDB8] text-[16px] -ml-8 px-3 py-4 text-white rounded-full' onClick={(e)=> handleSearch()} ><span class="material-symbols-outlined mx-2 mt-1">search</span></button>
             </div>
-            <p className='redRose lg:ml-14 ml-6 text-[#1EBDB8] font-semibold text-[20px]'>Explore Treatments accross specialties</p>
-            <div className='grid lg:grid-cols-4 grid-cols-2 w-[90%] items-center text-[#1EBDB8] mx-auto'>
-                        <div className='flex flex-col bg-[#FFFFFF] cursor-pointer hover:bg-[#EAEAEA] duration-300 shadow-md py-4 h-32 rounded-[30px] items-center text-center m-4' onClick={(e)=> {setSearchTerm('Primary Care'); setSearchActive(true)}}><div><img src="/1.png" alt="logo" className='w-14 h-14 mb-4'/></div> <p>Primary Care </p></div>
-                        <div className='flex flex-col bg-[#FFFFFF] cursor-pointer hover:bg-[#EAEAEA] duration-300 shadow-md py-4 h-32 rounded-[30px] items-center text-center m-4' onClick={(e)=> {setSearchTerm('Dermatologist'); setSearchActive(true)}}><div><img src="/ps.png" alt="logo" className='w-14 h-14 mb-4' /></div> <p>Dermatologist</p></div>
-                        <div className='flex flex-col bg-[#FFFFFF] cursor-pointer hover:bg-[#EAEAEA] duration-300 shadow-md py-4 h-32 rounded-[30px] items-center text-center m-4' onClick={(e)=> {setSearchTerm('Dentist'); setSearchActive(true)}}><div><img src="/neo.png" alt="logo" className='w-14 h-14 mb-4' /></div> <p>Dentist</p></div>
-                        <div className='flex flex-col bg-[#FFFFFF] cursor-pointer hover:bg-[#EAEAEA] duration-300 shadow-md py-4 h-32 rounded-[30px] items-center text-center m-4' onClick={(e)=> {setSearchTerm('Cardiologist'); setSearchActive(true)}}><div><img src="/5.png" alt="logo" className='w-14 h-14 mb-4' /></div> <p>Cardiologist</p></div>
-                        <div className='flex flex-col bg-[#FFFFFF] cursor-pointer hover:bg-[#EAEAEA] duration-300 shadow-md py-4 h-32 rounded-[30px] items-center text-center m-4' onClick={(e)=> {setSearchTerm('Orthopedist'); setSearchActive(true)}}><div><img src="/rhe.png" alt="logo" className='w-14 h-14 mb-4' /></div> <p>Orthopedist</p></div>
-                        <div className='flex flex-col bg-[#FFFFFF] cursor-pointer hover:bg-[#EAEAEA] duration-300 shadow-md py-4 h-32 rounded-[30px] items-center text-center m-4' onClick={(e)=> {setSearchTerm('Psychiatrist'); setSearchActive(true)}}><div><img src="/4.png" alt="logo" className='w-14 h-14 mb-4' /></div> <p>Psychiatrist</p></div>
-                        <div className='flex flex-col bg-[#FFFFFF] cursor-pointer hover:bg-[#EAEAEA] duration-300 shadow-md py-4 h-32 rounded-[30px] items-center text-center m-4' onClick={(e)=> {setSearchTerm('Pediatrician'); setSearchActive(true)}}><div><img src="/rds.png" alt="logo" className='w-14 h-14 mb-4' /></div> <p>Pediatrician</p></div>
-                        <div className='flex flex-col bg-[#FFFFFF] cursor-pointer hover:bg-[#EAEAEA] duration-300 shadow-md py-4 h-32 rounded-[30px] items-center text-center m-4' onClick={(e)=> {setSearchTerm('Gynecologist'); setSearchActive(true)}}><div><img src="/3.png" alt="logo" className='w-14 h-14 mb-4' /></div> <p>Gynecologist</p></div>
-                      
-
-            </div>
-            <p className='redRose lg:ml-14 ml-6 text-[#1EBDB8] font-semibold text-[20px]'>Sponsord</p>
+           
+            
+            <p className='redRose lg:ml-14 ml-6 text-[#1EBDB8] font-semibold text-[20px] mb-4 mt-6'>Sponsored</p>
             <div className="grid mx-auto lg:grid-cols-3 grid-cols-1 gap-4 w-[90%] overflow-y-autos">
             {providers?.map((doctor) => (
-                <DoctorCard doctor={doctor} schedule={handleNewAppointmentOpen} fav={false}/>
+                <DoctorCard doctor={doctor} schedule={handleNewAppointmentOpen} user={user} fav={false}/>
             ))}
+            </div>
+            <p className='redRose lg:ml-14 ml-6 mt-4 text-[#1EBDB8] font-semibold text-[20px]'>Explore Treatments accross specialties</p>
+            <div className='grid lg:grid-cols-4 grid-cols-2 w-[90%] items-center text-[#1EBDB8] mx-auto mb-12'>
+                        <div className='flex flex-col bg-[#FFFFFF] cursor-pointer hover:bg-[#1EBDB8] hover:text-white hover:bg-opacity-70 duration-300 shadow-md py-4 h-32 rounded-[30px] items-center text-center m-4' onClick={(e)=> {setSearchTerm('Primary Care'); setSearchActive(true)}}><div><img src="/1.png" alt="logo" className='w-14 h-14 mb-4'/></div> <p>Primary Care </p></div>
+                        <div className='flex flex-col bg-[#FFFFFF] cursor-pointer hover:bg-[#1EBDB8] hover:text-white hover:bg-opacity-70 duration-300 shadow-md py-4 h-32 rounded-[30px] items-center text-center m-4' onClick={(e)=> {setSearchTerm('Dermatologist'); setSearchActive(true)}}><div><img src="/ps.png" alt="logo" className='w-14 h-14 mb-4' /></div> <p>Dermatologist</p></div>
+                        <div className='flex flex-col bg-[#FFFFFF] cursor-pointer hover:bg-[#1EBDB8] hover:text-white hover:bg-opacity-70 duration-300 shadow-md py-4 h-32 rounded-[30px] items-center text-center m-4' onClick={(e)=> {setSearchTerm('Dentist'); setSearchActive(true)}}><div><img src="/neo.png" alt="logo" className='w-14 h-14 mb-4' /></div> <p>Dentist</p></div>
+                        <div className='flex flex-col bg-[#FFFFFF] cursor-pointer hover:bg-[#1EBDB8] hover:text-white hover:bg-opacity-70 duration-300 shadow-md py-4 h-32 rounded-[30px] items-center text-center m-4' onClick={(e)=> {setSearchTerm('Cardiologist'); setSearchActive(true)}}><div><img src="/5.png" alt="logo" className='w-14 h-14 mb-4' /></div> <p>Cardiologist</p></div>
+                        <div className='flex flex-col bg-[#FFFFFF] cursor-pointer hover:bg-[#1EBDB8] hover:text-white hover:bg-opacity-70 duration-300 shadow-md py-4 h-32 rounded-[30px] items-center text-center m-4' onClick={(e)=> {setSearchTerm('Orthopedist'); setSearchActive(true)}}><div><img src="/rhe.png" alt="logo" className='w-14 h-14 mb-4' /></div> <p>Orthopedist</p></div>
+                        <div className='flex flex-col bg-[#FFFFFF] cursor-pointer hover:bg-[#1EBDB8] hover:text-white hover:bg-opacity-70 duration-300 shadow-md py-4 h-32 rounded-[30px] items-center text-center m-4' onClick={(e)=> {setSearchTerm('Psychiatrist'); setSearchActive(true)}}><div><img src="/4.png" alt="logo" className='w-14 h-14 mb-4' /></div> <p>Psychiatrist</p></div>
+                        <div className='flex flex-col bg-[#FFFFFF] cursor-pointer hover:bg-[#1EBDB8] hover:text-white hover:bg-opacity-70 duration-300 shadow-md py-4 h-32 rounded-[30px] items-center text-center m-4' onClick={(e)=> {setSearchTerm('Pediatrician'); setSearchActive(true)}}><div><img src="/rds.png" alt="logo" className='w-14 h-14 mb-4' /></div> <p>Pediatrician</p></div>
+                        <div className='flex flex-col bg-[#FFFFFF] cursor-pointer hover:bg-[#1EBDB8] hover:text-white hover:bg-opacity-70 duration-300 shadow-md py-4 h-32 rounded-[30px] items-center text-center m-4' onClick={(e)=> {setSearchTerm('Gynecologist'); setSearchActive(true)}}><div><img src="/3.png" alt="logo" className='w-14 h-14 mb-4' /></div> <p>Gynecologist</p></div>
+                      
+
             </div>
         </div>
        )}

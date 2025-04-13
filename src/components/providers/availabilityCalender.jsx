@@ -11,12 +11,53 @@ import {
 } from "date-fns";
 import Spinner from "../../common/spinner";
 import EditAvailabilityOverlay from "../../overlays/provider/editAvailabilityOverlay";
+import ViewAppointmentsOverlay from "../../overlays/provider/viewAppointmentsOverlay";
+import { getUserByEmail } from "../../api/userCalls";
+import { useSelector } from "react-redux";
 
-const AvailabilityCalendar = ({appointments, availability}) => {
+
+const AvailabilityCalendar = ({appointments}) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const calendarRef = useRef(null); 
   const currentTimeRef = useRef(null); 
   const [editAvailibiltyOpen, setEditAvailibilityOpen] = useState()
+  const [viewAppointmentOpen, setViewAppointmentOpen] = useState()
+  const { user } = useSelector((state) => state.auth);
+  const [availability, setAvailability] = useState([]);
+
+  const [timezone, setTimezone] = useState("UTC");
+  
+  useEffect(() => {
+      // Fetch IP-based timezone
+      const fetchTimezone = async () => {
+          try {
+              const response = await fetch("https://ipapi.co/json/");
+              const data = await response.json();
+              setTimezone(data.timezone);
+          } catch (error) {
+              console.error("Error fetching timezone:", error);
+              setTimezone("UTC"); // Fallback timezone
+          }
+      };
+      fetchTimezone();
+  }, []);
+
+    useEffect(()=> {
+      const fetchUserData = async() => {
+        try {
+          const response = await getUserByEmail(user.email)
+          if(response.availability?.length > 0){
+            setAvailability(response.availability)
+          }
+        } catch (error) {
+          
+        }
+      }
+      if(user.email){
+         fetchUserData()
+      }
+  
+    },[user])
 
   const times = Array.from({ length: 24 }, (_, i) => {
     const hour = i % 12 === 0 ? 12 : i % 12;
@@ -31,14 +72,28 @@ const AvailabilityCalendar = ({appointments, availability}) => {
 
   
   const isCurrentTime = (time) => {
+    // Get the current time in the user's timezone
     const now = new Date();
-    const currentHour = now.getHours() % 12 || 12;
-    const currentPeriod = now.getHours() >= 12 ? "PM" : "AM";
 
+    // Format the current hour based on the timezone
+    const formattedNow = new Intl.DateTimeFormat("en-US", {
+      timeZone: timezone,
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true, // This keeps the AM/PM format
+    }).format(now);
+
+    // Extract current hour and period (AM/PM)
+    const [currentHourWithPeriod] = formattedNow.split(":");
+    const currentPeriod = formattedNow.includes("AM") ? "AM" : "PM";
+    const currentHour = parseInt(currentHourWithPeriod);
+
+    // Split the input time into hour and period
     const [hourWithMinutes, period] = time.split(" ");
     const hour = parseInt(hourWithMinutes.split(":")[0]);
 
-    return parseInt(hour) === currentHour && period === currentPeriod;
+    // Compare the extracted hours and periods
+    return currentHour === hour && currentPeriod === period;
   };
 
   const daysInMonth = eachDayOfInterval({
@@ -80,9 +135,12 @@ const AvailabilityCalendar = ({appointments, availability}) => {
         });
       }
     }
-  }, [currentMonth]);
+  }, [currentMonth, timezone]);
   const toggleEditAvailibilityOpen = () => {
     setEditAvailibilityOpen(!editAvailibiltyOpen)
+  }
+  const toggleViewAppointmentsOpen = () => {
+    setViewAppointmentOpen(!viewAppointmentOpen)
   }
 
 
@@ -126,8 +184,16 @@ const AvailabilityCalendar = ({appointments, availability}) => {
             return false;
         }
     });
-};
+  };
+  const getAvailabilityForSlot = (date, time) => { 
+    const slotAvailability = availability?.find((availability) => availability.date === date);
+    if (!slotAvailability) return "Unavailable";
 
+    const isAvailable = slotAvailability.availableAppointments.includes(time);
+    return isAvailable ? "Available" : "Unavailable";
+  };
+
+  console.log(availability)
 
 
   return (
@@ -151,11 +217,18 @@ const AvailabilityCalendar = ({appointments, availability}) => {
             <span className="material-symbols-outlined mt-2">chevron_right</span>
           </button>
         </div>
-        <button className="bg-[#1EBDB8] text-white px-4 py-2 rounded shadow-md" onClick={(e)=> setEditAvailibilityOpen(!editAvailibiltyOpen)}>
-          Edit Schedule
-        </button>
+        <div className="flex space-x-2">
+          <button className="bg-[#1EBDB8] text-white px-4 py-2 rounded shadow-md" onClick={(e)=> setEditAvailibilityOpen(!editAvailibiltyOpen)}>
+            Edit Schedule
+          </button>
+          <button className="bg-[#1EBDB8] text-white px-4 py-2 rounded shadow-md" onClick={toggleViewAppointmentsOpen}>
+            View Appointments
+          </button>
+        </div>
+        
       </div>
       {editAvailibiltyOpen && <EditAvailabilityOverlay onClose={toggleEditAvailibilityOpen}/>}
+      {viewAppointmentOpen && <ViewAppointmentsOverlay appointments={appointments} onClose={toggleViewAppointmentsOpen}/>}
 
       {/* Calendar Grid */}
       <div
@@ -215,17 +288,24 @@ const AvailabilityCalendar = ({appointments, availability}) => {
                   key={`${format(day, "yyyy-MM-dd")}-${time}`}
                   className="p-2 border-b bg-white h-[150px] border-r"
                 >
+                  {!getAppointmentsForSlot(day, time)?.length && (
+                    <p className="text-[#1EBDB8] font-bold text-center">
+                        {getAvailabilityForSlot(format(day, "yyyy-MM-dd"), time)}
+                      </p>
+
+                  ) }
+
                   {getAppointmentsForSlot(day, time)?.map((appointment, index) => (
-                    <div key={index} className="bg-[#1EBDB8] rounded-[10px] bg-opacity-30 p-3 text-sm text-[#707271]">
+                    <div key={index} className="bg-[#1EBDB8] rounded-[10px] bg-opacity-30 h-full p-3 text-sm text-[#707271]">
                       <div className="flex items-center gap-2">
                         <img
                           src={appointment?.patientDetails?.avatar}
                           alt="patientavatar"
                           className="w-8 h-8 rounded-full"
                         />
-                        <p className="text-lg text-[#333333] font-semibold">{appointment?.patientDetails?.firstName}</p>
+                        <p className="text-sm text-[#333333] font-semibold">{appointment?.patientDetails?.name}</p>
                       </div>
-                      <p>{appointment?.schedulingDetails?.visitReason}</p>
+                      <p>{appointment?.status}</p>
                       <p>{appointment?.type}</p>
                       <p className="mt-4 font-semibold">{appointment?.time}</p>
                     </div>
