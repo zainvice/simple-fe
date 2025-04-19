@@ -98,3 +98,4 @@
 // Tweak animation speed on 2025-04-13
 // Improve error messages on 2025-04-15
 // Fix responsive issues on 2025-04-17
+// Add mobile nav support on 2025-04-19
